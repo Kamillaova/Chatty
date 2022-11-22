@@ -10,7 +10,6 @@ import ru.mrbrikster.chatty.util.textapi.ActionBar;
 import java.util.List;
 
 public class ActionBarNotification extends Notification {
-
   private static final String PERMISSION_NODE = NOTIFICATION_PERMISSION_NODE + "actionbar";
   private final List<String> messages;
   private final String prefix;
@@ -56,5 +55,4 @@ public class ActionBarNotification extends Notification {
         ).send(player)
       );
   }
-
 }

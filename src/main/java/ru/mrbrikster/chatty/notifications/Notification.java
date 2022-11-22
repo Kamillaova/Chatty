@@ -1,6 +1,5 @@
 package ru.mrbrikster.chatty.notifications;
 
-import lombok.Getter;
 import org.bukkit.Bukkit;
 import org.bukkit.scheduler.BukkitTask;
 import ru.mrbrikster.chatty.Chatty;
@@ -17,7 +16,6 @@ public abstract class Notification {
   private final BukkitTask bukkitTask;
   private final int size;
   private final boolean random;
-  @Getter
   private final boolean permission;
 
   private int currentMessage;
@@ -46,4 +44,7 @@ public abstract class Notification {
     return currentMessage;
   }
 
+  public boolean isPermission() {
+    return permission;
+  }
 }

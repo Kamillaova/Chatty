@@ -5,8 +5,6 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonParser;
 import com.google.gson.stream.JsonWriter;
-import lombok.Getter;
-import lombok.SneakyThrows;
 import net.md_5.bungee.api.ChatColor;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
@@ -21,6 +19,7 @@ import java.io.IOException;
 import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -50,7 +49,6 @@ public class FancyMessage implements JsonRepresentedObject, Cloneable, Iterable<
     ConfigurationSerialization.registerClass(FancyMessage.class);
   }
 
-  @Getter
   private List<MessagePart> messageParts;
   private String jsonString;
   private boolean dirty;
@@ -228,6 +226,7 @@ public class FancyMessage implements JsonRepresentedObject, Cloneable, Iterable<
    * @return This builder instance.
    * @throws IllegalArgumentException If any of the enumeration values in the array do not represent formatters.
    */
+  @SuppressWarnings("deprecation")
   public FancyMessage style(ChatColor... styles) {
     for (var style : styles) {
       if (TextUtil.isColor(style)) {
@@ -395,6 +394,7 @@ public class FancyMessage implements JsonRepresentedObject, Cloneable, Iterable<
    * @param lines The lines of formatted text which will be displayed to the client upon hovering.
    * @return This builder instance.
    */
+  @SuppressWarnings("DataFlowIssue")
   public FancyMessage formattedTooltip(FancyMessage... lines) {
     if (lines.length < 1) {
       onHover(null, null); // Clear tooltip
@@ -460,12 +460,8 @@ public class FancyMessage implements JsonRepresentedObject, Cloneable, Iterable<
    * @return This builder instance.
    */
   public FancyMessage translationReplacements(FancyMessage... replacements) {
-    for (var str : replacements) {
-      latest().translationReplacements.add(str);
-    }
-
+    Collections.addAll(latest().translationReplacements, replacements);
     dirty = true;
-
     return this;
   }
 
@@ -552,23 +548,26 @@ public class FancyMessage implements JsonRepresentedObject, Cloneable, Iterable<
    *
    * @return The JSON string representing this object.
    */
-  @SneakyThrows
   public String toJSONString() {
-    if (!dirty && jsonString != null) {
-      return jsonString;
-    }
-    var string = new StringWriter();
-    var json = GSON.newJsonWriter(string);
-    json.setHtmlSafe(false);
     try {
-      writeJson(json);
-      json.close();
+      if (!dirty && jsonString != null) {
+        return jsonString;
+      }
+      var string = new StringWriter();
+      var json = GSON.newJsonWriter(string);
+      json.setHtmlSafe(false);
+      try {
+        writeJson(json);
+        json.close();
+      } catch (IOException e) {
+        throw new RuntimeException("invalid message");
+      }
+      jsonString = string.toString();
+      dirty = false;
+      return jsonString;
     } catch (IOException e) {
-      throw new RuntimeException("invalid message");
+      throw new RuntimeException(e);
     }
-    jsonString = string.toString();
-    dirty = false;
-    return jsonString;
   }
 
   /**
@@ -683,4 +682,6 @@ public class FancyMessage implements JsonRepresentedObject, Cloneable, Iterable<
 
     return stringBuilder.toString();
   }
+
+  public List<MessagePart> getMessageParts() { return this.messageParts; }
 }

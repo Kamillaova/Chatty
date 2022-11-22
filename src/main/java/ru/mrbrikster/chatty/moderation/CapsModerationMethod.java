@@ -1,6 +1,5 @@
 package ru.mrbrikster.chatty.moderation;
 
-import lombok.Getter;
 import ru.mrbrikster.baseplugin.config.ConfigurationNode;
 
 import static java.lang.Character.toLowerCase;
@@ -9,7 +8,6 @@ import static java.lang.Character.toUpperCase;
 public class CapsModerationMethod extends ModerationMethod {
   private final int percent;
   private final int length;
-  @Getter
   private final boolean useBlock;
 
   CapsModerationMethod(ConfigurationNode configurationNode, String message) {
@@ -54,4 +52,6 @@ public class CapsModerationMethod extends ModerationMethod {
 
     return (double) capsLength / (double) length * 100;
   }
+
+  public boolean isUseBlock() { return this.useBlock; }
 }

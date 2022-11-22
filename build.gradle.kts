@@ -20,9 +20,6 @@ dependencies {
 
   compileOnly("com.github.MilkBowl:VaultAPI:1.7.1")
   compileOnly("me.clip:placeholderapi:2.11.2")
-
-  compileOnly("org.projectlombok:lombok:1.18.24")
-  annotationProcessor("org.projectlombok:lombok:1.18.24")
 }
 
 tasks {

@@ -1,7 +1,6 @@
 package ru.mrbrikster.chatty.chat;
 
 import com.google.gson.JsonPrimitive;
-import lombok.Getter;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -26,9 +25,7 @@ import java.util.regex.Pattern;
 
 public class ChatManager {
   private static final Pattern CHAT_NAME_PATTERN = Pattern.compile("^[a-z0-9]{1,32}$");
-  @Getter
   private final List<Chat> chats = new ArrayList<>();
-  @Getter
   private final Logger logger;
   private final Configuration configuration;
   private final JsonStorage jsonStorage;
@@ -170,8 +167,10 @@ public class ChatManager {
     init();
   }
 
-  public static class Logger {
+  public List<Chat> getChats() { return this.chats; }
+  public Logger getLogger() { return this.logger; }
 
+  public static class Logger {
     void write(Player player, String message, String additionalPrefix) {
       BufferedWriter bufferedWriter = null;
       var logsDirectory = new File(Chatty.instance().getDataFolder().getAbsolutePath() + File.separator + "logs");

@@ -1,7 +1,6 @@
 package ru.mrbrikster.chatty.moderation;
 
 import com.google.common.io.Files;
-import lombok.Getter;
 import org.bukkit.plugin.java.JavaPlugin;
 import ru.mrbrikster.baseplugin.config.ConfigurationNode;
 import ru.mrbrikster.chatty.util.TextUtil;
@@ -20,12 +19,9 @@ public class SwearModerationMethod extends ModifyingSubstringsModerationMethod {
   private static final List<Pattern> swearsWhitelist = new ArrayList<>();
   private static File swearsDirectory;
   private static File swearsFile;
-  @Getter
   private static File whitelistFile;
   private final String replacement;
-  @Getter
   private final List<String> words;
-  @Getter
   private final boolean useBlock;
   private String editedMessage;
 
@@ -88,6 +84,7 @@ public class SwearModerationMethod extends ModifyingSubstringsModerationMethod {
     }
     return false;
   }
+  public static File getWhitelistFile() { return SwearModerationMethod.whitelistFile; }
 
   @Override
   public String getEditedMessage() {
@@ -164,4 +161,7 @@ public class SwearModerationMethod extends ModifyingSubstringsModerationMethod {
 
     return new int[]{wordStart, wordEnd};
   }
+
+  public List<String> getWords() { return this.words; }
+  public boolean isUseBlock() { return this.useBlock; }
 }

@@ -1,6 +1,5 @@
 package ru.mrbrikster.chatty.moderation;
 
-import lombok.Getter;
 import ru.mrbrikster.baseplugin.config.ConfigurationNode;
 import ru.mrbrikster.chatty.util.CachedObject;
 import ru.mrbrikster.chatty.util.TextUtil;
@@ -13,15 +12,13 @@ public class AdvertisementModerationMethod extends ModifyingSubstringsModeration
   private static final String IP =
     "\\b((\\d{1,2}|2(5[0-5]|[0-4]\\d))[._,)(-]+){3}(\\d{1,2}|2(5[0-5]|[0-4]\\d))(:\\d{2,7})?";
   private static final String WEB =
-    "(?i)\\b(https?:\\/\\/)?[\\w\\.а-яА-Я-]+\\.([a-z]{2,4}|[рР][фФ]|[уУ][кК][рР])\\b(:\\d{2,7})?(\\/\\S+)?";
+    "(?i)\\b(https?://)?[\\w.а-яА-Я-]+\\.([a-z]{2,4}|[рР][фФ]|[уУ][кК][рР])\\b(:\\d{2,7})?(/\\S+)?";
   private static final CachedObject<String, Pattern> cachedIp = new CachedObject<>(IP, Pattern.compile(IP));
   private static final CachedObject<String, Pattern> cachedWeb = new CachedObject<>(WEB, Pattern.compile(WEB));
   private final Set<String> whitelist;
   private final Pattern ipPattern;
   private final Pattern webPattern;
-  @Getter
   private final String replacement;
-  @Getter
   private final boolean useBlock;
   private String editedMessage;
   private boolean checked = false, result = false;
@@ -107,4 +104,6 @@ public class AdvertisementModerationMethod extends ModifyingSubstringsModeration
     this.editedMessage = builder.toString();
     return containsAds;
   }
+
+  public boolean isUseBlock() { return this.useBlock; }
 }

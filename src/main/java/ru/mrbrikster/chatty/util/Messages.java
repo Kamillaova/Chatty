@@ -11,12 +11,9 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.function.Function;
 
+import static java.util.Objects.requireNonNull;
+
 public class Messages {
-
-  private static final Function<String, String> COLORIZE = (string) -> string == null
-                                                                       ? null
-                                                                       : TextUtil.stylish(string);
-
   private final Configuration localeConfiguration;
   private final Configuration inJarConfiguration;
 
@@ -43,7 +40,7 @@ public class Messages {
 
         if (!enLocaleFile.exists()) {
           try {
-            FileUtils.copyURLToFile(getClass().getResource("/locale/en.yml"), enLocaleFile);
+            FileUtils.copyURLToFile(requireNonNull(getClass().getResource("/locale/en.yml")), enLocaleFile);
           } catch (IOException e) {
             e.printStackTrace();
           }
@@ -60,7 +57,11 @@ public class Messages {
     }
 
     this.localeConfiguration = chatty.getConfiguration("locale/" + localeName + ".yml");
-    this.inJarConfiguration = new BukkitConfiguration(YamlConfiguration.loadConfiguration(new InputStreamReader(chatty.getClass().getResourceAsStream("/locale/en.yml"))));
+    this.inJarConfiguration = new BukkitConfiguration(
+      YamlConfiguration.loadConfiguration(
+        new InputStreamReader(requireNonNull(chatty.getClass().getResourceAsStream("/locale/en.yml")))
+      )
+    );
   }
 
   public String get(String key) {
@@ -68,9 +69,10 @@ public class Messages {
   }
 
   public String get(String key, String def) {
-    return TextUtil.stylish(localeConfiguration == null
-                            ? def
-                            : localeConfiguration.getNode("messages." + key).getAsString(def));
+    return TextUtil.stylish(
+      localeConfiguration == null
+        ? def
+        : localeConfiguration.getNode("messages." + key).getAsString(def)
+    );
   }
-
 }

@@ -1,12 +1,10 @@
 package ru.mrbrikster.chatty.dependencies;
 
-import lombok.Getter;
 import ru.mrbrikster.chatty.Chatty;
 import ru.mrbrikster.chatty.chat.ChatManager;
 
 import java.util.logging.Level;
 
-@Getter
 public class DependencyManager {
   private VaultHook vault;
   private PlaceholderAPIHook placeholderApi;
@@ -25,4 +23,7 @@ public class DependencyManager {
       chatty.getLogger().log(Level.INFO, "PlaceholderAPI has successful hooked.");
     }
   }
+
+  public VaultHook getVault() { return this.vault; }
+  public PlaceholderAPIHook getPlaceholderApi() { return this.placeholderApi; }
 }

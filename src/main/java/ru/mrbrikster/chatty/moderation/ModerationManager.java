@@ -1,19 +1,14 @@
 package ru.mrbrikster.chatty.moderation;
 
-import lombok.Getter;
 import org.bukkit.plugin.java.JavaPlugin;
 import ru.mrbrikster.baseplugin.config.Configuration;
 import ru.mrbrikster.chatty.Chatty;
 
 public class ModerationManager {
-
   private final JavaPlugin javaPlugin;
   private final Configuration configuration;
-  @Getter
   private boolean capsModerationEnabled;
-  @Getter
   private boolean advertisementModerationEnabled;
-  @Getter
   private boolean swearModerationEnabled;
 
   public ModerationManager(Chatty chatty) {
@@ -58,4 +53,7 @@ public class ModerationManager {
     return new SwearModerationMethod(configuration.getNode("moderation.swear"), message, lastFormatColors);
   }
 
+  public boolean isCapsModerationEnabled() { return this.capsModerationEnabled; }
+  public boolean isAdvertisementModerationEnabled() { return this.advertisementModerationEnabled; }
+  public boolean isSwearModerationEnabled() { return this.swearModerationEnabled; }
 }

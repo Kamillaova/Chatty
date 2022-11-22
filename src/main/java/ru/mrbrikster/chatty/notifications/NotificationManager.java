@@ -7,7 +7,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class NotificationManager {
-
   private final List<ChatNotification> chatNotifications = new ArrayList<>();
   private final List<TitleNotification> titleNotifications = new ArrayList<>();
   private final List<ActionBarNotification> actionBarNotifications = new ArrayList<>();
@@ -81,5 +80,4 @@ public class NotificationManager {
 
     this.init();
   }
-
 }

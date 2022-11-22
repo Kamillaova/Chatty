@@ -1,6 +1,5 @@
 package ru.mrbrikster.chatty.util.textapi;
 
-import lombok.experimental.UtilityClass;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.Nullable;
@@ -14,8 +13,7 @@ import static ru.mrbrikster.chatty.util.textapi.NMSUtil.ServerPackage.MINECRAFT;
 import static ru.mrbrikster.chatty.util.textapi.NMSUtil.ServerPackage.NETWORK;
 import static ru.mrbrikster.chatty.util.textapi.NMSUtil.ServerPackage.getServerVersion;
 
-@UtilityClass
-public class NMSUtil {
+public final class NMSUtil {
   private static final HashMap<String, Class<?>> NMS_CLASSES = new HashMap<>();
 
   static {
@@ -58,11 +56,13 @@ public class NMSUtil {
     NMS_CLASSES.put("ChatSender", resolveSuitableClass(NETWORK + ".chat.ChatSender"));
   }
 
-  public Class<?> getClass(String key) {
+  private NMSUtil() { }
+
+  public static Class<?> getClass(String key) {
     return NMS_CLASSES.get(key);
   }
 
-  private Class<?> resolveSuitableClass(String... paths) {
+  private static Class<?> resolveSuitableClass(String... paths) {
     for (var path : paths) {
       try {
         return Class.forName(path);
@@ -72,8 +72,7 @@ public class NMSUtil {
     return null;
   }
 
-  
-  public Field resolveField(Class<?> clazz, String... names) {
+  public static Field resolveField(Class<?> clazz, String... names) {
     for (var name : names) {
       try {
         return clazz.getField(name);
@@ -83,7 +82,7 @@ public class NMSUtil {
     throw new IllegalStateException();
   }
 
-  public void sendChatPacket(Player player, String type, String text, @Nullable Player sender) {
+  public static void sendChatPacket(Player player, String type, String text, @Nullable Player sender) {
     try {
       var clsIChatBaseComponent = NMS_CLASSES.get("IChatBaseComponent");
       var chatBaseComponent = NMS_CLASSES.get("IChatBaseComponent$ChatSerializer").getMethod("a", String.class).invoke(null, text);

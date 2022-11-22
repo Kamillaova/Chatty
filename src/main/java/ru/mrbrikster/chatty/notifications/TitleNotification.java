@@ -18,9 +18,9 @@ public class TitleNotification extends Notification {
 
     this.name = name;
     this.messages = messages.stream()
-                      .map(TextUtil::stylish)
-                      .map(TextUtil::fixMultilineFormatting)
-                      .toList();
+      .map(TextUtil::stylish)
+      .map(TextUtil::fixMultilineFormatting)
+      .toList();
   }
 
   @Override
