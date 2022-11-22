@@ -9,50 +9,50 @@ import java.util.Optional;
 
 public class PlayerTagManager {
 
-    private final DependencyManager dependencyManager;
-    private final JsonStorage jsonStorage;
+  private final DependencyManager dependencyManager;
+  private final JsonStorage jsonStorage;
 
-    public PlayerTagManager(Chatty chatty) {
-        this.dependencyManager = chatty.getExact(DependencyManager.class);
-        this.jsonStorage = chatty.getExact(JsonStorage.class);
+  public PlayerTagManager(Chatty chatty) {
+    this.dependencyManager = chatty.getExact(DependencyManager.class);
+    this.jsonStorage = chatty.getExact(JsonStorage.class);
+  }
+
+  public String getPrefix(Player player) {
+    String prefix = "";
+
+    Optional<JsonElement> jsonElement = jsonStorage.getProperty(player, "prefix");
+
+    if (jsonElement.isPresent()) {
+      return jsonElement.get().getAsString();
     }
 
-    public String getPrefix(Player player) {
-        String prefix = "";
+    if (dependencyManager.getVault() != null) {
+      VaultHook vaultHook = dependencyManager.getVault();
+      prefix = vaultHook.getPrefix(player);
 
-        Optional<JsonElement> jsonElement = jsonStorage.getProperty(player, "prefix");
-
-        if (jsonElement.isPresent()) {
-            return jsonElement.get().getAsString();
-        }
-
-        if (dependencyManager.getVault() != null) {
-            VaultHook vaultHook = dependencyManager.getVault();
-            prefix = vaultHook.getPrefix(player);
-
-            if (prefix == null) prefix = "";
-        }
-
-        return prefix;
+      if (prefix == null) prefix = "";
     }
 
-    public String getSuffix(Player player) {
-        String suffix = "";
+    return prefix;
+  }
 
-        Optional<JsonElement> jsonElement = jsonStorage.getProperty(player, "suffix");
+  public String getSuffix(Player player) {
+    String suffix = "";
 
-        if (jsonElement.isPresent()) {
-            return jsonElement.get().getAsString();
-        }
+    Optional<JsonElement> jsonElement = jsonStorage.getProperty(player, "suffix");
 
-        if (dependencyManager.getVault() != null) {
-            VaultHook vaultHook = dependencyManager.getVault();
-            suffix = vaultHook.getSuffix(player);
-
-            if (suffix == null) suffix = "";
-        }
-
-        return suffix;
+    if (jsonElement.isPresent()) {
+      return jsonElement.get().getAsString();
     }
+
+    if (dependencyManager.getVault() != null) {
+      VaultHook vaultHook = dependencyManager.getVault();
+      suffix = vaultHook.getSuffix(player);
+
+      if (suffix == null) suffix = "";
+    }
+
+    return suffix;
+  }
 
 }

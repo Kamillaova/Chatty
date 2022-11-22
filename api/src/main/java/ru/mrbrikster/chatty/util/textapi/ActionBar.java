@@ -29,89 +29,89 @@ import org.bukkit.entity.Player;
  */
 public class ActionBar {
 
-    private JsonObject json;
+  private JsonObject json;
 
-    /**
-     * Constructs an {@link ActionBar} object based on plain text.
-     *
-     * @param text Text to display.
-     */
-    public ActionBar(String text) {
-        Preconditions.checkNotNull(text);
-        this.json = Title.convert(text);
-    }
+  /**
+   * Constructs an {@link ActionBar} object based on plain text.
+   *
+   * @param text Text to display.
+   */
+  public ActionBar(String text) {
+    Preconditions.checkNotNull(text);
+    this.json = Title.convert(text);
+  }
 
-    /**
-     * Constructs an {@link ActionBar} object based on JSON-formatted text.
-     *
-     * @param json Text to display Must be in /tellraw JSON format.
-     */
-    public ActionBar(JsonObject json) {
-        Preconditions.checkNotNull(json);
-        this.json = json;
-    }
+  /**
+   * Constructs an {@link ActionBar} object based on JSON-formatted text.
+   *
+   * @param json Text to display Must be in /tellraw JSON format.
+   */
+  public ActionBar(JsonObject json) {
+    Preconditions.checkNotNull(json);
+    this.json = json;
+  }
 
-    /**
-     * This method has been kept just to ensure backwards compatibility with older versions of TextAPI.
-     * It is not supported and will be removed in a future release.
-     *
-     * @param player  The player to send the message to.
-     * @param message The message to send.
-     * @deprecated Please create a new {@link ActionBar} instance instead.
-     */
-    @Deprecated
-    public static void send(Player player, String message) {
-        new ActionBar(message).send(player);
-    }
+  /**
+   * This method has been kept just to ensure backwards compatibility with older versions of TextAPI.
+   * It is not supported and will be removed in a future release.
+   *
+   * @param player  The player to send the message to.
+   * @param message The message to send.
+   * @deprecated Please create a new {@link ActionBar} instance instead.
+   */
+  @Deprecated
+  public static void send(Player player, String message) {
+    new ActionBar(message).send(player);
+  }
 
-    /**
-     * This method has been kept just to ensure backwards compatibility with older versions of TextAPI.
-     * It is not supported and will be removed in a future release.
-     *
-     * @param message The message to send.
-     * @deprecated Please create a new {@link ActionBar} instance instead.
-     */
-    @Deprecated
-    public static void sendToAll(String message) {
-        new ActionBar(message).sendToAll();
-    }
+  /**
+   * This method has been kept just to ensure backwards compatibility with older versions of TextAPI.
+   * It is not supported and will be removed in a future release.
+   *
+   * @param message The message to send.
+   * @deprecated Please create a new {@link ActionBar} instance instead.
+   */
+  @Deprecated
+  public static void sendToAll(String message) {
+    new ActionBar(message).sendToAll();
+  }
 
-    /**
-     * Sends an action bar message to a specific player.
-     *
-     * @param player The player to send the message to.
-     */
-    public void send(Player player) {
-        NMSUtil.sendChatPacket(player, "GAME_INFO", json.toString(), null);
-    }
+  /**
+   * Sends an action bar message to a specific player.
+   *
+   * @param player The player to send the message to.
+   */
+  public void send(Player player) {
+    NMSUtil.sendChatPacket(player, "GAME_INFO", json.toString(), null);
+  }
 
-    /**
-     * Sends an action bar message to all online players.
-     */
-    public void sendToAll() {
-        for (Player player : Bukkit.getOnlinePlayers()) {
-            send(player);
-        }
+  /**
+   * Sends an action bar message to all online players.
+   */
+  public void sendToAll() {
+    for (Player player : Bukkit.getOnlinePlayers()) {
+      send(player);
     }
+  }
 
-    /**
-     * Changes the text to display.
-     *
-     * @param text Text to display.
-     */
-    public void setText(String text) {
-        Preconditions.checkNotNull(text);
-        this.json = Title.convert(text);
-    }
+  /**
+   * Changes the text to display.
+   *
+   * @param text Text to display.
+   */
+  public void setText(String text) {
+    Preconditions.checkNotNull(text);
+    this.json = Title.convert(text);
+  }
 
-    /**
-     * Changes the text to display.
-     *
-     * @param json Text to display. Must be in /tellraw JSON format.
-     */
-    public void setJsonText(JsonObject json) {
-        Preconditions.checkNotNull(json);
-        this.json = json;
-    }
+  /**
+   * Changes the text to display.
+   *
+   * @param json Text to display. Must be in /tellraw JSON format.
+   */
+  public void setJsonText(JsonObject json) {
+    Preconditions.checkNotNull(json);
+    this.json = json;
+  }
 
 }

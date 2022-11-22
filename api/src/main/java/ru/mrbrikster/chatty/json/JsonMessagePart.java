@@ -8,66 +8,61 @@ import java.util.List;
 
 public class JsonMessagePart implements MessagePart {
 
-    private final String text;
-    private String command;
-    private String suggest;
-    private List<FancyMessage> tooltip;
-    private String link;
+  private final String text;
+  private String command;
+  private String suggest;
+  private List<FancyMessage> tooltip;
+  private String link;
 
-    public JsonMessagePart(String text) {
-        this.text = text;
+  public JsonMessagePart(String text) {
+    this.text = text;
+  }
+
+  public JsonMessagePart command(String command) {
+    this.command = command;
+
+    return this;
+  }
+
+  public JsonMessagePart suggest(String suggest) {
+    this.suggest = suggest;
+
+    return this;
+  }
+
+  public JsonMessagePart tooltip(List<String> tooltip) {
+    if (!tooltip.isEmpty()) {
+      List<FancyMessage> lines = new ArrayList<>();
+
+      for (String line : tooltip) { lines.add(new FormattedMessage(line).toFancyMessage()); }
+
+      this.tooltip = lines;
     }
 
-    public JsonMessagePart command(String command) {
-        this.command = command;
+    return this;
+  }
 
-        return this;
-    }
+  public JsonMessagePart link(String link) {
+    this.link = link;
 
-    public JsonMessagePart suggest(String suggest) {
-        this.suggest = suggest;
+    return this;
+  }
 
-        return this;
-    }
+  @Override
+  public FancyMessage append(FancyMessage fancyMessage) {
+    LegacyConverter.getMessageParts(fancyMessage.getLastColors() + TextUtil.stylish(text)).forEach(messagePart -> {
+      fancyMessage.then(messagePart);
 
-    public JsonMessagePart tooltip(List<String> tooltip) {
-        if (!tooltip.isEmpty()) {
-            List<FancyMessage> lines = new ArrayList<>();
+      if (command != null) { fancyMessage.command(command); }
 
-            for (String line : tooltip)
-                lines.add(new FormattedMessage(line).toFancyMessage());
+      if (suggest != null) { fancyMessage.suggest(suggest); }
 
-            this.tooltip = lines;
-        }
+      if (link != null) { fancyMessage.link(link); }
 
-        return this;
-    }
+      if (tooltip != null) { fancyMessage.formattedTooltip(tooltip); }
+    });
 
-    public JsonMessagePart link(String link) {
-        this.link = link;
-
-        return this;
-    }
-
-    @Override
-    public FancyMessage append(FancyMessage fancyMessage) {
-        LegacyConverter.getMessageParts(fancyMessage.getLastColors() + TextUtil.stylish(text)).forEach(messagePart -> {
-            fancyMessage.then(messagePart);
-
-            if (command != null)
-                fancyMessage.command(command);
-
-            if (suggest != null)
-                fancyMessage.suggest(suggest);
-
-            if (link != null)
-                fancyMessage.link(link);
-
-            if (tooltip != null)
-                fancyMessage.formattedTooltip(tooltip);
-        });
-
-        return fancyMessage;
-    }
+    return fancyMessage;
+  }
 
 }

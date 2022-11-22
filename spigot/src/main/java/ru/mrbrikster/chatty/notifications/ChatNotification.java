@@ -16,64 +16,64 @@ import java.util.List;
 
 public class ChatNotification extends Notification {
 
-    private static final String PERMISSION_NODE = NOTIFICATION_PERMISSION_NODE + "chat.%s";
-    private static final JsonParser JSON_PARSER = new JsonParser();
+  private static final String PERMISSION_NODE = NOTIFICATION_PERMISSION_NODE + "chat.%s";
+  private static final JsonParser JSON_PARSER = new JsonParser();
 
-    private final String name;
-    private final List<List<Pair<String, Boolean>>> messages = new ArrayList<>();
+  private final String name;
+  private final List<List<Pair<String, Boolean>>> messages = new ArrayList<>();
 
-    ChatNotification(String name, int delay, String prefix, List<String> messages, boolean permission, boolean random) {
-        super(delay, permission, messages.size(), random);
+  ChatNotification(String name, int delay, String prefix, List<String> messages, boolean permission, boolean random) {
+    super(delay, permission, messages.size(), random);
 
-        this.name = name;
-        this.messages.clear();
+    this.name = name;
+    this.messages.clear();
 
-        Debugger debugger = Chatty.instance().getExact(Debugger.class);
+    Debugger debugger = Chatty.instance().getExact(Debugger.class);
 
-        for (String message : messages) {
-            message = TextUtil.fixMultilineFormatting(message);
+    for (String message : messages) {
+      message = TextUtil.fixMultilineFormatting(message);
 
-            String[] lines = message.split("(\n)|(\\\\n)");
+      String[] lines = message.split("(\n)|(\\\\n)");
 
-            List<Pair<String, Boolean>> formattedLines = new ArrayList<>();
-            for (String line : lines) {
-                try {
-                    JsonObject jsonObject = JSON_PARSER.parse(line).getAsJsonObject();
-                    debugger.debug("Seems to line is JSON!");
-                    formattedLines.add(Pair.of(jsonObject.toString(), true));
-                } catch (JsonSyntaxException | IllegalStateException exception) {
-                    debugger.debug("Seems to line is not JSON. Using as plain text");
-                    formattedLines.add(Pair.of(TextUtil.stylish(prefix + line), false));
-                }
-            }
-
-            this.messages.add(formattedLines);
+      List<Pair<String, Boolean>> formattedLines = new ArrayList<>();
+      for (String line : lines) {
+        try {
+          JsonObject jsonObject = JSON_PARSER.parse(line).getAsJsonObject();
+          debugger.debug("Seems to line is JSON!");
+          formattedLines.add(Pair.of(jsonObject.toString(), true));
+        } catch (JsonSyntaxException | IllegalStateException exception) {
+          debugger.debug("Seems to line is not JSON. Using as plain text");
+          formattedLines.add(Pair.of(TextUtil.stylish(prefix + line), false));
         }
+      }
+
+      this.messages.add(formattedLines);
+    }
+  }
+
+  @Override
+  public void run() {
+    if (messages.isEmpty()) {
+      return;
     }
 
-    @Override
-    public void run() {
-        if (messages.isEmpty()) {
-            return;
+    Chatty.instance().getExact(Debugger.class).debug("Run \"%s\" ChatNotification.", name);
+
+    List<Pair<String, Boolean>> lines = messages.get(nextMessage());
+
+    DependencyManager dependencyManager = Chatty.instance().getExact(DependencyManager.class);
+    Bukkit.getOnlinePlayers().stream().filter(player -> !isPermission() || player.hasPermission(String.format(PERMISSION_NODE, name)))
+      .forEach(player -> lines.forEach(line -> {
+        String formattedLine = dependencyManager.getPlaceholderApi() != null
+                               ? dependencyManager.getPlaceholderApi().setPlaceholders(player, line.getA())
+                               : line.getA();
+
+        if (line.getB()) {
+          NMSUtil.sendChatPacket(player, "CHAT", formattedLine, null);
+        } else {
+          player.sendMessage(formattedLine);
         }
-
-        Chatty.instance().getExact(Debugger.class).debug("Run \"%s\" ChatNotification.", name);
-
-        List<Pair<String, Boolean>> lines = messages.get(nextMessage());
-
-        DependencyManager dependencyManager = Chatty.instance().getExact(DependencyManager.class);
-        Bukkit.getOnlinePlayers().stream().filter(player -> !isPermission() || player.hasPermission(String.format(PERMISSION_NODE, name)))
-                .forEach(player -> lines.forEach(line -> {
-                    String formattedLine = dependencyManager.getPlaceholderApi() != null
-                            ? dependencyManager.getPlaceholderApi().setPlaceholders(player, line.getA())
-                            : line.getA();
-
-                    if (line.getB()) {
-                        NMSUtil.sendChatPacket(player, "CHAT", formattedLine, null);
-                    } else {
-                        player.sendMessage(formattedLine);
-                    }
-                }));
-    }
+      }));
+  }
 
 }

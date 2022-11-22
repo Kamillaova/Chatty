@@ -1,0 +1,6 @@
+rootProject.name = "chatty"
+
+include(
+  "api",
+  "spigot"
+)

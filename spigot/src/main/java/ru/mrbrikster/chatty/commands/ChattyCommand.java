@@ -7,20 +7,20 @@ import ru.mrbrikster.chatty.Chatty;
 
 public class ChattyCommand extends BukkitCommand {
 
-    private final Configuration configuration;
+  private final Configuration configuration;
 
-    ChattyCommand(Configuration configuration) {
-        super("chatty");
+  ChattyCommand(Configuration configuration) {
+    super("chatty");
 
-        this.configuration = configuration;
-    }
+    this.configuration = configuration;
+  }
 
-    @Override
-    public void handle(CommandSender sender, String label, String[] args) {
-        if (sender.hasPermission("chatty.command.reload")) {
-            configuration.reload();
-            sender.sendMessage(Chatty.instance().messages().get("reload"));
-        } else sender.sendMessage(Chatty.instance().messages().get("no-permission"));
-    }
+  @Override
+  public void handle(CommandSender sender, String label, String[] args) {
+    if (sender.hasPermission("chatty.command.reload")) {
+      configuration.reload();
+      sender.sendMessage(Chatty.instance().messages().get("reload"));
+    } else { sender.sendMessage(Chatty.instance().messages().get("no-permission")); }
+  }
 
 }
