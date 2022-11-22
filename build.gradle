@@ -6,7 +6,7 @@ allprojects {
 subprojects {
     pluginManager.apply('java-library')
 
-    sourceCompatibility = targetCompatibility = JavaVersion.VERSION_1_8
+    sourceCompatibility = targetCompatibility = JavaVersion.VERSION_17
 
     tasks {
         compileJava {
