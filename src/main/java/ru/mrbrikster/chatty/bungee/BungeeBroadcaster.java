@@ -7,7 +7,6 @@ import ru.mrbrikster.chatty.Chatty;
 
 public class BungeeBroadcaster {
 
-  @SuppressWarnings("all")
   public static void broadcast(Player player, String chat, String message, boolean json) {
     ByteArrayDataOutput out = ByteStreams.newDataOutput();
 

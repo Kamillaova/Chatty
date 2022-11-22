@@ -42,7 +42,6 @@ import static ru.mrbrikster.chatty.json.fanciful.TextualComponent.rawText;
  * optionally initializing it with text. Further property-setting method calls will affect that editing component.
  * </p>
  */
-@SuppressWarnings("all")
 public class FancyMessage implements JsonRepresentedObject, Cloneable, Iterable<MessagePart>, ConfigurationSerializable {
 
   private static JsonParser _stringParser = new JsonParser();

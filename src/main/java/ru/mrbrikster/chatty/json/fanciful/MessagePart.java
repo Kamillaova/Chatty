@@ -20,7 +20,6 @@ import static net.md_5.bungee.api.ChatColor.MAGIC;
 /**
  * Internal class: Represents a component of a JSON-serializable {@link FancyMessage}.
  */
-@SuppressWarnings("all")
 public final class MessagePart implements JsonRepresentedObject, ConfigurationSerializable, Cloneable {
 
   static final BiMap<ChatColor, String> stylesToNames;

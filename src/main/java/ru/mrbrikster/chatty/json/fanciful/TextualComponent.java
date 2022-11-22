@@ -16,7 +16,6 @@ import java.util.Map;
  * but also to represent localized strings and other text values.
  * <p>Different instances of this class can be created with static constructor methods.</p>
  */
-@SuppressWarnings("all")
 public abstract class TextualComponent implements Cloneable {
 
   static {

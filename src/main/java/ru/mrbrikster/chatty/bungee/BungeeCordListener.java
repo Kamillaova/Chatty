@@ -26,7 +26,6 @@ public class BungeeCordListener implements PluginMessageListener {
     this.chatManager = chatManager;
   }
 
-  @SuppressWarnings("all")
   @Override
   public void onPluginMessageReceived(String channel, Player player, byte[] message) {
     if (!channel.equals("BungeeCord")) {

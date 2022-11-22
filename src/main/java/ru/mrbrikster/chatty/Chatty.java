@@ -52,12 +52,10 @@ public final class Chatty extends BukkitBasePlugin {
   }
 
   @NotNull
-  @SuppressWarnings("all")
   public <T> Optional<T> get(Class<T> clazz) {
     return (Optional<T>) Optional.ofNullable(dependenciesMap.get(clazz));
   }
 
-  @SuppressWarnings("all")
   public <T> T getExact(Class<T> clazz) {
     return (T) dependenciesMap.get(clazz);
   }

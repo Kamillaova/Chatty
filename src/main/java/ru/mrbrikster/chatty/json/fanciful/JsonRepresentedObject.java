@@ -7,7 +7,6 @@ import java.io.IOException;
 /**
  * Represents an object that can be serialized to a JSON writer instance.
  */
-@SuppressWarnings("all")
 interface JsonRepresentedObject {
 
   /**
