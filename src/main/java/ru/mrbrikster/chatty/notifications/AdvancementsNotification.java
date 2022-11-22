@@ -8,7 +8,6 @@ import org.bukkit.NamespacedKey;
 import org.bukkit.configuration.serialization.ConfigurationSerializable;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
-import org.jetbrains.annotations.NotNull;
 import ru.mrbrikster.chatty.Chatty;
 import ru.mrbrikster.chatty.util.TextUtil;
 

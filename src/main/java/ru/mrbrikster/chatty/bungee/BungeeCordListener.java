@@ -1,18 +1,15 @@
 package ru.mrbrikster.chatty.bungee;
 
-import com.google.common.io.ByteArrayDataInput;
 import com.google.common.io.ByteStreams;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.messaging.PluginMessageListener;
-import ru.mrbrikster.chatty.chat.Chat;
 import ru.mrbrikster.chatty.chat.ChatManager;
 import ru.mrbrikster.chatty.json.fanciful.FancyMessage;
 
 import java.io.ByteArrayInputStream;
 import java.io.DataInputStream;
 import java.io.IOException;
-import java.util.Optional;
 import java.util.UUID;
 
 public class BungeeCordListener implements PluginMessageListener {

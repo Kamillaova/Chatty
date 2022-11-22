@@ -13,7 +13,6 @@ import ru.mrbrikster.chatty.Chatty;
 import ru.mrbrikster.chatty.dependencies.DependencyManager;
 import ru.mrbrikster.chatty.dependencies.PlayerTagManager;
 import ru.mrbrikster.chatty.util.Sound;
-import ru.mrbrikster.chatty.util.TextUtil;
 
 import static ru.mrbrikster.chatty.util.TextUtil.stylish;
 

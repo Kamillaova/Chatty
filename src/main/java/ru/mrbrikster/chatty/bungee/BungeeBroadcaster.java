@@ -1,6 +1,5 @@
 package ru.mrbrikster.chatty.bungee;
 
-import com.google.common.io.ByteArrayDataOutput;
 import com.google.common.io.ByteStreams;
 import org.bukkit.entity.Player;
 import ru.mrbrikster.chatty.Chatty;

@@ -1,11 +1,11 @@
 package ru.mrbrikster.chatty.commands.pm;
 
-import ru.mrbrikster.chatty.util.ArrayWrapper;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import ru.mrbrikster.baseplugin.config.Configuration;
 import ru.mrbrikster.chatty.Chatty;
+import ru.mrbrikster.chatty.util.ArrayWrapper;
 
 import java.util.Arrays;
 

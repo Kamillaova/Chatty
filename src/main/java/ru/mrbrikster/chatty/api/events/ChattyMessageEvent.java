@@ -3,7 +3,6 @@ package ru.mrbrikster.chatty.api.events;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
-import org.jetbrains.annotations.NotNull;
 import ru.mrbrikster.chatty.api.chats.Chat;
 
 public class ChattyMessageEvent extends Event {
@@ -13,7 +12,7 @@ public class ChattyMessageEvent extends Event {
   private final Chat chat;
   private final String message;
 
-  public ChattyMessageEvent( Player player,  Chat chat,  String message) {
+  public ChattyMessageEvent(Player player, Chat chat,  String message) {
     super(true);
     this.player = player;
     this.chat = chat;

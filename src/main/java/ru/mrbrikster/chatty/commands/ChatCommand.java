@@ -1,7 +1,6 @@
 package ru.mrbrikster.chatty.commands;
 
 import com.google.gson.JsonPrimitive;
-import ru.mrbrikster.chatty.util.ArrayWrapper;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import ru.mrbrikster.baseplugin.commands.BukkitCommand;
@@ -9,6 +8,7 @@ import ru.mrbrikster.baseplugin.config.Configuration;
 import ru.mrbrikster.chatty.Chatty;
 import ru.mrbrikster.chatty.chat.ChatManager;
 import ru.mrbrikster.chatty.chat.JsonStorage;
+import ru.mrbrikster.chatty.util.ArrayWrapper;
 
 import static java.lang.String.format;
 

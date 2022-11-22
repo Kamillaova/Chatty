@@ -7,7 +7,6 @@ import ru.mrbrikster.chatty.util.TextUtil;
 import ru.mrbrikster.chatty.util.textapi.Title;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 public class TitleNotification extends Notification {
   private static final String PERMISSION_NODE = NOTIFICATION_PERMISSION_NODE + "title.%s";

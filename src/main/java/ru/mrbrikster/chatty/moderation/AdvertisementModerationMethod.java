@@ -7,7 +7,6 @@ import ru.mrbrikster.chatty.util.TextUtil;
 
 import java.util.HashSet;
 import java.util.Set;
-import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class AdvertisementModerationMethod extends ModifyingSubstringsModerationMethod {

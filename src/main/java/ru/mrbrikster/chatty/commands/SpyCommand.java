@@ -1,6 +1,5 @@
 package ru.mrbrikster.chatty.commands;
 
-import com.google.gson.JsonPrimitive;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import ru.mrbrikster.baseplugin.commands.BukkitCommand;

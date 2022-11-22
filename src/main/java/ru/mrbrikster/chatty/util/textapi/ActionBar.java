@@ -17,7 +17,6 @@
  */
 package ru.mrbrikster.chatty.util.textapi;
 
-import com.google.common.base.Preconditions;
 import com.google.gson.JsonObject;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
