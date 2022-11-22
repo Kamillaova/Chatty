@@ -52,12 +52,6 @@ public class SuffixCommand extends BukkitCommand {
             if (args[1].equalsIgnoreCase("clear")) {
                 jsonStorage.setProperty(player, "suffix", null);
 
-                if (configuration.getNode("miscellaneous.commands.suffix.auto-nte").getAsBoolean(false)) {
-                    if (dependencyManager.getNametagEdit() != null) {
-                        dependencyManager.getNametagEdit().setSuffix(player, null);
-                    }
-                }
-
                 sender.sendMessage(Chatty.instance().messages().get("suffix-command.suffix-clear")
                         .replace("{player}", player.getName()));
             } else {
@@ -79,12 +73,6 @@ public class SuffixCommand extends BukkitCommand {
                 }
 
                 jsonStorage.setProperty(player, "suffix", new JsonPrimitive(formattedSuffix));
-
-                if (configuration.getNode("miscellaneous.commands.suffix.auto-nte").getAsBoolean(false)) {
-                    if (dependencyManager.getNametagEdit() != null) {
-                        dependencyManager.getNametagEdit().setSuffix(player, formattedSuffix);
-                    }
-                }
 
                 sender.sendMessage(Chatty.instance().messages().get("suffix-command.suffix-set")
                         .replace("{player}", player.getName())

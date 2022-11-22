@@ -14,7 +14,6 @@ public class DependencyManager {
 
     @Getter private VaultHook vault;
     @Getter private PlaceholderAPIHook placeholderApi;
-    @Getter private NametagEditHook nametagEdit;
 
     public DependencyManager(Chatty chatty) {
         Configuration configuration = chatty.getExact(Configuration.class);
@@ -30,11 +29,6 @@ public class DependencyManager {
             this.placeholderApi = new PlaceholderAPIHook(chatManager);
             placeholderApi.register();
             chatty.getLogger().log(Level.INFO, "PlaceholderAPI has successful hooked.");
-        }
-
-        if (chatty.getServer().getPluginManager().isPluginEnabled("NametagEdit")) {
-            this.nametagEdit = new NametagEditHook(configuration, jsonStorage);
-            chatty.getLogger().log(Level.INFO, "NametagEdit has successful hooked.");
         }
     }
 

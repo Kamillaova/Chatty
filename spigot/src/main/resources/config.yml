@@ -577,10 +577,6 @@ miscellaneous:
         min: 3
         max: 16
 
-      # Auto-applying in NametagEdit.
-      # (Requires NameTagEdit plugin).
-      auto-nte: false
-
     # Change chat (and NametagEdit, if enabled) suffix
     # /suffix <player> <suffix>
     #
@@ -597,10 +593,6 @@ miscellaneous:
       length-limit:
         min: 3
         max: 16
-
-      # Auto-applying in NametagEdit.
-      # (Requires NameTagEdit plugin).
-      auto-nte: false
 
   # Change vanilla Minecraft messages.
   # Supports PlaceholderAPI.

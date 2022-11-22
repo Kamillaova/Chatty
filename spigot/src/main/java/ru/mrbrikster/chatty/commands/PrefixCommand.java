@@ -52,12 +52,6 @@ public class PrefixCommand extends BukkitCommand {
             if (args[1].equalsIgnoreCase("clear")) {
                 jsonStorage.setProperty(player, "prefix", null);
 
-                if (configuration.getNode("miscellaneous.commands.prefix.auto-nte").getAsBoolean(false)) {
-                    if (dependencyManager.getNametagEdit() != null) {
-                        dependencyManager.getNametagEdit().setPrefix(player, null);
-                    }
-                }
-
                 sender.sendMessage(Chatty.instance().messages().get("prefix-command.prefix-clear")
                         .replace("{player}", player.getName()));
             } else {
@@ -79,12 +73,6 @@ public class PrefixCommand extends BukkitCommand {
                 }
 
                 jsonStorage.setProperty(player, "prefix", new JsonPrimitive(formattedPrefix));
-
-                if (configuration.getNode("miscellaneous.commands.prefix.auto-nte").getAsBoolean(false)) {
-                    if (dependencyManager.getNametagEdit() != null) {
-                        dependencyManager.getNametagEdit().setPrefix(player, formattedPrefix);
-                    }
-                }
 
                 sender.sendMessage(Chatty.instance().messages().get("prefix-command.prefix-set")
                         .replace("{player}", player.getName())

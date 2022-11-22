@@ -189,10 +189,6 @@ public final class Chatty extends BukkitBasePlugin {
             metrics.addCustomChart(new SimplePie("swear_moderation_method",
                     () -> String.valueOf(configuration.getNode("moderation.swear.enable").getAsBoolean(false))));
 
-            metrics.addCustomChart(new SimplePie("miscellaneous_auto_nte",
-                    () -> String.valueOf(configuration.getNode("miscellaneous.commands.prefix.auto-nte").getAsBoolean(false)
-                            || configuration.getNode("miscellaneous.commands.suffix.auto-nte").getAsBoolean(false))));
-
             metrics.addCustomChart(new SimplePie("miscellaneous_join_msg",
                     () -> String.valueOf(configuration.getNode("miscellaneous.vanilla.join.enable").getAsBoolean(false))));
 
