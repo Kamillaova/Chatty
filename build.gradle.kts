@@ -1,33 +1,70 @@
 plugins {
   java
+  id("com.github.johnrengelman.shadow") version "7.1.2"
 }
 
-allprojects {
-  group = "ru.mrbrikster"
-  version = "2.19.11"
+group = "ru.mrbrikster.chatty"
+version = "2.19.11"
+
+java {
+  sourceCompatibility = JavaVersion.VERSION_17
+  targetCompatibility = JavaVersion.VERSION_17
 }
 
-subprojects {
-  apply(plugin = "java")
-  apply(plugin = "java-library")
+dependencies {
+  compileOnly("org.spigotmc:spigot-api:1.19-R0.1-SNAPSHOT")
 
-  java {
-    sourceCompatibility = JavaVersion.VERSION_17
-    targetCompatibility = JavaVersion.VERSION_17
-  }
+  compileOnly("org.jetbrains:annotations:23.0.0")
 
-  tasks {
-    withType<JavaCompile>().configureEach {
-      options.encoding = "UTF-8"
+  implementation("com.github.Brikster:BasePlugin:v1.8")
+  implementation("com.google.code.gson:gson:2.8.9")
+  implementation("org.bstats:bstats-bukkit:2.2.1")
+
+  compileOnly("net.milkbowl.vault:VaultAPI:1.7")
+  compileOnly("me.clip:placeholderapi:2.10.6")
+  compileOnly("commons-io:commons-io:2.7")
+
+  compileOnly("org.projectlombok:lombok:1.18.24")
+  annotationProcessor("org.projectlombok:lombok:1.18.24")
+}
+
+tasks {
+  jar { enabled = false }
+  assemble { dependsOn(shadowJar) }
+  processResources {
+    val props = mapOf("version" to project.version)
+    inputs.properties(props)
+    filteringCharset = Charsets.UTF_8.name()
+    filesMatching("plugin.yml") {
+      expand(props)
     }
   }
+  withType<AbstractArchiveTask>().configureEach {
+    isReproducibleFileOrder = true
+    isPreserveFileTimestamps = false
+  }
+  shadowJar {
+    fun autoRelocate(vararg pkgs: String) {
+      pkgs.forEach { relocate(it, "${project.group}.shaded.$it") }
+    }
 
-  dependencies {
-    compileOnly("org.jetbrains:annotations:17.0.0")
+    autoRelocate(
+      "ru.mrbrikster.baseplugin",
+      "com.google.gson",
+      "org.bstats",
+    )
 
-    compileOnly("org.projectlombok:lombok:1.18.22")
-    annotationProcessor("org.projectlombok:lombok:1.18.22")
+    mergeServiceFiles()
 
-    compileOnly("org.spigotmc:spigot-api:1.19-R0.1-SNAPSHOT")
+    exclude("**/module-info.class", "META-INF/maven/**")
+
+    manifest {
+      attributes("Multi-Release" to "true")
+    }
+
+    archiveFileName.set("${project.name}.jar")
+  }
+  withType<JavaCompile>().configureEach {
+    options.encoding = "UTF-8"
   }
 }
