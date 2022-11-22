@@ -26,7 +26,7 @@ public final class MessagePart implements JsonRepresentedObject, ConfigurationSe
 
   static {
     ImmutableBiMap.Builder<ChatColor, String> builder = ImmutableBiMap.builder();
-    for (ChatColor style : ChatColor.values()) {
+    for (var style : ChatColor.values()) {
       if (TextUtil.isColor(style)) {
         continue;
       }
@@ -57,7 +57,7 @@ public final class MessagePart implements JsonRepresentedObject, ConfigurationSe
   String insertionData = null;
   ArrayList<JsonRepresentedObject> translationReplacements = new ArrayList<JsonRepresentedObject>();
 
-  MessagePart(final TextualComponent text) {
+  MessagePart(TextualComponent text) {
     this.text = text;
   }
 
@@ -67,7 +67,7 @@ public final class MessagePart implements JsonRepresentedObject, ConfigurationSe
 
   @SuppressWarnings("unchecked")
   public static MessagePart deserialize(Map<String, Object> serialized) {
-    MessagePart part = new MessagePart((TextualComponent) serialized.get("text"));
+    var part = new MessagePart((TextualComponent) serialized.get("text"));
     part.styles = (ArrayList<ChatColor>) serialized.get("styles");
     part.color = ChatColor.of(serialized.get("color").toString());
     part.hoverActionName = (String) serialized.get("hoverActionName");
@@ -86,7 +86,7 @@ public final class MessagePart implements JsonRepresentedObject, ConfigurationSe
   @Override
   @SuppressWarnings("unchecked")
   public MessagePart clone() throws CloneNotSupportedException {
-    MessagePart obj = (MessagePart) super.clone();
+    var obj = (MessagePart) super.clone();
     obj.styles = (ArrayList<ChatColor>) styles.clone();
     if (hoverActionData instanceof JsonString) {
       obj.hoverActionData = new JsonString(((JsonString) hoverActionData).getValue());
@@ -103,7 +103,7 @@ public final class MessagePart implements JsonRepresentedObject, ConfigurationSe
       json.beginObject();
       text.writeJson(json);
       json.name("color").value(color.getName());
-      for (final ChatColor style : styles) {
+      for (var style : styles) {
         json.name(stylesToNames.get(style)).value(true);
       }
       if (clickActionName != null && clickActionData != null) {
@@ -126,7 +126,7 @@ public final class MessagePart implements JsonRepresentedObject, ConfigurationSe
       }
       if (translationReplacements.size() > 0 && TextualComponent.isTranslatableText(text)) {
         json.name("with").beginArray();
-        for (JsonRepresentedObject obj : translationReplacements) {
+        for (var obj : translationReplacements) {
           obj.writeJson(json);
         }
         json.endArray();
@@ -139,7 +139,7 @@ public final class MessagePart implements JsonRepresentedObject, ConfigurationSe
 
   @Override
   public Map<String, Object> serialize() {
-    HashMap<String, Object> map = new HashMap<String, Object>();
+    var map = new HashMap<String, Object>();
     map.put("text", text);
     map.put("styles", styles);
     map.put("color", color.getName());

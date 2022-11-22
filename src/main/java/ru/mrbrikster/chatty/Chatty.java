@@ -72,7 +72,7 @@ public final class Chatty extends BukkitBasePlugin {
   public void onEnable() {
     Chatty.instance = Chatty.this;
 
-    Configuration configuration = getConfiguration();
+    var configuration = getConfiguration();
 
     if (!configuration.getNode("config-version").getAsString("0.0").equals("2.0")) {
       var file = new File(getDataFolder(), "config.yml");

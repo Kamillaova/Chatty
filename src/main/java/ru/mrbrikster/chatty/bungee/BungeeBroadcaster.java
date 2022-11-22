@@ -7,7 +7,7 @@ import ru.mrbrikster.chatty.Chatty;
 
 public class BungeeBroadcaster {
   public static void broadcast(Player player, String chat, String message, boolean json) {
-    ByteArrayDataOutput out = ByteStreams.newDataOutput();
+    var out = ByteStreams.newDataOutput();
 
     /*
       Forward message allows to share custom plugin data between BungeeCord servers
@@ -17,13 +17,13 @@ public class BungeeBroadcaster {
     out.writeUTF("ALL");
     out.writeUTF("chatty");
 
-    ByteArrayDataOutput messageStream = ByteStreams.newDataOutput();
+    var messageStream = ByteStreams.newDataOutput();
     messageStream.writeUTF(chat);
     messageStream.writeUTF(BungeeCordListener.SERVER_UUID.toString());
     messageStream.writeUTF(message);
     messageStream.writeBoolean(json);
 
-    byte[] bytes = messageStream.toByteArray();
+    var bytes = messageStream.toByteArray();
 
     out.writeShort(bytes.length);
     out.write(bytes);

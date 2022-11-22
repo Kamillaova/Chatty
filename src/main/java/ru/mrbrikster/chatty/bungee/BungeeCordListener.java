@@ -30,15 +30,15 @@ public class BungeeCordListener implements PluginMessageListener {
       return;
     }
 
-    ByteArrayDataInput in = ByteStreams.newDataInput(message);
-    String subchannel = in.readUTF();
+    var in = ByteStreams.newDataInput(message);
+    var subchannel = in.readUTF();
 
     if (subchannel.equals("chatty")) {
-      short length = in.readShort();
-      byte[] bytes = new byte[length];
+      var length = in.readShort();
+      var bytes = new byte[length];
       in.readFully(bytes);
 
-      DataInputStream inputStream = new DataInputStream(new ByteArrayInputStream(bytes));
+      var inputStream = new DataInputStream(new ByteArrayInputStream(bytes));
 
       String chatName;
       String text;
@@ -47,7 +47,7 @@ public class BungeeCordListener implements PluginMessageListener {
       try {
         chatName = inputStream.readUTF();
 
-        UUID uuid = UUID.fromString(inputStream.readUTF());
+        var uuid = UUID.fromString(inputStream.readUTF());
         if (uuid.equals(SERVER_UUID)) return;
 
         text = inputStream.readUTF();
@@ -57,20 +57,20 @@ public class BungeeCordListener implements PluginMessageListener {
         return;
       }
 
-      Optional<Chat> optionalChat = chatManager.getChats().stream().filter(c -> c.getName().equals(chatName)).findAny();
+      var optionalChat = chatManager.getChats().stream().filter(c -> c.getName().equals(chatName)).findAny();
 
       if (optionalChat.isEmpty()) {
         return;
       }
 
-      Chat chat = optionalChat.get();
+      var chat = optionalChat.get();
 
       if (chat.getRange() > -3) {
         return;
       }
 
       if (json) {
-        FancyMessage fancyMessage = FancyMessage.deserialize(text);
+        var fancyMessage = FancyMessage.deserialize(text);
         fancyMessage.send(Bukkit.getOnlinePlayers().stream()
           .filter(recipient -> !chat.isPermissionRequired() ||
             recipient.hasPermission("chatty.chat." + chat.getName() + ".see") ||

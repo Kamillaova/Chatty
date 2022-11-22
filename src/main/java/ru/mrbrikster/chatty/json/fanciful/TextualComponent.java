@@ -234,7 +234,7 @@ public abstract class TextualComponent implements Cloneable {
     public static ComplexTextTypeComponent deserialize(Map<String, Object> map) {
       String key = null;
       Map<String, String> value = new HashMap<String, String>();
-      for (Map.Entry<String, Object> valEntry : map.entrySet()) {
+      for (var valEntry : map.entrySet()) {
         if (valEntry.getKey().equals("key")) {
           key = (String) valEntry.getValue();
         } else if (valEntry.getKey().startsWith("value.")) {
@@ -269,7 +269,7 @@ public abstract class TextualComponent implements Cloneable {
     public void writeJson(JsonWriter writer) throws IOException {
       writer.name(getKey());
       writer.beginObject();
-      for (Map.Entry<String, String> jsonPair : _value.entrySet()) {
+      for (var jsonPair : _value.entrySet()) {
         writer.name(jsonPair.getKey()).value(jsonPair.getValue());
       }
       writer.endObject();
@@ -288,7 +288,7 @@ public abstract class TextualComponent implements Cloneable {
     public Map<String, Object> serialize() {
       return new java.util.HashMap<String, Object>() {{
         put("key", getKey());
-        for (Map.Entry<String, String> valEntry : getValue().entrySet()) {
+        for (var valEntry : getValue().entrySet()) {
           put("value." + valEntry.getKey(), valEntry.getValue());
         }
       }};

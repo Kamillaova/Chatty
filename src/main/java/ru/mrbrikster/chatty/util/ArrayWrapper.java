@@ -83,10 +83,10 @@ public final class ArrayWrapper<E> {
    */
   @SuppressWarnings("unchecked")
   public static <T> T[] toArray(Iterable<? extends T> list, Class<T> c) {
-    int size = -1;
+    var size = -1;
     if (list instanceof Collection<?>) {
       @SuppressWarnings("rawtypes")
-      Collection coll = (Collection) list;
+      var coll = (Collection) list;
       size = coll.size();
     }
 
@@ -98,8 +98,8 @@ public final class ArrayWrapper<E> {
       }
     }
 
-    T[] result = (T[]) Array.newInstance(c, size);
-    int i = 0;
+    var result = (T[]) Array.newInstance(c, size);
+    var i = 0;
     for (T element : list) { // Assumes iteration order is consistent
       result[i++] = element; // Assign array element at index THEN increment counter
     }
