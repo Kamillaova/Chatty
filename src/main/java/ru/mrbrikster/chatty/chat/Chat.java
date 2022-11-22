@@ -1,7 +1,6 @@
 package ru.mrbrikster.chatty.chat;
 
 import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -10,7 +9,6 @@ import org.bukkit.Bukkit;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.metadata.FixedMetadataValue;
-import org.bukkit.metadata.MetadataValue;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import ru.mrbrikster.baseplugin.commands.BukkitCommand;
@@ -28,18 +26,16 @@ import java.util.stream.Collectors;
 @AllArgsConstructor
 @Getter
 public class Chat implements ru.mrbrikster.chatty.api.chats.Chat {
-
   private static final String CHAT_COOLDOWN_METADATA_KEY = "chatty.cooldown.chat.%s";
-
-  @NotNull
+  
   private final String name;
-  @NotNull
+  
   private final String displayName;
   private final boolean enable;
-  @NotNull
+  
   private final String format;
   private final int range;
-  @NotNull
+  
   private final String symbol;
   private final boolean permissionRequired;
   private final long cooldown;
@@ -91,22 +87,22 @@ public class Chat implements ru.mrbrikster.chatty.api.chats.Chat {
   }
 
   @Override
-  @NotNull
   public Collection<? extends Player> getRecipients(@Nullable Player player) {
     return filterRecipients(player, new ArrayList<>(Bukkit.getOnlinePlayers()));
   }
 
   @Override
-  @NotNull
-  public Collection<? extends Player> filterRecipients(@Nullable Player player, @NotNull Collection<? extends Player> players) {
+  
+  public Collection<? extends Player> filterRecipients(@Nullable Player player,  Collection<? extends Player> players) {
     if (range > -2 && player != null) {
       players.removeIf(onlinePlayer -> !onlinePlayer.getWorld().equals(player.getWorld()));
     }
 
     if (player != null) {
       players.removeIf(recipient -> {
-        var jsonElement = Chatty.instance().getExact(JsonStorage.class)
-          .getProperty(recipient, "ignore").orElseGet(JsonArray::new);
+        var jsonElement = Chatty.instance().get(JsonStorage.class)
+          .getProperty(recipient, "ignore")
+          .orElseGet(JsonArray::new);
 
         if (jsonElement.isJsonArray()) {
           for (var ignoreJsonElement : jsonElement.getAsJsonArray()) {
@@ -136,8 +132,9 @@ public class Chat implements ru.mrbrikster.chatty.api.chats.Chat {
   @Override
   public void sendMessage(String message, Predicate<Player> playerPredicate) {
     var stylishedMessage = TextUtil.stylish(message);
-    getRecipients(null).stream().filter(playerPredicate).forEach(player ->
-      player.sendMessage(stylishedMessage));
+    getRecipients(null).stream()
+      .filter(playerPredicate)
+      .forEach(player -> player.sendMessage(stylishedMessage));
 
     Bukkit.getConsoleSender().sendMessage(TextUtil.stripHex(stylishedMessage));
   }
@@ -147,5 +144,4 @@ public class Chat implements ru.mrbrikster.chatty.api.chats.Chat {
     formattedMessage.send(getRecipients(null).stream().filter(playerPredicate).collect(Collectors.toSet()), null);
     formattedMessage.sendConsole();
   }
-
 }

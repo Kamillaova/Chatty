@@ -7,14 +7,13 @@ import org.jetbrains.annotations.NotNull;
 import ru.mrbrikster.chatty.api.chats.Chat;
 
 public class ChattyMessageEvent extends Event {
-
   private static final HandlerList HANDLER_LIST = new HandlerList();
 
   private final Player player;
   private final Chat chat;
   private final String message;
 
-  public ChattyMessageEvent(@NotNull Player player, @NotNull Chat chat, @NotNull String message) {
+  public ChattyMessageEvent( Player player,  Chat chat,  String message) {
     super(true);
     this.player = player;
     this.chat = chat;
@@ -30,7 +29,6 @@ public class ChattyMessageEvent extends Event {
    *
    * @return player that sends a message
    */
-  @NotNull
   public Player getPlayer() {
     return player;
   }
@@ -40,7 +38,6 @@ public class ChattyMessageEvent extends Event {
    *
    * @return chat to which message sends
    */
-  @NotNull
   public Chat getChat() {
     return chat;
   }
@@ -50,15 +47,12 @@ public class ChattyMessageEvent extends Event {
    *
    * @return message typed by player
    */
-  @NotNull
   public String getMessage() {
     return message;
   }
 
   @Override
-  @NotNull
   public HandlerList getHandlers() {
     return HANDLER_LIST;
   }
-
 }

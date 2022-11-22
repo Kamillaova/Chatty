@@ -13,8 +13,7 @@ import java.util.Map;
  * All writes merely write the represented string value.
  */
 final class JsonString implements JsonRepresentedObject, ConfigurationSerializable {
-
-  private String _value;
+  private final String _value;
 
   public JsonString(CharSequence value) {
     _value = value == null ? null : value.toString();
@@ -43,5 +42,4 @@ final class JsonString implements JsonRepresentedObject, ConfigurationSerializab
   public String toString() {
     return _value;
   }
-
 }

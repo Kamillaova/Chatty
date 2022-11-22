@@ -1,7 +1,6 @@
 package ru.mrbrikster.chatty.moderation;
 
 public abstract class ModifyingSubstringsModerationMethod extends ModerationMethod {
-
   protected final String lastFormatColors;
 
   ModifyingSubstringsModerationMethod(String message, String lastFormatColors) {
@@ -9,5 +8,4 @@ public abstract class ModifyingSubstringsModerationMethod extends ModerationMeth
 
     this.lastFormatColors = lastFormatColors;
   }
-
 }

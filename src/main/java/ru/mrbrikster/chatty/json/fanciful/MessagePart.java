@@ -20,13 +20,13 @@ import static net.md_5.bungee.api.ChatColor.MAGIC;
 /**
  * Internal class: Represents a component of a JSON-serializable {@link FancyMessage}.
  */
+@SuppressWarnings("deprecation")
 public final class MessagePart implements JsonRepresentedObject, ConfigurationSerializable, Cloneable {
-
   static final BiMap<ChatColor, String> stylesToNames;
 
   static {
     ImmutableBiMap.Builder<ChatColor, String> builder = ImmutableBiMap.builder();
-    for (final ChatColor style : ChatColor.values()) {
+    for (ChatColor style : ChatColor.values()) {
       if (TextUtil.isColor(style)) {
         continue;
       }
@@ -49,9 +49,9 @@ public final class MessagePart implements JsonRepresentedObject, ConfigurationSe
     ConfigurationSerialization.registerClass(MessagePart.class);
   }
 
-  public TextualComponent text = null;
+  public TextualComponent text;
   ChatColor color = ChatColor.WHITE;
-  ArrayList<ChatColor> styles = new ArrayList<ChatColor>();
+  ArrayList<ChatColor> styles = new ArrayList<>();
   String clickActionName = null, clickActionData = null, hoverActionName = null;
   JsonRepresentedObject hoverActionData = null;
   String insertionData = null;
@@ -124,7 +124,7 @@ public final class MessagePart implements JsonRepresentedObject, ConfigurationSe
       if (insertionData != null) {
         json.name("insertion").value(insertionData);
       }
-      if (translationReplacements.size() > 0 && text != null && TextualComponent.isTranslatableText(text)) {
+      if (translationReplacements.size() > 0 && TextualComponent.isTranslatableText(text)) {
         json.name("with").beginArray();
         for (JsonRepresentedObject obj : translationReplacements) {
           obj.writeJson(json);
@@ -151,5 +151,4 @@ public final class MessagePart implements JsonRepresentedObject, ConfigurationSe
     map.put("translationReplacements", translationReplacements);
     return map;
   }
-
 }

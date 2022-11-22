@@ -205,7 +205,7 @@ public enum Sound {
     this.versionDependentNames = versionDependentNames;
   }
 
-  public static org.bukkit.Sound byName(@NotNull String name) {
+  public static org.bukkit.Sound byName( String name) {
     for (var value : Sound.values()) {
       for (var versionDependentName : value.versionDependentNames) {
         if (versionDependentName.equalsIgnoreCase(name)) {
@@ -228,5 +228,4 @@ public enum Sound {
 
     throw new IllegalArgumentException("Found no valid sound name for " + this.name());
   }
-
 }

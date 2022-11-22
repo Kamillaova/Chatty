@@ -11,14 +11,14 @@ import ru.mrbrikster.chatty.Chatty;
 import ru.mrbrikster.chatty.chat.JsonStorage;
 import ru.mrbrikster.chatty.dependencies.PlayerTagManager;
 import ru.mrbrikster.chatty.json.FormattedMessage;
-import ru.mrbrikster.chatty.moderation.AdvertisementModerationMethod;
 import ru.mrbrikster.chatty.moderation.ModerationManager;
-import ru.mrbrikster.chatty.moderation.SwearModerationMethod;
+import ru.mrbrikster.chatty.util.JsonPrimitives;
 import ru.mrbrikster.chatty.util.Sound;
 import ru.mrbrikster.chatty.util.TextUtil;
 
-public abstract class PrivateMessageCommand extends BukkitCommand {
+import static ru.mrbrikster.chatty.util.TextUtil.stylish;
 
+public abstract class PrivateMessageCommand extends BukkitCommand {
   private static final String MODERATION_COLOR_SYMBOL = "§z";
 
   protected final Configuration configuration;
@@ -30,14 +30,14 @@ public abstract class PrivateMessageCommand extends BukkitCommand {
   public PrivateMessageCommand(Chatty chatty, String name, String... aliases) {
     super(name, aliases);
 
-    this.configuration = chatty.getExact(Configuration.class);
-    this.jsonStorage = chatty.getExact(JsonStorage.class);
+    this.configuration = chatty.get(Configuration.class);
+    this.jsonStorage = chatty.get(JsonStorage.class);
 
-    this.playerTagManager = chatty.getExact(PlayerTagManager.class);
-    this.moderationManager = chatty.getExact(ModerationManager.class);
+    this.playerTagManager = chatty.get(PlayerTagManager.class);
+    this.moderationManager = chatty.get(ModerationManager.class);
   }
 
-  protected void handlePrivateMessage(@NotNull CommandSender sender, @NotNull CommandSender recipient, @NotNull String message) {
+  protected void handlePrivateMessage( CommandSender sender,  CommandSender recipient,  String message) {
     var recipientName = recipient.getName();
     var recipientPrefix = "";
     var recipientSuffix = "";
@@ -77,7 +77,8 @@ public abstract class PrivateMessageCommand extends BukkitCommand {
 
             if (swearFound != null) {
               Bukkit.getScheduler().runTaskLaterAsynchronously(Chatty.instance(),
-                () -> sender.sendMessage(swearFound), 5L
+                () -> sender.sendMessage(swearFound),
+                5L
               );
             }
           }
@@ -160,24 +161,32 @@ public abstract class PrivateMessageCommand extends BukkitCommand {
       Bukkit.getOnlinePlayers().stream()
         .filter(spyPlayer -> !spyPlayer.equals(sender) && !spyPlayer.equals(recipient))
         .filter(spyPlayer -> spyPlayer.hasPermission("chatty.spy") || spyPlayer.hasPermission("chatty.spy.pm"))
-        .filter(spyPlayer -> jsonStorage.getProperty(spyPlayer, "spy-mode").orElse(new JsonPrimitive(true)).getAsBoolean())
+        .filter(spyPlayer -> jsonStorage.getProperty(spyPlayer, "spy-mode")
+          .orElse(JsonPrimitives.TRUE)
+          .getAsBoolean()
+        )
         .forEach(spyPlayer -> spyPlayer.sendMessage(stylishedSpyMessage));
     }
   }
 
-  @NotNull
   private String createFormat(
-    String format, @NotNull String message,
-    String recipientName, String recipientPrefix, String recipientSuffix,
-    String senderName, String senderPrefix, String senderSuffix
+    String format,
+    String message,
+    String recipientName,
+    String recipientPrefix,
+    String recipientSuffix,
+    String senderName,
+    String senderPrefix,
+    String senderSuffix
   ) {
-    format = TextUtil.stylish(format
+    format = stylish(format
       .replace("{sender-prefix}", senderPrefix)
       .replace("{sender-suffix}", senderSuffix)
       .replace("{sender-name}", senderName)
       .replace("{recipient-name}", recipientName)
       .replace("{recipient-prefix}", recipientPrefix)
-      .replace("{recipient-suffix}", recipientSuffix));
+      .replace("{recipient-suffix}", recipientSuffix)
+    );
 
     return format.replace("{message}", message.replace(MODERATION_COLOR_SYMBOL, getLastColors(format)));
   }
@@ -189,7 +198,6 @@ public abstract class PrivateMessageCommand extends BukkitCommand {
       return format;
     }
 
-    return TextUtil.getLastColors(TextUtil.stylish(format.substring(0, messageIndex)));
+    return TextUtil.getLastColors(stylish(format.substring(0, messageIndex)));
   }
-
 }

@@ -3,7 +3,6 @@ package ru.mrbrikster.chatty.moderation;
 import lombok.Getter;
 import org.bukkit.plugin.java.JavaPlugin;
 import ru.mrbrikster.baseplugin.config.Configuration;
-import ru.mrbrikster.baseplugin.config.ConfigurationNode;
 import ru.mrbrikster.chatty.Chatty;
 
 public class ModerationManager {
@@ -19,7 +18,7 @@ public class ModerationManager {
 
   public ModerationManager(Chatty chatty) {
     this.javaPlugin = chatty;
-    this.configuration = chatty.getExact(Configuration.class);
+    this.configuration = chatty.get(Configuration.class);
 
     init();
     configuration.onReload(config -> reload());

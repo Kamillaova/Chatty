@@ -7,16 +7,11 @@ import ru.mrbrikster.chatty.chat.JsonStorage;
 import ru.mrbrikster.chatty.commands.pm.IgnoreCommand;
 import ru.mrbrikster.chatty.commands.pm.MsgCommand;
 import ru.mrbrikster.chatty.commands.pm.ReplyCommand;
-import ru.mrbrikster.chatty.dependencies.DependencyManager;
-import ru.mrbrikster.chatty.moderation.ModerationManager;
 
 public class CommandManager {
-
   private final Configuration configuration;
   private final ChatManager chatManager;
-  private final DependencyManager dependencyManager;
   private final JsonStorage jsonStorage;
-  private final ModerationManager moderationManager;
 
   private ChattyCommand chattyCommand;
   private ClearChatCommand clearChatCommand;
@@ -30,11 +25,9 @@ public class CommandManager {
   private SuffixCommand suffixCommand;
 
   public CommandManager(Chatty chatty) {
-    this.configuration = chatty.getExact(Configuration.class);
-    this.chatManager = chatty.getExact(ChatManager.class);
-    this.dependencyManager = chatty.getExact(DependencyManager.class);
-    this.jsonStorage = chatty.getExact(JsonStorage.class);
-    this.moderationManager = chatty.getExact(ModerationManager.class);
+    this.configuration = chatty.get(Configuration.class);
+    this.chatManager = chatty.get(ChatManager.class);
+    this.jsonStorage = chatty.get(JsonStorage.class);
 
     this.init();
 
@@ -84,12 +77,12 @@ public class CommandManager {
     }
 
     if (configuration.getNode("miscellaneous.commands.prefix.enable").getAsBoolean(false)) {
-      this.prefixCommand = new PrefixCommand(configuration, dependencyManager, jsonStorage);
+      this.prefixCommand = new PrefixCommand(configuration, jsonStorage);
       this.prefixCommand.register(Chatty.instance());
     }
 
     if (configuration.getNode("miscellaneous.commands.suffix.enable").getAsBoolean(false)) {
-      this.suffixCommand = new SuffixCommand(configuration, dependencyManager, jsonStorage);
+      this.suffixCommand = new SuffixCommand(configuration, jsonStorage);
       this.suffixCommand.register(Chatty.instance());
     }
   }
@@ -133,5 +126,4 @@ public class CommandManager {
       this.suffixCommand.unregister(Chatty.instance());
     }
   }
-
 }

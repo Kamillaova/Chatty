@@ -7,7 +7,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class JsonMessagePart implements MessagePart {
-
   private final String text;
   private String command;
   private String suggest;
@@ -34,7 +33,9 @@ public class JsonMessagePart implements MessagePart {
     if (!tooltip.isEmpty()) {
       List<FancyMessage> lines = new ArrayList<>();
 
-      for (var line : tooltip) { lines.add(new FormattedMessage(line).toFancyMessage()); }
+      for (var line : tooltip) {
+        lines.add(new FormattedMessage(line).toFancyMessage());
+      }
 
       this.tooltip = lines;
     }
@@ -53,16 +54,12 @@ public class JsonMessagePart implements MessagePart {
     LegacyConverter.getMessageParts(fancyMessage.getLastColors() + TextUtil.stylish(text)).forEach(messagePart -> {
       fancyMessage.then(messagePart);
 
-      if (command != null) { fancyMessage.command(command); }
-
-      if (suggest != null) { fancyMessage.suggest(suggest); }
-
-      if (link != null) { fancyMessage.link(link); }
-
-      if (tooltip != null) { fancyMessage.formattedTooltip(tooltip); }
+      if (command != null) fancyMessage.command(command);
+      if (suggest != null) fancyMessage.suggest(suggest);
+      if (link != null) fancyMessage.link(link);
+      if (tooltip != null) fancyMessage.formattedTooltip(tooltip);
     });
 
     return fancyMessage;
   }
-
 }

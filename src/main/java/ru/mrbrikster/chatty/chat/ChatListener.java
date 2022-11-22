@@ -1,7 +1,6 @@
 package ru.mrbrikster.chatty.chat;
 
 import com.google.common.collect.ImmutableMap;
-import com.google.gson.JsonPrimitive;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
@@ -11,7 +10,6 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.plugin.EventExecutor;
-import org.jetbrains.annotations.NotNull;
 import ru.mrbrikster.baseplugin.config.Configuration;
 import ru.mrbrikster.baseplugin.config.ConfigurationNode;
 import ru.mrbrikster.chatty.Chatty;
@@ -20,15 +18,12 @@ import ru.mrbrikster.chatty.bungee.BungeeBroadcaster;
 import ru.mrbrikster.chatty.chat.event.ChattyAsyncPlayerChatEvent;
 import ru.mrbrikster.chatty.dependencies.DependencyManager;
 import ru.mrbrikster.chatty.dependencies.PlayerTagManager;
-import ru.mrbrikster.chatty.dependencies.VaultHook;
 import ru.mrbrikster.chatty.json.FormattedMessage;
 import ru.mrbrikster.chatty.json.JsonMessagePart;
 import ru.mrbrikster.chatty.json.LegacyMessagePart;
-import ru.mrbrikster.chatty.moderation.AdvertisementModerationMethod;
-import ru.mrbrikster.chatty.moderation.CapsModerationMethod;
 import ru.mrbrikster.chatty.moderation.ModerationManager;
 import ru.mrbrikster.chatty.moderation.ModerationMethod;
-import ru.mrbrikster.chatty.moderation.SwearModerationMethod;
+import ru.mrbrikster.chatty.util.JsonPrimitives;
 import ru.mrbrikster.chatty.util.Pair;
 import ru.mrbrikster.chatty.util.Sound;
 import ru.mrbrikster.chatty.util.TextUtil;
@@ -39,19 +34,16 @@ import java.util.List;
 import java.util.Map;
 import java.util.UnknownFormatConversionException;
 import java.util.function.Function;
-import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import java.util.stream.Collectors;
 
 public class ChatListener implements Listener, EventExecutor {
-
   private static final Pattern COLOR_PATTERN = Pattern.compile("(?i)&([0-9A-F])");
-  private static final Pattern MAGIC_PATTERN = Pattern.compile("(?i)&([K])");
-  private static final Pattern BOLD_PATTERN = Pattern.compile("(?i)&([L])");
-  private static final Pattern STRIKETHROUGH_PATTERN = Pattern.compile("(?i)&([M])");
-  private static final Pattern UNDERLINE_PATTERN = Pattern.compile("(?i)&([N])");
-  private static final Pattern ITALIC_PATTERN = Pattern.compile("(?i)&([O])");
-  private static final Pattern RESET_PATTERN = Pattern.compile("(?i)&([R])");
+  private static final Pattern MAGIC_PATTERN = Pattern.compile("(?i)&(K)");
+  private static final Pattern BOLD_PATTERN = Pattern.compile("(?i)&(L)");
+  private static final Pattern STRIKETHROUGH_PATTERN = Pattern.compile("(?i)&(M)");
+  private static final Pattern UNDERLINE_PATTERN = Pattern.compile("(?i)&(N)");
+  private static final Pattern ITALIC_PATTERN = Pattern.compile("(?i)&(O)");
+  private static final Pattern RESET_PATTERN = Pattern.compile("(?i)&(R)");
   private static final String PERMISSION_PREFIX = "chatty.style.";
 
   private static final Map<String, Pattern> PATTERNS = ImmutableMap.<String, Pattern>builder()
@@ -61,7 +53,8 @@ public class ChatListener implements Listener, EventExecutor {
     .put(PERMISSION_PREFIX + "strikethrough", STRIKETHROUGH_PATTERN)
     .put(PERMISSION_PREFIX + "underline", UNDERLINE_PATTERN)
     .put(PERMISSION_PREFIX + "italic", ITALIC_PATTERN)
-    .put(PERMISSION_PREFIX + "reset", RESET_PATTERN).build();
+    .put(PERMISSION_PREFIX + "reset", RESET_PATTERN)
+    .build();
 
   private static final Pattern MENTION_PATTERN = Pattern.compile("@[a-zA-Zа-яА-Я0-9_]{3,16}");
 
@@ -77,12 +70,12 @@ public class ChatListener implements Listener, EventExecutor {
   private final Map<Player, Chat> pendingMessages;
 
   public ChatListener(Chatty chatty) {
-    this.configuration = chatty.getExact(Configuration.class);
-    this.chatManager = chatty.getExact(ChatManager.class);
-    this.dependencyManager = chatty.getExact(DependencyManager.class);
-    this.moderationManager = chatty.getExact(ModerationManager.class);
-    this.jsonStorage = chatty.getExact(JsonStorage.class);
-    this.playerTagManager = chatty.getExact(PlayerTagManager.class);
+    this.configuration = chatty.get(Configuration.class);
+    this.chatManager = chatty.get(ChatManager.class);
+    this.dependencyManager = chatty.get(DependencyManager.class);
+    this.moderationManager = chatty.get(ModerationManager.class);
+    this.jsonStorage = chatty.get(JsonStorage.class);
+    this.playerTagManager = chatty.get(PlayerTagManager.class);
 
     this.pendingSpyMessages = new IdentityHashMap<>();
     this.pendingSwears = new IdentityHashMap<>();
@@ -90,9 +83,9 @@ public class ChatListener implements Listener, EventExecutor {
   }
 
   @Override
-  public void execute(@NotNull Listener listener, @NotNull Event event) {
-    if (listener == this && event instanceof AsyncPlayerChatEvent) {
-      if (((AsyncPlayerChatEvent) event).isCancelled()) {
+  public void execute(Listener listener, Event event) {
+    if (listener == this && event instanceof AsyncPlayerChatEvent e) {
+      if (e.isCancelled()) {
         return;
       }
 
@@ -107,12 +100,12 @@ public class ChatListener implements Listener, EventExecutor {
     String message;
 
     if (event instanceof ChattyAsyncPlayerChatEvent) {
-      chat = ((ChattyAsyncPlayerChatEvent) event).getChat();
+      chat = ((ChattyAsyncPlayerChatEvent) event).chat();
       message = event.getMessage();
     } else {
       var chatMessagePair = getChat(player, event.getMessage());
-      chat = chatMessagePair.getA();
-      message = chatMessagePair.getB();
+      chat = chatMessagePair.left();
+      message = chatMessagePair.right();
     }
 
     if (chat == null) {
@@ -287,7 +280,7 @@ public class ChatListener implements Listener, EventExecutor {
 
     if (pair == null) return;
 
-    if (pair.getA().isSpyEnabled()
+    if (pair.left().isSpyEnabled()
       && configuration.getNode("spy.enable").getAsBoolean(false)
       && !event.isCancelled()) {
       var spyInfo = TextUtil.stylish(configuration.getNode("spy.format.chat")
@@ -300,9 +293,9 @@ public class ChatListener implements Listener, EventExecutor {
 
       Bukkit.getOnlinePlayers().stream()
         .filter(spy ->
-          (spy.hasPermission("chatty.spy." + pair.getA().getName()))
-            && jsonStorage.getProperty(spy, "spy-mode").orElse(new JsonPrimitive(true)).getAsBoolean()
-            && !pair.getB().contains(spy))
+          (spy.hasPermission("chatty.spy." + pair.left().getName()))
+            && jsonStorage.getProperty(spy, "spy-mode").orElse(JsonPrimitives.TRUE).getAsBoolean()
+            && !pair.right().contains(spy))
         .forEach(spy -> spy.sendMessage(spyInfo));
     }
   }
@@ -353,9 +346,11 @@ public class ChatListener implements Listener, EventExecutor {
         line.replace("{player}", player.getDisplayName())
           .replace("{prefix}", playerTagManager.getPrefix(player))
           .replace("{suffix}", playerTagManager.getSuffix(player))
-      )).collect(Collectors.toList());
+      )).toList();
 
-    if (dependencyManager.getPlaceholderApi() != null) { tooltip = dependencyManager.getPlaceholderApi().setPlaceholders(player, tooltip); }
+    if (dependencyManager.getPlaceholderApi() != null) {
+      tooltip = dependencyManager.getPlaceholderApi().setPlaceholders(player, tooltip);
+    }
 
     var command = configuration.getNode("json.command").getAsString(null);
     var suggestCommand = configuration.getNode("json.suggest").getAsString(null);
@@ -428,15 +423,17 @@ public class ChatListener implements Listener, EventExecutor {
       formattedMessage.send(cannotSeeSwears, event.getPlayer());
 
       var swearTooltip = configuration.getNode("json.swears.tooltip").getAsStringList()
-        .stream().map(TextUtil::stylish).collect(Collectors.toList());
+        .stream().map(TextUtil::stylish).toList();
 
       var suggest = configuration.getNode("json.swears.suggest").getAsString(null);
 
       swears.forEach(swear -> formattedMessage.replace(
         replacement,
         new JsonMessagePart(replacement)
-          .tooltip(swearTooltip.stream().map(tooltipLine -> tooltipLine.replace("{word}", swear))
-            .collect(Collectors.toList()))
+          .tooltip(swearTooltip.stream()
+            .map(tooltipLine -> tooltipLine.replace("{word}", swear))
+            .toList()
+          )
           .suggest(suggest != null ? suggest.replace("{word}", swear) : null)
       ));
 
@@ -474,7 +471,7 @@ public class ChatListener implements Listener, EventExecutor {
             line.replace("{player}", mentionedPlayer.getDisplayName())
               .replace("{prefix}", playerTagManager.getPrefix(mentionedPlayer))
               .replace("{suffix}", playerTagManager.getSuffix(mentionedPlayer))
-          )).collect(Collectors.toList());
+          )).toList();
 
         if (dependencyManager.getPlaceholderApi() != null) {
           mentionTooltip = dependencyManager.getPlaceholderApi().setPlaceholders(mentionedPlayer, mentionTooltip);
@@ -521,7 +518,7 @@ public class ChatListener implements Listener, EventExecutor {
         line.replace("{player}", player.getDisplayName())
           .replace("{prefix}", playerTagManager.getPrefix(player))
           .replace("{suffix}", playerTagManager.getSuffix(player))
-      )).collect(Collectors.toList());
+      )).toList();
 
     if (dependencyManager.getPlaceholderApi() != null) { replacementTooltip = dependencyManager.getPlaceholderApi().setPlaceholders(player, replacementTooltip); }
 
@@ -564,7 +561,7 @@ public class ChatListener implements Listener, EventExecutor {
   private String stylish(Player player, String message, String chat) {
     for (var entry : PATTERNS.entrySet()) {
       if (player.hasPermission(entry.getKey()) || player.hasPermission(entry.getKey() + "." + chat)) {
-        message = entry.getValue().matcher(message).replaceAll("\u00A7$1");
+        message = entry.getValue().matcher(message).replaceAll("§$1");
       }
     }
 
@@ -582,7 +579,7 @@ public class ChatListener implements Listener, EventExecutor {
   private String unstylish(String string) {
     var b = string.toCharArray();
     for (var i = 0; i < b.length - 1; i++) {
-      if (b[i] == '\u00A7' && "0123456789AaBbCcDdEeFfKkLlMmNnOoRr".indexOf(b[i + 1]) > -1) {
+      if (b[i] == '§' && "0123456789AaBbCcDdEeFfKkLlMmNnOoRr".indexOf(b[i + 1]) > -1) {
         b[i] = '&';
         b[i + 1] = Character.toLowerCase(b[i + 1]);
       }
@@ -602,5 +599,4 @@ public class ChatListener implements Listener, EventExecutor {
       return ChatColor.stripColor(applyPlaceholders(player, string));
     };
   }
-
 }

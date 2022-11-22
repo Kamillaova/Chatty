@@ -1,7 +1,6 @@
 package ru.mrbrikster.chatty.notifications;
 
 import ru.mrbrikster.baseplugin.config.Configuration;
-import ru.mrbrikster.baseplugin.config.ConfigurationNode;
 import ru.mrbrikster.chatty.Chatty;
 
 import java.util.ArrayList;
@@ -16,7 +15,7 @@ public class NotificationManager {
   private final Configuration configuration;
 
   public NotificationManager(Chatty chatty) {
-    this.configuration = chatty.getExact(Configuration.class);
+    this.configuration = chatty.get(Configuration.class);
 
     this.init();
     configuration.onReload(config -> reload());

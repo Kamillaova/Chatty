@@ -4,7 +4,6 @@ import lombok.Getter;
 import org.bukkit.Bukkit;
 import org.bukkit.scheduler.BukkitTask;
 import ru.mrbrikster.chatty.Chatty;
-import ru.mrbrikster.chatty.util.Debugger;
 
 import java.util.Random;
 import java.util.concurrent.ThreadLocalRandom;
@@ -31,9 +30,9 @@ public abstract class Notification {
   }
 
   public void cancel() {
-    if (bukkitTask != null) { bukkitTask.cancel(); }
-
-    Chatty.instance().getExact(Debugger.class).debug(this.getClass().getSimpleName() + " task cancelled.");
+    if (bukkitTask != null) {
+      bukkitTask.cancel();
+    }
   }
 
   public abstract void run();

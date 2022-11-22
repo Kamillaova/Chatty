@@ -14,10 +14,8 @@ import java.io.DataInputStream;
 import java.io.IOException;
 import java.util.Optional;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 public class BungeeCordListener implements PluginMessageListener {
-
   public final static UUID SERVER_UUID = UUID.randomUUID();
 
   private final ChatManager chatManager;
@@ -61,7 +59,7 @@ public class BungeeCordListener implements PluginMessageListener {
 
       Optional<Chat> optionalChat = chatManager.getChats().stream().filter(c -> c.getName().equals(chatName)).findAny();
 
-      if (!optionalChat.isPresent()) {
+      if (optionalChat.isEmpty()) {
         return;
       }
 
@@ -73,25 +71,22 @@ public class BungeeCordListener implements PluginMessageListener {
 
       if (json) {
         FancyMessage fancyMessage = FancyMessage.deserialize(text);
-        fancyMessage.send(Bukkit.getOnlinePlayers().stream().filter(recipient -> {
-          return !chat.isPermissionRequired()
-            || recipient.hasPermission("chatty.chat." + chat.getName() + ".see")
-            || recipient.hasPermission("chatty.chat." + chat.getName());
-        }).collect(Collectors.toList()), null);
+        fancyMessage.send(Bukkit.getOnlinePlayers().stream()
+          .filter(recipient -> !chat.isPermissionRequired() ||
+            recipient.hasPermission("chatty.chat." + chat.getName() + ".see") ||
+            recipient.hasPermission("chatty.chat." + chat.getName())
+          ).toList(), null);
 
         fancyMessage.send(Bukkit.getConsoleSender(), null);
       } else {
-        Bukkit.getOnlinePlayers().stream().filter(recipient -> {
-          return !chat.isPermissionRequired()
+        Bukkit.getOnlinePlayers().stream()
+          .filter(recipient -> !chat.isPermissionRequired()
             || recipient.hasPermission("chatty.chat." + chat.getName() + ".see")
-            || recipient.hasPermission("chatty.chat." + chat.getName());
-        }).forEach(onlinePlayer -> {
-          onlinePlayer.sendMessage(text);
-        });
+            || recipient.hasPermission("chatty.chat." + chat.getName()))
+          .forEach(onlinePlayer -> onlinePlayer.sendMessage(text));
 
         Bukkit.getConsoleSender().sendMessage(text);
       }
     }
   }
-
 }

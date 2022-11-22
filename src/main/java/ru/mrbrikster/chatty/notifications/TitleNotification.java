@@ -3,7 +3,6 @@ package ru.mrbrikster.chatty.notifications;
 import org.bukkit.Bukkit;
 import ru.mrbrikster.chatty.Chatty;
 import ru.mrbrikster.chatty.dependencies.DependencyManager;
-import ru.mrbrikster.chatty.util.Debugger;
 import ru.mrbrikster.chatty.util.TextUtil;
 import ru.mrbrikster.chatty.util.textapi.Title;
 
@@ -11,7 +10,6 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public class TitleNotification extends Notification {
-
   private static final String PERMISSION_NODE = NOTIFICATION_PERMISSION_NODE + "title.%s";
   private final String name;
   private final List<String> messages;
@@ -21,28 +19,23 @@ public class TitleNotification extends Notification {
 
     this.name = name;
     this.messages = messages.stream()
-      .map(TextUtil::stylish)
-      .map(TextUtil::fixMultilineFormatting)
-      .collect(Collectors.toList());
+                      .map(TextUtil::stylish)
+                      .map(TextUtil::fixMultilineFormatting)
+                      .toList();
   }
 
   @Override
   public void run() {
-    if (messages.isEmpty()) {
-      return;
-    }
-
-    Chatty.instance().getExact(Debugger.class).debug("Run \"%s\" TitleNotification.", name);
+    if (messages.isEmpty()) return;
 
     var message = messages.get(nextMessage()).split("(\n)|(\\\\n)", 2);
 
-    var dependencyManager = Chatty.instance().getExact(DependencyManager.class);
+    var dependencyManager = Chatty.instance().get(DependencyManager.class);
 
     Bukkit.getOnlinePlayers()
       .stream()
       .filter(player -> !isPermission() || player.hasPermission(String.format(PERMISSION_NODE, name)))
       .forEach(onlinePlayer -> {
-
         var playerMessage = message.clone();
 
         if (dependencyManager.getPlaceholderApi() != null) {
@@ -51,12 +44,15 @@ public class TitleNotification extends Notification {
           }
         }
 
-        var title = new Title(playerMessage[0], playerMessage.length == 2
-                                                  ? playerMessage[1]
-                                                  : "", 20, 40, 20);
+        var title = new Title(
+          playerMessage[0],
+          playerMessage.length == 2 ? playerMessage[1] : "",
+          20,
+          40,
+          20
+        );
 
         title.send(onlinePlayer);
       });
   }
-
 }

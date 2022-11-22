@@ -10,7 +10,7 @@ import com.google.gson.JsonParser;
 import com.google.gson.stream.JsonWriter;
 import lombok.Getter;
 import lombok.SneakyThrows;
-import net.amoebaman.util.ArrayWrapper;
+import ru.mrbrikster.chatty.util.ArrayWrapper;
 import net.md_5.bungee.api.ChatColor;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
@@ -43,8 +43,8 @@ import static ru.mrbrikster.chatty.json.fanciful.TextualComponent.rawText;
  * </p>
  */
 public class FancyMessage implements JsonRepresentedObject, Cloneable, Iterable<MessagePart>, ConfigurationSerializable {
-
-  private static JsonParser _stringParser = new JsonParser();
+  @SuppressWarnings("deprecation")
+  private static JsonParser JsonParser = new JsonParser();
   private static final Gson GSON = new GsonBuilder()
     .disableHtmlEscaping()
     .create();
@@ -104,8 +104,9 @@ public class FancyMessage implements JsonRepresentedObject, Cloneable, Iterable<
    * @param json The JSON string which represents a fancy message.
    * @return A {@code FancyMessage} representing the parameterized JSON message.
    */
+  @SuppressWarnings("deprecation")
   public static FancyMessage deserialize(String json) {
-    JsonObject serialized = _stringParser.parse(json).getAsJsonObject();
+    JsonObject serialized = JsonParser.parse(json).getAsJsonObject();
     JsonArray extra = serialized.getAsJsonArray("extra"); // Get the extra component
     FancyMessage returnVal = new FancyMessage();
     returnVal.messageParts.clear();
@@ -607,7 +608,7 @@ public class FancyMessage implements JsonRepresentedObject, Cloneable, Iterable<
    * Sends this message to multiple command senders.
    *
    * @param senders The command senders who will receive the message.
-   * @see #send(CommandSender)
+   * @see #send(CommandSender, Player)
    */
   public void send(final Iterable<? extends CommandSender> senders, Player from) {
     String string = toJSONString();
@@ -666,9 +667,8 @@ public class FancyMessage implements JsonRepresentedObject, Cloneable, Iterable<
 
   // Doc copied from interface
   public Map<String, Object> serialize() {
-    HashMap<String, Object> map = new HashMap<String, Object>();
+    HashMap<String, Object> map = new HashMap<>();
     map.put("messageParts", messageParts);
-//        map.put("JSON", toJSONString());
     return map;
   }
 
@@ -682,9 +682,8 @@ public class FancyMessage implements JsonRepresentedObject, Cloneable, Iterable<
   public String getLastColors() {
     StringBuilder stringBuilder = new StringBuilder();
     stringBuilder.append(latest().color);
-    latest().styles.forEach(style -> stringBuilder.append(style));
+    latest().styles.forEach(stringBuilder::append);
 
     return stringBuilder.toString();
   }
-
 }

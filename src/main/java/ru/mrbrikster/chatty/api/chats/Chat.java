@@ -1,9 +1,6 @@
 package ru.mrbrikster.chatty.api.chats;
 
-import lombok.experimental.UtilityClass;
-import org.bukkit.World;
 import org.bukkit.entity.Player;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import ru.mrbrikster.chatty.json.FormattedMessage;
 
@@ -11,13 +8,11 @@ import java.util.Collection;
 import java.util.function.Predicate;
 
 public interface Chat {
-
   /**
    * Name of chat from plugin configuration
    *
    * @return name of chat
    */
-  @NotNull
   String getName();
 
   /**
@@ -32,7 +27,6 @@ public interface Chat {
    *
    * @return chat format specified in configuration
    */
-  @NotNull
   String getFormat();
 
   /**
@@ -53,6 +47,7 @@ public interface Chat {
    *
    * @return whether permission required or not
    */
+  @SuppressWarnings("BooleanMethodIsAlwaysInverted")
   boolean isPermissionRequired();
 
   /**
@@ -61,7 +56,6 @@ public interface Chat {
    * @param player player who sends a message
    * @return collection of chat recipients
    */
-  @NotNull
   Collection<? extends Player> getRecipients(@Nullable Player player);
 
   /**
@@ -71,8 +65,8 @@ public interface Chat {
    * @param players collection of players to filter
    * @return edited collection of chat recipients
    */
-  @NotNull
-  Collection<? extends Player> filterRecipients(@Nullable Player player, @NotNull Collection<? extends Player> players);
+
+  Collection<? extends Player> filterRecipients(@Nullable Player player, Collection<? extends Player> players);
 
   /**
    * This method let you send any message to the chat participants (without {@link Chat#getFormat()})
@@ -122,19 +116,19 @@ public interface Chat {
    */
   void sendFormattedMessage(FormattedMessage formattedMessage, Predicate<Player> playerPredicate);
 
-  @UtilityClass
-  class Ranges {
+  final class Ranges {
+    public static final int MULTI_SERVER = -3;
+    public static final int CROSS_WORLD = -2;
+    public static final int SINGLE_WORLD = -1;
 
-    public final int MULTI_SERVER = -3;
-    public final int CROSS_WORLD = -2;
-    public final int SINGLE_WORLD = -1;
+    private Ranges() { }
 
     /**
      * Checks if range is applicable to messaging between two players
      *
      * @return whether range is applicable or not
      */
-    public boolean isApplicable(@NotNull Player firstPlayer, @NotNull Player secondPlayer, int range) {
+    public static boolean isApplicable(Player firstPlayer, Player secondPlayer, int range) {
       if (range == CROSS_WORLD || range == MULTI_SERVER) {
         return true;
       }
@@ -146,13 +140,11 @@ public interface Chat {
       }
 
       if (range >= 0) {
-        return firstPlayerWorld.equals(secondPlayerWorld)
-          && firstPlayer.getLocation().distanceSquared(secondPlayer.getLocation()) <= (range * range);
+        return firstPlayerWorld.equals(secondPlayerWorld) &&
+          firstPlayer.getLocation().distanceSquared(secondPlayer.getLocation()) <= (range * range);
       } else {
         return false;
       }
     }
-
   }
-
 }

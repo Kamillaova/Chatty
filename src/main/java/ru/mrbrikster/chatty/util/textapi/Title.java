@@ -31,8 +31,9 @@ import java.lang.reflect.Method;
  * @author Luca
  */
 public class Title {
+  @SuppressWarnings({"deprecation", "unused"})
+  private static final JsonParser JsonParser = new JsonParser();
 
-  private static final JsonParser JSON_PARSER = new JsonParser();
   private JsonObject title, subtitle;
   private int fadeIn, fadeOut, stay;
 
@@ -71,8 +72,9 @@ public class Title {
     this.stay = stay;
   }
 
+  @SuppressWarnings("deprecation")
   static JsonObject convert(String text) {
-    return JSON_PARSER.parse(new FormattedMessage(text).toJSONString()).getAsJsonObject();
+    return JsonParser.parse(new FormattedMessage(text).toJSONString()).getAsJsonObject();
   }
 
   /**

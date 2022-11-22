@@ -1,6 +1,6 @@
 package ru.mrbrikster.chatty.commands.pm;
 
-import net.amoebaman.util.ArrayWrapper;
+import ru.mrbrikster.chatty.util.ArrayWrapper;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -10,9 +10,8 @@ import ru.mrbrikster.chatty.Chatty;
 import java.util.Arrays;
 
 public class MsgCommand extends PrivateMessageCommand {
-
   public MsgCommand(Chatty chatty) {
-    super(chatty, "msg", ArrayWrapper.toArray(chatty.getExact(Configuration.class)
+    super(chatty, "msg", ArrayWrapper.toArray(chatty.get(Configuration.class)
       .getNode("pm.commands.msg.aliases").getAsStringList(), String.class));
   }
 
@@ -61,5 +60,4 @@ public class MsgCommand extends PrivateMessageCommand {
 
     handlePrivateMessage(sender, recipient, message);
   }
-
 }

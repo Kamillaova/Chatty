@@ -3,8 +3,10 @@ package ru.mrbrikster.chatty.moderation;
 import lombok.Getter;
 import ru.mrbrikster.baseplugin.config.ConfigurationNode;
 
-public class CapsModerationMethod extends ModerationMethod {
+import static java.lang.Character.toLowerCase;
+import static java.lang.Character.toUpperCase;
 
+public class CapsModerationMethod extends ModerationMethod {
   private final int percent;
   private final int length;
   @Getter
@@ -44,7 +46,7 @@ public class CapsModerationMethod extends ModerationMethod {
       codePoint = c;
       if (Character.isLetter(codePoint)) {
         length++;
-        if (codePoint == Character.toUpperCase(codePoint) && (Character.toLowerCase(codePoint) != Character.toUpperCase(codePoint))) {
+        if (codePoint == toUpperCase(codePoint) && (toLowerCase(codePoint) != toUpperCase(codePoint))) {
           capsLength++;
         }
       }
@@ -52,5 +54,4 @@ public class CapsModerationMethod extends ModerationMethod {
 
     return (double) capsLength / (double) length * 100;
   }
-
 }

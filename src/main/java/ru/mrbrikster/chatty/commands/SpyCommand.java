@@ -6,9 +6,9 @@ import org.bukkit.entity.Player;
 import ru.mrbrikster.baseplugin.commands.BukkitCommand;
 import ru.mrbrikster.chatty.Chatty;
 import ru.mrbrikster.chatty.chat.JsonStorage;
+import ru.mrbrikster.chatty.util.JsonPrimitives;
 
 public class SpyCommand extends BukkitCommand {
-
   private final JsonStorage jsonStorage;
 
   SpyCommand(JsonStorage jsonStorage) {
@@ -25,16 +25,15 @@ public class SpyCommand extends BukkitCommand {
         return;
       }
 
-      if (jsonStorage.getProperty((Player) sender, "spy-mode").orElse(new JsonPrimitive(true)).getAsBoolean()) {
-        jsonStorage.setProperty((Player) sender, "spy-mode", new JsonPrimitive(false));
+      if (jsonStorage.getProperty((Player) sender, "spy-mode").orElse(JsonPrimitives.TRUE).getAsBoolean()) {
+        jsonStorage.setProperty((Player) sender, "spy-mode", JsonPrimitives.FALSE);
         sender.sendMessage(Chatty.instance().messages().get("spy-off"));
       } else {
-        jsonStorage.setProperty((Player) sender, "spy-mode", new JsonPrimitive(true));
+        jsonStorage.setProperty((Player) sender, "spy-mode", JsonPrimitives.TRUE);
         sender.sendMessage(Chatty.instance().messages().get("spy-on"));
       }
     } else {
       sender.sendMessage(Chatty.instance().messages().get("only-for-players"));
     }
   }
-
 }

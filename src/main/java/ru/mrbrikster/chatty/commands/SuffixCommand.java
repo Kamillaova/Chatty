@@ -3,31 +3,25 @@ package ru.mrbrikster.chatty.commands;
 import com.google.gson.JsonPrimitive;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Player;
 import ru.mrbrikster.baseplugin.commands.BukkitCommand;
 import ru.mrbrikster.baseplugin.config.Configuration;
 import ru.mrbrikster.chatty.Chatty;
 import ru.mrbrikster.chatty.chat.JsonStorage;
-import ru.mrbrikster.chatty.dependencies.DependencyManager;
 import ru.mrbrikster.chatty.util.TextUtil;
 
 import java.util.Arrays;
 
 public class SuffixCommand extends BukkitCommand {
-
   private final Configuration configuration;
   private final JsonStorage jsonStorage;
-  private final DependencyManager dependencyManager;
 
   SuffixCommand(
     Configuration configuration,
-    DependencyManager dependencyManager,
     JsonStorage jsonStorage
   ) {
     super("suffix", "setsuffix");
 
     this.configuration = configuration;
-    this.dependencyManager = dependencyManager;
     this.jsonStorage = jsonStorage;
   }
 
@@ -55,7 +49,8 @@ public class SuffixCommand extends BukkitCommand {
         jsonStorage.setProperty(player, "suffix", null);
 
         sender.sendMessage(Chatty.instance().messages().get("suffix-command.suffix-clear")
-          .replace("{player}", player.getName()));
+          .replace("{player}", player.getName())
+        );
       } else {
         var suffix = String.join(" ", Arrays.copyOfRange(args, 1, args.length));
         var formattedSuffix = configuration.getNode("miscellaneous.commands.suffix.before-suffix").getAsString("") + suffix;
@@ -82,8 +77,8 @@ public class SuffixCommand extends BukkitCommand {
       }
     } else {
       sender.sendMessage(Chatty.instance().messages().get("suffix-command.usage")
-        .replace("{label}", label));
+        .replace("{label}", label)
+      );
     }
   }
-
 }

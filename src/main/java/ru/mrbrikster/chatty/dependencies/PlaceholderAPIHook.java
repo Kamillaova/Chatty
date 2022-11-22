@@ -5,14 +5,12 @@ import me.clip.placeholderapi.expansion.PlaceholderExpansion;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import ru.mrbrikster.chatty.Chatty;
-import ru.mrbrikster.chatty.chat.Chat;
 import ru.mrbrikster.chatty.chat.ChatManager;
 
 import java.util.List;
 import java.util.Locale;
 
 public class PlaceholderAPIHook extends PlaceholderExpansion {
-
   private final ChatManager chatManager;
 
   public PlaceholderAPIHook(ChatManager chatManager) {
@@ -55,7 +53,7 @@ public class PlaceholderAPIHook extends PlaceholderExpansion {
 
     var split = params.split("_");
     switch (split[0].toLowerCase(Locale.ENGLISH)) {
-      case "cooldown": {
+      case "cooldown" -> {
         if (split.length > 1) {
           // To support player names with underscore
           split = params.split("_", 3);
@@ -78,8 +76,7 @@ public class PlaceholderAPIHook extends PlaceholderExpansion {
 
         return "-1";
       }
-
-      case "current": {
+      case "current" -> {
         split = params.split("_", 2);
 
         if (split.length > 1) {
@@ -93,8 +90,7 @@ public class PlaceholderAPIHook extends PlaceholderExpansion {
         var chat = chatManager.getCurrentChat(player);
         return chat == null ? "no" : chat.getDisplayName();
       }
-
-      case "online": {
+      case "online" -> {
         if (split.length < 2) {
           return "-1";
         }
@@ -111,10 +107,9 @@ public class PlaceholderAPIHook extends PlaceholderExpansion {
 
         return Integer.toString(i);
       }
-
-      default:
+      default -> {
         return null;
+      }
     }
   }
-
 }

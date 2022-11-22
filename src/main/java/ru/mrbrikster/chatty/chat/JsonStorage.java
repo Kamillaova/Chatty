@@ -20,15 +20,15 @@ import java.io.IOException;
 import java.util.Optional;
 
 public class JsonStorage {
-
   private static final Gson GSON = new GsonBuilder().setPrettyPrinting().create();
-  private static final JsonParser JSON_PARSER = new JsonParser();
+  @SuppressWarnings("deprecation")
+  private static final JsonParser JsonParser = new JsonParser();
 
   private final File storageFile;
   private final Configuration configuration;
 
   public JsonStorage(Chatty chatty) {
-    this.configuration = chatty.getExact(Configuration.class);
+    this.configuration = chatty.get(Configuration.class);
     this.storageFile = new File(chatty.getDataFolder(), "storage.json");
 
     if (!storageFile.exists()) {
@@ -42,22 +42,35 @@ public class JsonStorage {
     }
   }
 
+  @SuppressWarnings("deprecation")
   private void setProperty(String player, String property, JsonElement value) {
     JsonElement jsonObject = null;
     try {
-      jsonObject = JSON_PARSER.parse(read());
+      jsonObject = JsonParser.parse(read());
     } catch (IOException e) {
       e.printStackTrace();
     }
 
-    if (jsonObject == null || !jsonObject.isJsonObject()) { jsonObject = new JsonObject(); } else jsonObject = jsonObject.getAsJsonObject();
+    if (jsonObject == null ||
+      !jsonObject.isJsonObject()
+    ) {
+      jsonObject = new JsonObject();
+    } else {
+      jsonObject = jsonObject.getAsJsonObject();
+    }
 
     JsonElement propertyElement;
     if (((JsonObject) jsonObject).has(property)) {
       propertyElement = ((JsonObject) jsonObject).remove(property);
 
-      if (propertyElement.isJsonObject()) { propertyElement = propertyElement.getAsJsonObject(); } else propertyElement = new JsonObject();
-    } else { propertyElement = new JsonObject(); }
+      if (propertyElement.isJsonObject()) {
+        propertyElement = propertyElement.getAsJsonObject();
+      } else {
+        propertyElement = new JsonObject();
+      }
+    } else {
+      propertyElement = new JsonObject();
+    }
 
     if (((JsonObject) propertyElement).has(player)) { ((JsonObject) propertyElement).remove(player); }
 
@@ -80,15 +93,20 @@ public class JsonStorage {
     }
   }
 
+  @SuppressWarnings("deprecation")
   private Optional<JsonElement> getProperty(String player, String property) {
     try {
-      var jsonObject = JSON_PARSER.parse(read());
+      var jsonObject = JsonParser.parse(read());
 
-      if (!jsonObject.isJsonObject()) { return Optional.empty(); }
+      if (!jsonObject.isJsonObject()) {
+        return Optional.empty();
+      }
 
       var propertyElement = ((JsonObject) jsonObject).get(property);
 
-      if (propertyElement == null) { return Optional.empty(); }
+      if (propertyElement == null) {
+        return Optional.empty();
+      }
 
       if (propertyElement.isJsonObject()) {
         var playerPropertyElement = propertyElement.getAsJsonObject().get(player);
@@ -114,8 +132,9 @@ public class JsonStorage {
 
   public boolean isIgnore(CommandSender recipient, CommandSender sender) {
     if (sender != null) {
-      var jsonElement = Chatty.instance().getExact(JsonStorage.class)
-        .getProperty((Player) recipient, "ignore").orElseGet(JsonArray::new);
+      var jsonElement = Chatty.instance().get(JsonStorage.class)
+        .getProperty((Player) recipient, "ignore")
+        .orElseGet(JsonArray::new);
 
       if (jsonElement.isJsonArray()) {
         for (var ignoreJsonElement : jsonElement.getAsJsonArray()) {
@@ -152,5 +171,4 @@ public class JsonStorage {
     writer.flush();
     writer.close();
   }
-
 }

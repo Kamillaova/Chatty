@@ -1,5 +1,6 @@
 package ru.mrbrikster.chatty.commands;
 
+import com.google.common.io.FileWriteMode;
 import com.google.common.io.Files;
 import org.bukkit.command.CommandSender;
 import ru.mrbrikster.baseplugin.commands.BukkitCommand;
@@ -10,7 +11,6 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 
 public class SwearsCommand extends BukkitCommand {
-
   SwearsCommand() {
     super("swears", "swear");
   }
@@ -18,13 +18,18 @@ public class SwearsCommand extends BukkitCommand {
   @Override
   public void handle(CommandSender sender, String label, String[] args) {
     if (sender.hasPermission("chatty.command.swears")) {
-      if (args.length == 2
-        && args[0].equalsIgnoreCase("add")) {
+      if (args.length == 2 &&
+        args[0].equalsIgnoreCase("add")
+      ) {
         var word = args[1];
 
         if (SwearModerationMethod.addWhitelistWord(word)) {
           try {
-            Files.append("\n" + word, SwearModerationMethod.getWhitelistFile(), StandardCharsets.UTF_8);
+            Files.asCharSink(
+              SwearModerationMethod.getWhitelistFile(),
+              StandardCharsets.UTF_8,
+              FileWriteMode.APPEND
+            ).write("\n" + word);
           } catch (IOException e) {
             e.printStackTrace();
           }
@@ -33,9 +38,11 @@ public class SwearsCommand extends BukkitCommand {
         sender.sendMessage(Chatty.instance().messages().get("swears-command.add-word").replace("{word}", word));
       } else {
         sender.sendMessage(Chatty.instance().messages().get("swears-command.usage")
-          .replace("{label}", label));
+          .replace("{label}", label)
+        );
       }
-    } else { sender.sendMessage(Chatty.instance().messages().get("no-permission")); }
+    } else {
+      sender.sendMessage(Chatty.instance().messages().get("no-permission"));
+    }
   }
-
 }

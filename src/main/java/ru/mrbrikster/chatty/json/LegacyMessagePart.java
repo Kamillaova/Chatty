@@ -5,7 +5,6 @@ import ru.mrbrikster.chatty.json.fanciful.FancyMessage;
 import ru.mrbrikster.chatty.util.TextUtil;
 
 public class LegacyMessagePart implements MessagePart {
-
   @Getter
   private final String text;
   private final boolean colorize;
@@ -27,5 +26,4 @@ public class LegacyMessagePart implements MessagePart {
 
     return fancyMessage;
   }
-
 }

@@ -1,7 +1,5 @@
 package ru.mrbrikster.chatty.util;
 
-import com.google.common.base.Preconditions;
-import lombok.experimental.UtilityClass;
 import net.md_5.bungee.api.ChatColor;
 import ru.mrbrikster.chatty.json.LegacyConverter;
 
@@ -9,28 +7,32 @@ import java.awt.Color;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-@UtilityClass
-public class TextUtil {
+import static com.google.common.base.Preconditions.checkArgument;
 
-  private final Pattern HEX_COLORS_PATTERN = Pattern.compile("\\{#([a-fA-F0-9]{6})}");
-  private final Pattern HEX_GRADIENT_PATTERN = Pattern.compile("\\{#([a-fA-F0-9]{6})(:#([a-fA-F0-9]{6}))+( )([^{}])*(})");
-  private final Pattern HEX_SPIGOT_PATTERN = Pattern.compile("§[xX](§[a-fA-F0-9]){6}");
+public final class TextUtil {
+  private static final Pattern HEX_COLORS_PATTERN = Pattern.compile("\\{#([a-fA-F0-9]{6})}");
+  private static final Pattern HEX_GRADIENT_PATTERN = Pattern.compile("\\{#([a-fA-F0-9]{6})(:#([a-fA-F0-9]{6}))+( )([^{}])*(})");
+  private static final Pattern HEX_SPIGOT_PATTERN = Pattern.compile("§[xX](§[a-fA-F0-9]){6}");
 
-  private final List<ChatColor> FORMAT_COLORS = Arrays.asList(ChatColor.BOLD, ChatColor.ITALIC, ChatColor.UNDERLINE, ChatColor.MAGIC, ChatColor.STRIKETHROUGH, ChatColor.RESET);
+  private static final List<ChatColor> FORMAT_COLORS = List.of(
+    ChatColor.BOLD,
+    ChatColor.ITALIC,
+    ChatColor.UNDERLINE,
+    ChatColor.MAGIC,
+    ChatColor.STRIKETHROUGH,
+    ChatColor.RESET
+  );
 
-  public ChatColor parseChatColor(String string) {
-    Preconditions.checkArgument(string != null, "string cannot be null");
-    if (string.startsWith("#") && string.length() == 7) {
-      return ChatColor.of(string);
-    }
+  private TextUtil() { }
 
-    return ChatColor.valueOf(string);
+  public static ChatColor parseChatColor(String string) {
+    checkArgument(string != null, "string cannot be null");
+    return ChatColor.of(string);
   }
 
-  public boolean isColor(ChatColor color) {
+  public static boolean isColor(ChatColor color) {
     for (var formatColor : FORMAT_COLORS) {
       if (formatColor == color) {
         return false;
@@ -40,7 +42,7 @@ public class TextUtil {
     return true;
   }
 
-  public boolean isFormat(ChatColor color) {
+  public static boolean isFormat(ChatColor color) {
     return !isColor(color);
   }
 
@@ -50,7 +52,7 @@ public class TextUtil {
    * @param str string to strip hex
    * @return stripped string
    */
-  public String stripHex(String str) {
+  public static String stripHex(String str) {
     if (str == null) {
       return null;
     }
@@ -65,14 +67,14 @@ public class TextUtil {
    * @param text string to stylish
    * @return stylished string
    */
-  public String stylish(String text) {
+  public static String stylish(String text) {
     if (text == null) {
       return null;
     }
 
     var matcher = HEX_GRADIENT_PATTERN.matcher(text);
 
-    var stringBuffer = new StringBuffer();
+    var stringBuffer = new StringBuilder();
 
     while (matcher.find()) {
       var gradient = matcher.group();
@@ -145,7 +147,7 @@ public class TextUtil {
     text = stringBuffer.toString();
 
     matcher = HEX_COLORS_PATTERN.matcher(text);
-    stringBuffer = new StringBuffer();
+    stringBuffer = new StringBuilder();
 
     while (matcher.find()) {
       var hexColorString = matcher.group();
@@ -157,15 +159,15 @@ public class TextUtil {
     return ChatColor.translateAlternateColorCodes('&', stringBuffer.toString());
   }
 
-  public String fixMultilineFormatting(String text) {
+  public static String fixMultilineFormatting(String text) {
     return text.replaceAll("\n$", "").replaceAll("\n", "\n&r");
   }
 
-  public String getLastColors(String text) {
+  public static String getLastColors(String text) {
     return new LegacyConverter(text).toFancyMessage().getLastColors();
   }
 
-  private Color calculateGradientColor(int x, int parts, Color from, Color to) {
+  private static Color calculateGradientColor(int x, int parts, Color from, Color to) {
     var p = (double) (parts - x + 1) / (double) parts;
 
     return new Color(
@@ -174,5 +176,4 @@ public class TextUtil {
       (int) (from.getBlue() * p + to.getBlue() * (1 - p))
     );
   }
-
 }

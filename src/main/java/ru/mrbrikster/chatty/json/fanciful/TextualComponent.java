@@ -293,7 +293,5 @@ public abstract class TextualComponent implements Cloneable {
         }
       }};
     }
-
   }
-
 }

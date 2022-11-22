@@ -9,7 +9,6 @@ import java.net.URL;
 import java.util.List;
 
 public class LegacyConverter {
-
   private final FancyMessage fancyMessage = new FancyMessage();
 
   private final String strippedString;
@@ -97,20 +96,26 @@ public class LegacyConverter {
 
   private boolean processFormatCodeContains(char c) {
     switch (c) {
-      case 'k':
+      case 'k' -> {
         return (magic = true);
-      case 'l':
+      }
+      case 'l' -> {
         return (bold = true);
-      case 'm':
+      }
+      case 'm' -> {
         return (strike = true);
-      case 'n':
+      }
+      case 'n' -> {
         return (underline = true);
-      case 'o':
+      }
+      case 'o' -> {
         return (italic = true);
-      case 'r':
+      }
+      case 'r' -> {
         finalizeSection();
         color = null;
         return true;
+      }
     }
 
     return false;
@@ -148,5 +153,4 @@ public class LegacyConverter {
   public List<MessagePart> toMessageParts() {
     return fancyMessage.getMessageParts();
   }
-
 }

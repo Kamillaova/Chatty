@@ -4,7 +4,6 @@ import org.bukkit.Bukkit;
 import org.bukkit.scheduler.BukkitTask;
 import ru.mrbrikster.chatty.Chatty;
 import ru.mrbrikster.chatty.dependencies.DependencyManager;
-import ru.mrbrikster.chatty.util.Debugger;
 import ru.mrbrikster.chatty.util.TextUtil;
 import ru.mrbrikster.chatty.util.textapi.ActionBar;
 
@@ -31,12 +30,7 @@ public class ActionBarNotification extends Notification {
   }
 
   private void update() {
-    if (messages.isEmpty()) {
-      return;
-    }
-
-    Chatty.instance().getExact(Debugger.class).debug("Update ActionBarNotification message.");
-
+    if (messages.isEmpty()) return;
     currentMessage = nextMessage();
   }
 
@@ -49,19 +43,18 @@ public class ActionBarNotification extends Notification {
 
   @Override
   public void run() {
-    if (messages.isEmpty()) {
-      return;
-    }
-
-    Chatty.instance().getExact(Debugger.class).debug("Run ActionBarNotification.");
+    if (messages.isEmpty()) return;
 
     var message = TextUtil.stylish(prefix + messages.get(currentMessage));
 
-    var dependencyManager = Chatty.instance().getExact(DependencyManager.class);
+    var dependencyManager = Chatty.instance().get(DependencyManager.class);
     Bukkit.getOnlinePlayers().stream().filter(player -> !isPermission() || player.hasPermission(PERMISSION_NODE))
-      .forEach(player -> new ActionBar(dependencyManager.getPlaceholderApi() != null
-                                       ? dependencyManager.getPlaceholderApi().setPlaceholders(player, message)
-                                       : message).send(player));
+      .forEach(player -> new ActionBar(
+        dependencyManager.getPlaceholderApi() != null
+          ? dependencyManager.getPlaceholderApi().setPlaceholders(player, message)
+          : message
+        ).send(player)
+      );
   }
 
 }

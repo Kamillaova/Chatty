@@ -22,13 +22,14 @@ import com.google.gson.JsonObject;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
+import static com.google.common.base.Preconditions.checkNotNull;
+
 /**
  * Represents a message displayed above the hotbar.
  *
  * @author Luca
  */
 public class ActionBar {
-
   private JsonObject json;
 
   /**
@@ -37,7 +38,7 @@ public class ActionBar {
    * @param text Text to display.
    */
   public ActionBar(String text) {
-    Preconditions.checkNotNull(text);
+    checkNotNull(text);
     this.json = Title.convert(text);
   }
 
@@ -47,7 +48,7 @@ public class ActionBar {
    * @param json Text to display Must be in /tellraw JSON format.
    */
   public ActionBar(JsonObject json) {
-    Preconditions.checkNotNull(json);
+    checkNotNull(json);
     this.json = json;
   }
 
@@ -100,7 +101,7 @@ public class ActionBar {
    * @param text Text to display.
    */
   public void setText(String text) {
-    Preconditions.checkNotNull(text);
+    checkNotNull(text);
     this.json = Title.convert(text);
   }
 
@@ -110,8 +111,7 @@ public class ActionBar {
    * @param json Text to display. Must be in /tellraw JSON format.
    */
   public void setJsonText(JsonObject json) {
-    Preconditions.checkNotNull(json);
+    checkNotNull(json);
     this.json = json;
   }
-
 }

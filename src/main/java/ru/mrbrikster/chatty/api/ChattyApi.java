@@ -1,17 +1,13 @@
 package ru.mrbrikster.chatty.api;
 
-import lombok.Getter;
-import lombok.Setter;
-import org.jetbrains.annotations.NotNull;
 import ru.mrbrikster.chatty.api.chats.Chat;
 
 import java.util.Collection;
 import java.util.Optional;
 
 public interface ChattyApi {
-
   static ChattyApi get() {
-    return ChattyApiHolder.getApi();
+    return ChattyApiHolder.api();
   }
 
   /**
@@ -19,8 +15,7 @@ public interface ChattyApi {
    *
    * @return collection of enabled chats
    */
-  @NotNull
-  Collection<Chat> getChats();
+  Collection<Chat> chats();
 
   /**
    * Returns chat with given name, if exists
@@ -28,14 +23,16 @@ public interface ChattyApi {
    * @param name chat name
    * @return optional chat with given name
    */
-  @NotNull
   Optional<Chat> getChat(String name);
 
   class ChattyApiHolder {
+    private static ChattyApi api;
 
-    private static @Getter
-    @Setter ChattyApi api;
-
+    public static ChattyApi api() {
+      return api;
+    }
+    public static void api(ChattyApi api) {
+      ChattyApiHolder.api = api;
+    }
   }
-
 }

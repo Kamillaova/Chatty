@@ -1,38 +1,42 @@
 package ru.mrbrikster.chatty.commands.pm;
 
 import com.google.gson.JsonElement;
-import net.amoebaman.util.ArrayWrapper;
+import ru.mrbrikster.chatty.util.ArrayWrapper;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import ru.mrbrikster.baseplugin.config.Configuration;
 import ru.mrbrikster.chatty.Chatty;
 
-import java.util.Optional;
 import java.util.logging.Level;
-import java.util.stream.Collectors;
 
 public class ReplyCommand extends PrivateMessageCommand {
-
   public ReplyCommand(Chatty chatty) {
-    super(chatty, "r",
-      ArrayWrapper.toArray(chatty.getExact(Configuration.class).getNode("pm.commands.reply.aliases").getAsStringList()
-        .stream().map(alias -> {
-          if (alias.equalsIgnoreCase("r")) {
-            chatty.getLogger().log(Level.WARNING, "Please, rename \"r\" alias to \"reply\" in reply command configuration. " +
-              "This change was made due to EssentialsX with default command name \"r\" instead of \"reply\"");
+    super(
+      chatty,
+      "r",
+      ArrayWrapper.toArray(
+        chatty.get(Configuration.class)
+          .getNode("pm.commands.reply.aliases").
+          getAsStringList()
+          .stream().map(alias -> {
+            if (alias.equalsIgnoreCase("r")) {
+              chatty.getLogger().log(Level.WARNING, "Please, rename \"r\" alias to \"reply\" in reply command configuration. " +
+                "This change was made due to EssentialsX with default command name \"r\" instead of \"reply\"");
 
-            return "reply";
-          }
+              return "reply";
+            }
 
-          return alias;
-        }).collect(Collectors.toList()), String.class)
+            return alias;
+          }).toList(),
+        String.class
+      )
     );
   }
 
   @Override
   public void handle(CommandSender sender, String label, String[] args) {
-    if (!(sender instanceof Player)) {
+    if (!(sender instanceof Player player)) {
       sender.sendMessage(Chatty.instance().messages().get("only-for-players"));
       return;
     }
@@ -44,35 +48,37 @@ public class ReplyCommand extends PrivateMessageCommand {
 
     if (args.length < 1) {
       sender.sendMessage(Chatty.instance().messages().get("reply-command.usage")
-        .replace("{label}", label));
+        .replace("{label}", label)
+      );
       return;
     }
 
     var message = String.join(" ", args);
 
-    var optionalRecipient = jsonStorage.getProperty((Player) sender, "last-pm-interlocutor").map(JsonElement::getAsString);
-    if (!optionalRecipient.isPresent()) {
+    var optionalRecipient = jsonStorage.getProperty(player, "last-pm-interlocutor").map(JsonElement::getAsString);
+    if (optionalRecipient.isEmpty()) {
       sender.sendMessage(Chatty.instance().messages().get("reply-command.target-not-found"));
       return;
     }
 
-    CommandSender recipient = optionalRecipient.get().equalsIgnoreCase("CONSOLE")
-                                && configuration.getNode("pm.allow-console").getAsBoolean(false)
-                              ? Bukkit.getConsoleSender() : Bukkit.getPlayer(optionalRecipient.get());
+    CommandSender recipient = optionalRecipient.get().equalsIgnoreCase("CONSOLE") &&
+                                configuration.getNode("pm.allow-console").getAsBoolean(false)
+                                  ? Bukkit.getConsoleSender()
+                                  : Bukkit.getPlayer(optionalRecipient.get());
 
     if (recipient == null) {
       sender.sendMessage(Chatty.instance().messages().get("reply-command.target-not-found"));
       return;
     }
 
-    if (recipient instanceof Player
+    if (recipient instanceof Player recipientPlayer
       && !configuration.getNode("pm.allow-pm-vanished").getAsBoolean(true)
-      && !((Player) sender).canSee((Player) recipient)) {
+      && !player.canSee(recipientPlayer)
+    ) {
       sender.sendMessage(Chatty.instance().messages().get("reply-command.target-not-found"));
       return;
     }
 
     handlePrivateMessage(sender, recipient, message);
   }
-
 }

@@ -1,4 +1,4 @@
-package net.amoebaman.util;
+package ru.mrbrikster.chatty.util;
 
 import java.lang.reflect.Array;
 import java.util.Arrays;
@@ -17,12 +17,12 @@ import java.util.Objects;
  * @see Arrays
  */
 public final class ArrayWrapper<E> {
-
   /**
    * Creates an array wrapper with some elements.
    *
    * @param elements The elements of the array.
    */
+  @SafeVarargs
   public ArrayWrapper(E... elements) {
     setArray(elements);
   }

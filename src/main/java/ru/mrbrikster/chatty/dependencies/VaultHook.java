@@ -7,7 +7,6 @@ import org.bukkit.entity.Player;
 import org.bukkit.plugin.RegisteredServiceProvider;
 
 public class VaultHook {
-
   private final Chat chat;
   private final Economy economy;
 
@@ -15,9 +14,17 @@ public class VaultHook {
     var chatRegisteredServiceProvider = Bukkit.getServicesManager().getRegistration(Chat.class);
     var economyRegisteredServiceProvider = Bukkit.getServicesManager().getRegistration(Economy.class);
 
-    if (chatRegisteredServiceProvider != null) { this.chat = chatRegisteredServiceProvider.getProvider(); } else this.chat = null;
+    if (chatRegisteredServiceProvider != null) {
+      this.chat = chatRegisteredServiceProvider.getProvider();
+    } else {
+      this.chat = null;
+    }
 
-    if (economyRegisteredServiceProvider != null) { this.economy = economyRegisteredServiceProvider.getProvider(); } else this.economy = null;
+    if (economyRegisteredServiceProvider != null) {
+      this.economy = economyRegisteredServiceProvider.getProvider();
+    } else {
+      this.economy = null;
+    }
   }
 
   public boolean withdrawMoney(Player player, int amount) {
@@ -39,5 +46,4 @@ public class VaultHook {
 
     return null;
   }
-
 }

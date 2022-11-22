@@ -1,6 +1,6 @@
 package ru.mrbrikster.chatty.commands;
 
-import net.amoebaman.util.ArrayWrapper;
+import ru.mrbrikster.chatty.util.ArrayWrapper;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -9,7 +9,6 @@ import ru.mrbrikster.baseplugin.config.Configuration;
 import ru.mrbrikster.chatty.Chatty;
 
 public class ClearChatCommand extends BukkitCommand {
-
   ClearChatCommand(Configuration configuration) {
     super("clearchat", ArrayWrapper.toArray(configuration.getNode("miscellaneous.commands.clearchat.aliases").getAsStringList(), String.class));
   }
@@ -30,7 +29,8 @@ public class ClearChatCommand extends BukkitCommand {
       } else {
         if (args.length == 1 && args[0].equalsIgnoreCase("all")) {
           if (sender.hasPermission("chatty.command.clearchat.all")) {
-            var chatClearedMessage = Chatty.instance().messages().get("clearchat-command.clear-chat-for-all").replace("{player}", sender.getName());
+            var chatClearedMessage = Chatty.instance().messages().get("clearchat-command.clear-chat-for-all")
+              .replace("{player}", sender.getName());
 
             Bukkit.getOnlinePlayers().forEach(player -> {
               for (var i = 0; i < 100; i++) {
@@ -50,5 +50,4 @@ public class ClearChatCommand extends BukkitCommand {
       sender.sendMessage(Chatty.instance().messages().get("no-permission"));
     }
   }
-
 }

@@ -9,7 +9,6 @@ import ru.mrbrikster.chatty.Chatty;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.net.URL;
 import java.util.function.Function;
 
 public class Messages {
@@ -24,7 +23,7 @@ public class Messages {
   public Messages(Chatty chatty) {
     var localeDir = new File(chatty.getDataFolder(), "locale");
 
-    var localeName = chatty.getExact(Configuration.class).getNode("general.locale")
+    var localeName = chatty.get(Configuration.class).getNode("general.locale")
       .getAsString("en");
 
     if (!localeDir.exists()) {

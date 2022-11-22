@@ -17,7 +17,6 @@ import static ru.mrbrikster.chatty.util.textapi.NMSUtil.ServerPackage.getServerV
 
 @UtilityClass
 public class NMSUtil {
-
   private static final HashMap<String, Class<?>> NMS_CLASSES = new HashMap<>();
 
   static {
@@ -74,7 +73,7 @@ public class NMSUtil {
     return null;
   }
 
-  @NotNull
+  
   public Field resolveField(Class<?> clazz, String... names) {
     for (var name : names) {
       try {

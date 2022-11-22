@@ -1,23 +1,29 @@
 package ru.mrbrikster.chatty.commands;
 
 import com.google.gson.JsonPrimitive;
-import net.amoebaman.util.ArrayWrapper;
+import ru.mrbrikster.chatty.util.ArrayWrapper;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import ru.mrbrikster.baseplugin.commands.BukkitCommand;
 import ru.mrbrikster.baseplugin.config.Configuration;
 import ru.mrbrikster.chatty.Chatty;
-import ru.mrbrikster.chatty.chat.Chat;
 import ru.mrbrikster.chatty.chat.ChatManager;
 import ru.mrbrikster.chatty.chat.JsonStorage;
 
-public class ChatCommand extends BukkitCommand {
+import static java.lang.String.format;
 
+public class ChatCommand extends BukkitCommand {
   private final ChatManager chatManager;
   private final JsonStorage jsonStorage;
 
   public ChatCommand(Configuration configuration, ChatManager chatManager, JsonStorage jsonStorage) {
-    super("chat", ArrayWrapper.toArray(configuration.getNode("miscellaneous.commands.chat.aliases").getAsStringList(), String.class));
+    super(
+      "chat",
+      ArrayWrapper.toArray(
+        configuration.getNode("miscellaneous.commands.chat.aliases").getAsStringList(),
+        String.class
+      )
+    );
 
     this.chatManager = chatManager;
     this.jsonStorage = jsonStorage;
@@ -36,9 +42,10 @@ public class ChatCommand extends BukkitCommand {
         var chat = chatManager.getChat(chatName);
 
         if (chat != null) {
-          if (!chat.isPermissionRequired()
-            || sender.hasPermission(String.format("chatty.chat.%s", chat.getName()))
-            || sender.hasPermission(String.format("chatty.chat.%s.write", chat.getName()))) {
+          if (!chat.isPermissionRequired() ||
+            sender.hasPermission(format("chatty.chat.%s", chat.getName())) ||
+            sender.hasPermission(format("chatty.chat.%s.write", chat.getName()))
+          ) {
             jsonStorage.setProperty((Player) sender, "chat", new JsonPrimitive(chat.getName()));
             sender.sendMessage(Chatty.instance().messages().get("chat-command.chat-switched").replace("{chat}", chat.getDisplayName()));
           } else {
@@ -54,5 +61,4 @@ public class ChatCommand extends BukkitCommand {
       sender.sendMessage(Chatty.instance().messages().get("only-for-players"));
     }
   }
-
 }

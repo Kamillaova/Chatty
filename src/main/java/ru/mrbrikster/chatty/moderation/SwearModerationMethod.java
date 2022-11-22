@@ -16,10 +16,9 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class SwearModerationMethod extends ModifyingSubstringsModerationMethod {
-
   private static final int PATTERN_FLAGS = Pattern.CASE_INSENSITIVE | Pattern.UNICODE_CASE;
   private static Pattern swearsPattern;
-  private static List<Pattern> swearsWhitelist = new ArrayList<>();
+  private static final List<Pattern> swearsWhitelist = new ArrayList<>();
   private static File swearsDirectory;
   private static File swearsFile;
   @Getter
@@ -67,14 +66,16 @@ public class SwearModerationMethod extends ModifyingSubstringsModerationMethod {
     try {
       var pattern = new StringBuilder();
       for (var swear : Files.readLines(swearsFile, StandardCharsets.UTF_8)) {
-        if (swear.isEmpty()) { continue; }
+        if (swear.isEmpty()) {
+          continue;
+        }
 
         pattern.append("|").append(swear);
       }
 
       SwearModerationMethod.swearsPattern = Pattern.compile(pattern.length() > 1
                                                             ? pattern.substring(1)
-                                                            : "a^", PATTERN_FLAGS);
+                                                            : "^a", PATTERN_FLAGS);
       Files.readLines(whitelistFile, StandardCharsets.UTF_8).forEach(SwearModerationMethod::addWhitelistWord);
     } catch (IOException e) {
       e.printStackTrace();
@@ -164,5 +165,4 @@ public class SwearModerationMethod extends ModifyingSubstringsModerationMethod {
 
     return new int[]{wordStart, wordEnd};
   }
-
 }

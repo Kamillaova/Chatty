@@ -15,6 +15,8 @@ import ru.mrbrikster.chatty.dependencies.PlayerTagManager;
 import ru.mrbrikster.chatty.util.Sound;
 import ru.mrbrikster.chatty.util.TextUtil;
 
+import static ru.mrbrikster.chatty.util.TextUtil.stylish;
+
 public class MiscellaneousListener implements Listener {
 
   private final Configuration configuration;
@@ -22,9 +24,9 @@ public class MiscellaneousListener implements Listener {
   private final DependencyManager dependencyManager;
 
   public MiscellaneousListener(Chatty chatty) {
-    this.configuration = chatty.getExact(Configuration.class);
-    this.playerTagManager = chatty.getExact(PlayerTagManager.class);
-    this.dependencyManager = chatty.getExact(DependencyManager.class);
+    this.configuration = chatty.get(Configuration.class);
+    this.playerTagManager = chatty.get(PlayerTagManager.class);
+    this.dependencyManager = chatty.get(DependencyManager.class);
   }
 
   @EventHandler(priority = EventPriority.HIGHEST)
@@ -65,20 +67,26 @@ public class MiscellaneousListener implements Listener {
       if (joinMessage.isEmpty() || !hasPermission) {
         event.setJoinMessage(null);
       } else {
-        event.setJoinMessage(TextUtil.stylish(
+        event.setJoinMessage(stylish(
           applyPlaceholders(
             event.getPlayer(),
             joinMessage.replace("{prefix}", playerTagManager.getPrefix(event.getPlayer()))
               .replace("{suffix}", playerTagManager.getSuffix(event.getPlayer()))
               .replace("{player}", event.getPlayer().getDisplayName())
-          )));
+          ))
+        );
       }
     }
 
     if (hasPermission) {
       if (soundName != null) {
         var sound = Sound.byName(soundName);
-        Bukkit.getOnlinePlayers().forEach(player -> player.playSound(player.getLocation(), sound, (float) soundVolume, (float) soundPitch));
+        Bukkit.getOnlinePlayers().forEach(player -> player.playSound(
+          player.getLocation(),
+          sound,
+          (float) soundVolume,
+          (float) soundPitch
+        ));
       }
     }
   }
@@ -100,7 +108,7 @@ public class MiscellaneousListener implements Listener {
       if (quitMessage.isEmpty() || !hasPermission) {
         event.setQuitMessage(null);
       } else {
-        event.setQuitMessage(TextUtil.stylish(
+        event.setQuitMessage(stylish(
           applyPlaceholders(
             event.getPlayer(),
             quitMessage.replace("{prefix}", playerTagManager.getPrefix(event.getPlayer()))
@@ -116,7 +124,12 @@ public class MiscellaneousListener implements Listener {
         var sound = Sound.byName(soundName);
         var soundVolume = (double) configuration.getNode("miscellaneous.vanilla.quit.sound-volume").get(1d);
         var soundPitch = (double) configuration.getNode("miscellaneous.vanilla.quit.sound-pitch").get(1d);
-        Bukkit.getOnlinePlayers().forEach(player -> player.playSound(player.getLocation(), sound, (float) soundVolume, (float) soundPitch));
+        Bukkit.getOnlinePlayers().forEach(player -> player.playSound(
+          player.getLocation(),
+          sound,
+          (float) soundVolume,
+          (float) soundPitch
+        ));
       }
     }
   }
@@ -138,13 +151,14 @@ public class MiscellaneousListener implements Listener {
       if (deathMessage.isEmpty() || !hasPermission) {
         event.setDeathMessage(null);
       } else {
-        event.setDeathMessage(TextUtil.stylish(
+        event.setDeathMessage(stylish(
           applyPlaceholders(
             event.getEntity(),
             deathMessage.replace("{prefix}", playerTagManager.getPrefix(event.getEntity()))
               .replace("{suffix}", playerTagManager.getSuffix(event.getEntity()))
               .replace("{player}", event.getEntity().getDisplayName())
-          )));
+          ))
+        );
       }
     }
 
@@ -166,5 +180,4 @@ public class MiscellaneousListener implements Listener {
 
     return string;
   }
-
 }

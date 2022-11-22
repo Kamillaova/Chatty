@@ -11,7 +11,6 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class AdvertisementModerationMethod extends ModifyingSubstringsModerationMethod {
-
   private static final String IP =
     "\\b((\\d{1,2}|2(5[0-5]|[0-4]\\d))[._,)(-]+){3}(\\d{1,2}|2(5[0-5]|[0-4]\\d))(:\\d{2,7})?";
   private static final String WEB =
@@ -109,5 +108,4 @@ public class AdvertisementModerationMethod extends ModifyingSubstringsModeration
     this.editedMessage = builder.toString();
     return containsAds;
   }
-
 }

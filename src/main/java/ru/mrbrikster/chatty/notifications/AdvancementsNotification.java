@@ -5,19 +5,18 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
 import org.bukkit.Bukkit;
 import org.bukkit.NamespacedKey;
-import org.bukkit.advancement.Advancement;
-import org.bukkit.advancement.AdvancementProgress;
 import org.bukkit.configuration.serialization.ConfigurationSerializable;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.NotNull;
 import ru.mrbrikster.chatty.Chatty;
-import ru.mrbrikster.chatty.util.Debugger;
 import ru.mrbrikster.chatty.util.TextUtil;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import static java.util.Objects.requireNonNull;
 
 public class AdvancementsNotification extends Notification {
 
@@ -38,8 +37,6 @@ public class AdvancementsNotification extends Notification {
     if (messages.isEmpty()) {
       return;
     }
-
-    Chatty.instance().getExact(Debugger.class).debug("Run \"%s\" AdvancementsNotification.", name);
 
     var advancementMessage = new AdvancementMessage((Map<String, String>) messages.get(nextMessage()));
     Bukkit.getOnlinePlayers().stream().filter(player -> !isPermission() || player.hasPermission(String.format(PERMISSION_NODE, name)))
@@ -98,7 +95,7 @@ public class AdvancementsNotification extends Notification {
 
     private void grant(Player player) {
       var advancement = Bukkit.getAdvancement(id);
-      var progress = player.getAdvancementProgress(advancement);
+      var progress = player.getAdvancementProgress(requireNonNull(advancement));
       if (!progress.isDone()) {
         progress.getRemainingCriteria().forEach(progress::awardCriteria);
       }
@@ -106,7 +103,7 @@ public class AdvancementsNotification extends Notification {
 
     private void revoke(Player player) {
       var advancement = Bukkit.getAdvancement(id);
-      var progress = player.getAdvancementProgress(advancement);
+      var progress = player.getAdvancementProgress(requireNonNull(advancement));
       if (progress.isDone()) {
         progress.getAwardedCriteria().forEach(progress::revokeCriteria);
       }
@@ -142,7 +139,7 @@ public class AdvancementsNotification extends Notification {
     }
 
     @Override
-    public @NotNull Map<String, Object> serialize() {
+    public  Map<String, Object> serialize() {
       Map<String, Object> map = new HashMap<>();
 
       map.put("icon", icon);

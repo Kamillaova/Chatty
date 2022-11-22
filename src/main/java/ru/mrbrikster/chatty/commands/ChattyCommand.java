@@ -6,7 +6,6 @@ import ru.mrbrikster.baseplugin.config.Configuration;
 import ru.mrbrikster.chatty.Chatty;
 
 public class ChattyCommand extends BukkitCommand {
-
   private final Configuration configuration;
 
   ChattyCommand(Configuration configuration) {
@@ -20,7 +19,8 @@ public class ChattyCommand extends BukkitCommand {
     if (sender.hasPermission("chatty.command.reload")) {
       configuration.reload();
       sender.sendMessage(Chatty.instance().messages().get("reload"));
-    } else { sender.sendMessage(Chatty.instance().messages().get("no-permission")); }
+    } else {
+      sender.sendMessage(Chatty.instance().messages().get("no-permission"));
+    }
   }
-
 }

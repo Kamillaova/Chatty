@@ -1,18 +1,15 @@
 package ru.mrbrikster.chatty.chat;
 
-import com.google.gson.JsonElement;
 import com.google.gson.JsonPrimitive;
 import lombok.Getter;
-import net.amoebaman.util.ArrayWrapper;
+import ru.mrbrikster.chatty.util.ArrayWrapper;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
 import ru.mrbrikster.baseplugin.commands.BukkitCommand;
 import ru.mrbrikster.baseplugin.config.Configuration;
-import ru.mrbrikster.baseplugin.config.ConfigurationNode;
 import ru.mrbrikster.chatty.Chatty;
-import ru.mrbrikster.chatty.chat.Chat.ChatBuilder;
 import ru.mrbrikster.chatty.chat.event.ChattyAsyncPlayerChatEvent;
 import ru.mrbrikster.chatty.util.Sound;
 
@@ -25,11 +22,9 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
-import java.util.Optional;
 import java.util.regex.Pattern;
 
 public class ChatManager {
-
   private static final Pattern CHAT_NAME_PATTERN = Pattern.compile("^[a-z0-9]{1,32}$");
   @Getter
   private final List<Chat> chats = new ArrayList<>();
@@ -39,8 +34,8 @@ public class ChatManager {
   private final JsonStorage jsonStorage;
 
   public ChatManager(Chatty chatty) {
-    this.configuration = chatty.getExact(Configuration.class);
-    this.jsonStorage = chatty.getExact(JsonStorage.class);
+    this.configuration = chatty.get(Configuration.class);
+    this.jsonStorage = chatty.get(JsonStorage.class);
     this.logger = new Logger();
 
     init();
@@ -115,7 +110,6 @@ public class ChatManager {
     for (var chat : this.chats) {
       if (chat.getCommand() != null) {
         chat.setBukkitCommand(new BukkitCommand(chat.getCommand(), ArrayWrapper.toArray(chat.getAliases(), String.class)) {
-
           @Override
           public void handle(CommandSender sender, String label, String[] args) {
             if (sender instanceof Player) {
@@ -127,7 +121,9 @@ public class ChatManager {
               if (chat.isWriteAllowed((Player) sender)) {
                 if (args.length == 0) {
                   jsonStorage.setProperty((Player) sender, "chat", new JsonPrimitive(chat.getName()));
-                  sender.sendMessage(Chatty.instance().messages().get("chat-command.chat-switched").replace("{chat}", chat.getDisplayName()));
+                  sender.sendMessage(Chatty.instance().messages().get("chat-command.chat-switched")
+                    .replace("{chat}", chat.getDisplayName())
+                  );
                 } else {
                   Bukkit.getScheduler().runTaskAsynchronously(Chatty.instance(), () -> {
                     AsyncPlayerChatEvent event = new ChattyAsyncPlayerChatEvent(
@@ -156,7 +152,6 @@ public class ChatManager {
               sender.sendMessage(Chatty.instance().messages().get("only-for-players"));
             }
           }
-
         });
 
         chat.getBukkitCommand().register(Chatty.instance());
@@ -192,7 +187,7 @@ public class ChatManager {
       dateFormat = new SimpleDateFormat("[HH:mm:ss] ");
       var prefix = dateFormat.format(calendar.getTime());
       var line = String.format("%1$s%2$s%3$s (%4$s): %5$s",
-        prefix, additionalPrefix, player.getName(), player.getUniqueId().toString(), message
+        prefix, additionalPrefix, player.getName(), player.getUniqueId(), message
       );
 
       try {
@@ -210,7 +205,5 @@ public class ChatManager {
         } catch (Exception ignored) { }
       }
     }
-
   }
-
 }

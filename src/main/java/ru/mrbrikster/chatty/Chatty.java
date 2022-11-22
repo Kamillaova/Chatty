@@ -2,7 +2,6 @@ package ru.mrbrikster.chatty;
 
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
-import org.jetbrains.annotations.NotNull;
 import ru.mrbrikster.baseplugin.config.Configuration;
 import ru.mrbrikster.baseplugin.plugin.BukkitBasePlugin;
 import ru.mrbrikster.chatty.api.ChattyApi;
@@ -19,17 +18,14 @@ import ru.mrbrikster.chatty.dependencies.PlayerTagManager;
 import ru.mrbrikster.chatty.miscellaneous.MiscellaneousListener;
 import ru.mrbrikster.chatty.moderation.ModerationManager;
 import ru.mrbrikster.chatty.notifications.NotificationManager;
-import ru.mrbrikster.chatty.util.Debugger;
 import ru.mrbrikster.chatty.util.Messages;
 
 import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 public final class Chatty extends BukkitBasePlugin {
-
   private static Chatty instance;
   private static ChattyApi api;
   private final Map<Class<?>, Object> dependenciesMap = new HashMap<>();
@@ -48,15 +44,11 @@ public final class Chatty extends BukkitBasePlugin {
   }
 
   public Messages messages() {
-    return getExact(Messages.class);
+    return get(Messages.class);
   }
 
-  @NotNull
-  public <T> Optional<T> get(Class<T> clazz) {
-    return (Optional<T>) Optional.ofNullable(dependenciesMap.get(clazz));
-  }
-
-  public <T> T getExact(Class<T> clazz) {
+  @SuppressWarnings("unchecked")
+  public <T> T get(Class<T> clazz) {
     return (T) dependenciesMap.get(clazz);
   }
 
@@ -99,7 +91,6 @@ public final class Chatty extends BukkitBasePlugin {
     register(ChatManager.class, new ChatManager(this));
 
     register(Messages.class, new Messages(this));
-    register(Debugger.class, new Debugger(this));
 
     configuration.onReload(config -> {
       unregister(Messages.class);
@@ -130,18 +121,18 @@ public final class Chatty extends BukkitBasePlugin {
 
     if (configuration.getNode("general.bungeecord").getAsBoolean(false)) {
       this.getServer().getMessenger().registerOutgoingPluginChannel(this, "BungeeCord");
-      this.getServer().getMessenger().registerIncomingPluginChannel(this, "BungeeCord", new BungeeCordListener(getExact(ChatManager.class)));
+      this.getServer().getMessenger().registerIncomingPluginChannel(this, "BungeeCord", new BungeeCordListener(get(ChatManager.class)));
     }
 
-    Chatty.api = new ChattyApiImplementation(getExact(ChatManager.class).getChats().stream().filter(Chat::isEnable).collect(Collectors.toSet()));
-    ChattyApiHolder.setApi(api);
+    Chatty.api = new ChattyApiImplementation(get(ChatManager.class).getChats().stream().filter(Chat::isEnable).collect(Collectors.toSet()));
+    ChattyApiHolder.api(api);
   }
 
   @Override
   public void onDisable() {
     this.getServer().getScheduler().cancelTasks(this);
-    this.getExact(CommandManager.class).unregisterAll();
-    this.getExact(ChatManager.class).getChats().forEach(chat -> {
+    this.get(CommandManager.class).unregisterAll();
+    this.get(ChatManager.class).getChats().forEach(chat -> {
       if (chat.getBukkitCommand() != null) {
         chat.getBukkitCommand().unregister(Chatty.instance());
       }
