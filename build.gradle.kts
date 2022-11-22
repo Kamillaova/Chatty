@@ -17,9 +17,8 @@ dependencies {
   compileOnly("org.jetbrains:annotations:23.0.0")
 
   implementation("com.github.Brikster:BasePlugin:v1.8")
-  implementation("org.bstats:bstats-bukkit:2.10")
 
-  compileOnly("net.milkbowl.vault:VaultAPI:1.7.1")
+  compileOnly("com.github.MilkBowl:VaultAPI:1.7.1")
   compileOnly("me.clip:placeholderapi:2.11.2")
 
   compileOnly("org.projectlombok:lombok:1.18.24")
@@ -46,11 +45,7 @@ tasks {
       pkgs.forEach { relocate(it, "${project.group}.shaded.$it") }
     }
 
-    autoRelocate(
-      "ru.mrbrikster.baseplugin",
-      "com.google.gson",
-      "org.bstats",
-    )
+    autoRelocate("ru.mrbrikster.baseplugin")
 
     mergeServiceFiles()
 

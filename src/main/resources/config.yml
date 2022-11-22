@@ -8,7 +8,7 @@ config-version: '2.0'
 #   Creator: MrBrikster
 #
 # * Optional dependencies:
-#   Vault, PlaceholderAPI, NameTagEdit.
+#   Vault, PlaceholderAPI.
 # ******************************************************
 
 # * GENERAL
@@ -560,7 +560,7 @@ miscellaneous:
       enable: true
       aliases: [ 'chatclear' ]
 
-    # Change chat (and NametagEdit, if enabled) prefix
+    # Change chat prefix
     # /prefix <player> <prefix>
     #
     # Permissions:
@@ -577,7 +577,7 @@ miscellaneous:
         min: 3
         max: 16
 
-    # Change chat (and NametagEdit, if enabled) suffix
+    # Change chat suffix
     # /suffix <player> <suffix>
     #
     # Permissions:

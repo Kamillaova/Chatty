@@ -4,7 +4,6 @@ import ru.mrbrikster.baseplugin.config.Configuration;
 import ru.mrbrikster.chatty.Chatty;
 
 public class Debugger {
-
   private final Chatty chatty;
   private boolean debug;
 
@@ -17,9 +16,7 @@ public class Debugger {
     configuration.onReload(config -> this.debug = config.getNode("general.debug").getAsBoolean(false));
   }
 
-  @SuppressWarnings("all")
   public void debug(String msg, String... strings) {
-    if (debug) chatty.getLogger().info("[DEBUG] " + String.format(msg, strings));
+    if (debug) chatty.getLogger().info("[DEBUG] " + String.format(msg, (Object[]) strings));
   }
-
 }
