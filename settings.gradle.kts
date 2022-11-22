@@ -11,8 +11,3 @@ dependencyResolutionManagement {
 }
 
 rootProject.name = "chatty"
-
-include(
-  "api",
-  "spigot"
-)
