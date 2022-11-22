@@ -139,8 +139,8 @@ public interface Chat {
         return true;
       }
 
-      World firstPlayerWorld = firstPlayer.getWorld();
-      World secondPlayerWorld = secondPlayer.getWorld();
+      var firstPlayerWorld = firstPlayer.getWorld();
+      var secondPlayerWorld = secondPlayer.getWorld();
       if (range == SINGLE_WORLD) {
         return firstPlayerWorld.equals(secondPlayerWorld);
       }

@@ -49,7 +49,7 @@ public class ChatManager {
   }
 
   public Chat getChat(String chatName) {
-    for (Chat chat : chats) {
+    for (var chat : chats) {
       if (chat.getName().equalsIgnoreCase(chatName)) {
         return chat;
       }
@@ -59,12 +59,12 @@ public class ChatManager {
   }
 
   public Chat getCurrentChat(Player player) {
-    Optional<JsonElement> optional = jsonStorage.getProperty(player, "chat");
+    var optional = jsonStorage.getProperty(player, "chat");
     if (optional.isPresent()) {
-      JsonElement jsonElement = optional.get();
+      var jsonElement = optional.get();
       if (jsonElement.isJsonPrimitive()) {
-        String chatName = jsonElement.getAsJsonPrimitive().getAsString();
-        Chat chat = getChat(chatName);
+        var chatName = jsonElement.getAsJsonPrimitive().getAsString();
+        var chat = getChat(chatName);
         if (chat != null && chat.isWriteAllowed(player)) {
           return chat;
         }
@@ -75,7 +75,7 @@ public class ChatManager {
 
   private void init() {
     configuration.getNode("chats").getChildNodes().stream().map(chatNode -> {
-      ChatBuilder builder = Chat.builder()
+      var builder = Chat.builder()
         .name(chatNode.getName().toLowerCase())
         .displayName(chatNode.getNode("display-name").getAsString(chatNode.getName().toLowerCase()))
         .enable(chatNode.getNode("enable").getAsBoolean(false))
@@ -86,19 +86,19 @@ public class ChatManager {
         .cooldown(chatNode.getNode("cooldown").getAsLong(-1))
         .money(chatNode.getNode("money").getAsInt(0));
 
-      String chatCommand = chatNode.getNode("command").getAsString(null);
+      var chatCommand = chatNode.getNode("command").getAsString(null);
       if (chatCommand != null) {
         builder.command(chatCommand)
           .aliases(chatNode.getNode("aliases").getAsStringList());
       }
 
-      String soundName = chatNode.getNode("sound").getAsString(null);
+      var soundName = chatNode.getNode("sound").getAsString(null);
 
       if (soundName != null) {
         builder.sound(Sound.byName(soundName));
       }
 
-      ConfigurationNode moderationNode = chatNode.getNode("moderation");
+      var moderationNode = chatNode.getNode("moderation");
       builder.capsModerationEnabled(moderationNode.getNode("caps").getAsBoolean(true))
         .swearModerationEnabled(moderationNode.getNode("swear").getAsBoolean(true))
         .advertisementModerationEnabled(moderationNode.getNode("advertisement").getAsBoolean(true));
@@ -112,7 +112,7 @@ public class ChatManager {
       }
     }).forEach(this.chats::add);
 
-    for (Chat chat : this.chats) {
+    for (var chat : this.chats) {
       if (chat.getCommand() != null) {
         chat.setBukkitCommand(new BukkitCommand(chat.getCommand(), ArrayWrapper.toArray(chat.getAliases(), String.class)) {
 
@@ -139,7 +139,7 @@ public class ChatManager {
                     Bukkit.getPluginManager().callEvent(event);
 
                     if (!event.isCancelled()) {
-                      for (Player recipient : event.getRecipients()) {
+                      for (var recipient : event.getRecipients()) {
                         recipient.sendMessage(String.format(
                           event.getFormat(),
                           event.getPlayer().getDisplayName(),
@@ -179,19 +179,19 @@ public class ChatManager {
 
     void write(Player player, String message, String additionalPrefix) {
       BufferedWriter bufferedWriter = null;
-      File logsDirectory = new File(Chatty.instance().getDataFolder().getAbsolutePath() + File.separator + "logs");
+      var logsDirectory = new File(Chatty.instance().getDataFolder().getAbsolutePath() + File.separator + "logs");
 
       if (!logsDirectory.exists() && !logsDirectory.mkdir()) {
         return;
       }
 
       DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-      Calendar calendar = Calendar.getInstance();
-      String fileName = String.format("%s.log", dateFormat.format(calendar.getTime()));
+      var calendar = Calendar.getInstance();
+      var fileName = String.format("%s.log", dateFormat.format(calendar.getTime()));
 
       dateFormat = new SimpleDateFormat("[HH:mm:ss] ");
-      String prefix = dateFormat.format(calendar.getTime());
-      String line = String.format("%1$s%2$s%3$s (%4$s): %5$s",
+      var prefix = dateFormat.format(calendar.getTime());
+      var line = String.format("%1$s%2$s%3$s (%4$s): %5$s",
         prefix, additionalPrefix, player.getName(), player.getUniqueId().toString(), message
       );
 

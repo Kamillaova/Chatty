@@ -34,7 +34,7 @@ public class JsonMessagePart implements MessagePart {
     if (!tooltip.isEmpty()) {
       List<FancyMessage> lines = new ArrayList<>();
 
-      for (String line : tooltip) { lines.add(new FormattedMessage(line).toFancyMessage()); }
+      for (var line : tooltip) { lines.add(new FormattedMessage(line).toFancyMessage()); }
 
       this.tooltip = lines;
     }

@@ -17,9 +17,9 @@ public class DependencyManager {
   private PlaceholderAPIHook placeholderApi;
 
   public DependencyManager(Chatty chatty) {
-    Configuration configuration = chatty.getExact(Configuration.class);
-    JsonStorage jsonStorage = chatty.getExact(JsonStorage.class);
-    ChatManager chatManager = chatty.getExact(ChatManager.class);
+    var configuration = chatty.getExact(Configuration.class);
+    var jsonStorage = chatty.getExact(JsonStorage.class);
+    var chatManager = chatty.getExact(ChatManager.class);
 
     if (chatty.getServer().getPluginManager().isPluginEnabled("Vault")) {
       this.vault = new VaultHook();

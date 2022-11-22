@@ -28,17 +28,17 @@ public class ChatNotification extends Notification {
     this.name = name;
     this.messages.clear();
 
-    Debugger debugger = Chatty.instance().getExact(Debugger.class);
+    var debugger = Chatty.instance().getExact(Debugger.class);
 
-    for (String message : messages) {
+    for (var message : messages) {
       message = TextUtil.fixMultilineFormatting(message);
 
-      String[] lines = message.split("(\n)|(\\\\n)");
+      var lines = message.split("(\n)|(\\\\n)");
 
       List<Pair<String, Boolean>> formattedLines = new ArrayList<>();
-      for (String line : lines) {
+      for (var line : lines) {
         try {
-          JsonObject jsonObject = JSON_PARSER.parse(line).getAsJsonObject();
+          var jsonObject = JSON_PARSER.parse(line).getAsJsonObject();
           debugger.debug("Seems to line is JSON!");
           formattedLines.add(Pair.of(jsonObject.toString(), true));
         } catch (JsonSyntaxException | IllegalStateException exception) {
@@ -59,12 +59,12 @@ public class ChatNotification extends Notification {
 
     Chatty.instance().getExact(Debugger.class).debug("Run \"%s\" ChatNotification.", name);
 
-    List<Pair<String, Boolean>> lines = messages.get(nextMessage());
+    var lines = messages.get(nextMessage());
 
-    DependencyManager dependencyManager = Chatty.instance().getExact(DependencyManager.class);
+    var dependencyManager = Chatty.instance().getExact(DependencyManager.class);
     Bukkit.getOnlinePlayers().stream().filter(player -> !isPermission() || player.hasPermission(String.format(PERMISSION_NODE, name)))
       .forEach(player -> lines.forEach(line -> {
-        String formattedLine = dependencyManager.getPlaceholderApi() != null
+        var formattedLine = dependencyManager.getPlaceholderApi() != null
                                ? dependencyManager.getPlaceholderApi().setPlaceholders(player, line.getA())
                                : line.getA();
 

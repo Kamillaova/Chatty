@@ -48,9 +48,9 @@ public class ReplyCommand extends PrivateMessageCommand {
       return;
     }
 
-    String message = String.join(" ", args);
+    var message = String.join(" ", args);
 
-    Optional<String> optionalRecipient = jsonStorage.getProperty((Player) sender, "last-pm-interlocutor").map(JsonElement::getAsString);
+    var optionalRecipient = jsonStorage.getProperty((Player) sender, "last-pm-interlocutor").map(JsonElement::getAsString);
     if (!optionalRecipient.isPresent()) {
       sender.sendMessage(Chatty.instance().messages().get("reply-command.target-not-found"));
       return;

@@ -32,8 +32,8 @@ public class ChatCommand extends BukkitCommand {
       }
 
       if (args.length == 1) {
-        String chatName = args[0];
-        Chat chat = chatManager.getChat(chatName);
+        var chatName = args[0];
+        var chat = chatManager.getChat(chatName);
 
         if (chat != null) {
           if (!chat.isPermissionRequired()

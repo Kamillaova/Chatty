@@ -18,7 +18,7 @@ public class MsgCommand extends PrivateMessageCommand {
 
   @Override
   public void handle(CommandSender sender, String label, String[] args) {
-    boolean isPlayer = sender instanceof Player;
+    var isPlayer = sender instanceof Player;
     if (!isPlayer && !configuration.getNode("pm.allow-console").getAsBoolean(false)) {
       sender.sendMessage(Chatty.instance().messages().get("only-for-players"));
       return;
@@ -35,8 +35,8 @@ public class MsgCommand extends PrivateMessageCommand {
       return;
     }
 
-    String recipientName = args[0];
-    String message = String.join(" ", Arrays.copyOfRange(args, 1, args.length));
+    var recipientName = args[0];
+    var message = String.join(" ", Arrays.copyOfRange(args, 1, args.length));
 
     CommandSender recipient =
       recipientName.equalsIgnoreCase("CONSOLE") && configuration.getNode("pm.allow-console").getAsBoolean(false)

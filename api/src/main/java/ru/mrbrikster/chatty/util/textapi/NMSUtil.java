@@ -65,7 +65,7 @@ public class NMSUtil {
   }
 
   private Class<?> resolveSuitableClass(String... paths) {
-    for (String path : paths) {
+    for (var path : paths) {
       try {
         return Class.forName(path);
       } catch (ClassNotFoundException ignored) { }
@@ -76,7 +76,7 @@ public class NMSUtil {
 
   @NotNull
   public Field resolveField(Class<?> clazz, String... names) {
-    for (String name : names) {
+    for (var name : names) {
       try {
         return clazz.getField(name);
       } catch (NoSuchFieldException ignored) { }
@@ -87,20 +87,20 @@ public class NMSUtil {
 
   public void sendChatPacket(Player player, String type, String text, @Nullable Player sender) {
     try {
-      Class<?> clsIChatBaseComponent = NMS_CLASSES.get("IChatBaseComponent");
-      Object chatBaseComponent = NMS_CLASSES.get("IChatBaseComponent$ChatSerializer").getMethod("a", String.class).invoke(null, text);
+      var clsIChatBaseComponent = NMS_CLASSES.get("IChatBaseComponent");
+      var chatBaseComponent = NMS_CLASSES.get("IChatBaseComponent$ChatSerializer").getMethod("a", String.class).invoke(null, text);
 
-      Class<?> clsClientboundPlayerChatPacket = NMS_CLASSES.get("ClientboundPlayerChatPacket");
+      var clsClientboundPlayerChatPacket = NMS_CLASSES.get("ClientboundPlayerChatPacket");
 
       if (clsClientboundPlayerChatPacket == null) {
         // < 1.19
-        Class<?> clsChatMessageType = NMS_CLASSES.get("ChatMessageType");
-        Object entityPlayer = player.getClass().getMethod("getHandle").invoke(player);
-        Object playerConnection = resolveField(entityPlayer.getClass(), "b", "playerConnection").get(entityPlayer);
-        Object chatMessageType = clsChatMessageType.getMethod("valueOf", String.class).invoke(null, type);
+        var clsChatMessageType = NMS_CLASSES.get("ChatMessageType");
+        var entityPlayer = player.getClass().getMethod("getHandle").invoke(player);
+        var playerConnection = resolveField(entityPlayer.getClass(), "b", "playerConnection").get(entityPlayer);
+        var chatMessageType = clsChatMessageType.getMethod("valueOf", String.class).invoke(null, type);
 
         Object packetPlayOutChat = null;
-        Class<?> packetPlayOutChatClass = NMS_CLASSES.get("PacketPlayOutChat");
+        var packetPlayOutChatClass = NMS_CLASSES.get("PacketPlayOutChat");
 
         // Legacy versions (< 1.16)
         try {
@@ -131,25 +131,25 @@ public class NMSUtil {
         sendPacketMethod.invoke(playerConnection, packetPlayOutChat);
       } else {
         // 1.19+
-        Class<?> clsChatSender = NMS_CLASSES.get("ChatSender");
-        Class<?> clsPlayerChatMessage = NMS_CLASSES.get("PlayerChatMessage");
+        var clsChatSender = NMS_CLASSES.get("ChatSender");
+        var clsPlayerChatMessage = NMS_CLASSES.get("PlayerChatMessage");
 
         // ChatMessageType chatMessageType = type.equals("CHAT") ? ChatMessageType.b : ChatMessageType.d;
-        Object chatMessageType = NMS_CLASSES.get("ChatMessageType")
+        var chatMessageType = NMS_CLASSES.get("ChatMessageType")
           // b: 'system', d: 'game_info'
           .getDeclaredField(type.equals("CHAT") ? "c" : "d")
           .get(null);
 
-        Object senderName = NMS_CLASSES.get("IChatBaseComponent$ChatSerializer")
+        var senderName = NMS_CLASSES.get("IChatBaseComponent$ChatSerializer")
           .getMethod("a", String.class)
           .invoke(null, "{\"text\":\"" + player.getDisplayName() + "\"}");
 
         // PlayerChatMessage playerChatMessage = PlayerChatMessage.a(chatBaseComponent);
-        Object playerChatMessage = clsPlayerChatMessage.getMethod("a", clsIChatBaseComponent)
+        var playerChatMessage = clsPlayerChatMessage.getMethod("a", clsIChatBaseComponent)
           .invoke(null, chatBaseComponent);
 
         // EntityPlayer entityPlayer = ((CraftPlayer) player).getHandle();
-        Object entityPlayer = player.getClass().getMethod("getHandle").invoke(player);
+        var entityPlayer = player.getClass().getMethod("getHandle").invoke(player);
 
         if (sender == null) {
           // entityPlayer.a(chatBaseComponent, chatMessageType);
@@ -157,7 +157,7 @@ public class NMSUtil {
             .invoke(entityPlayer, chatBaseComponent, chatMessageType);
         } else {
           // ChatSender chatSender = new ChatSender(sender, senderName);
-          Object chatSender = clsChatSender.getConstructor(UUID.class, clsIChatBaseComponent)
+          var chatSender = clsChatSender.getConstructor(UUID.class, clsIChatBaseComponent)
             .newInstance(sender.getUniqueId(), senderName);
           // entityPlayer.a(playerChatMessage, chatSender, chatMessageType);
           entityPlayer.getClass().getMethod("a", clsPlayerChatMessage, clsChatSender, chatMessageType.getClass())

@@ -82,12 +82,12 @@ public class Title {
    */
   public void send(Player player) {
     try {
-      Object entityPlayer = player.getClass().getMethod("getHandle").invoke(player);
-      Object playerConnection = NMSUtil.resolveField(entityPlayer.getClass(), "b", "playerConnection").get(entityPlayer);
+      var entityPlayer = player.getClass().getMethod("getHandle").invoke(player);
+      var playerConnection = NMSUtil.resolveField(entityPlayer.getClass(), "b", "playerConnection").get(entityPlayer);
 
-      Class<?> clsPacket = NMSUtil.getClass("Packet");
-      Class<?> clsIChatBaseComponent = NMSUtil.getClass("IChatBaseComponent");
-      Class<?> clsChatSerializer = NMSUtil.getClass("IChatBaseComponent$ChatSerializer");
+      var clsPacket = NMSUtil.getClass("Packet");
+      var clsIChatBaseComponent = NMSUtil.getClass("IChatBaseComponent");
+      var clsChatSerializer = NMSUtil.getClass("IChatBaseComponent$ChatSerializer");
 
       Object titleComponent = null;
       if (title != null) { titleComponent = clsChatSerializer.getMethod("a", String.class).invoke(null, title.toString()); }
@@ -103,45 +103,45 @@ public class Title {
         sendPacketMethod = playerConnection.getClass().getMethod("a", clsPacket);
       }
 
-      Class<?> clsSetTitlePacket = NMSUtil.getClass("ClientboundSetTitleTextPacket");
+      var clsSetTitlePacket = NMSUtil.getClass("ClientboundSetTitleTextPacket");
       if (clsSetTitlePacket == null) {
         // Legacy titles code
 
-        Class<?> clsPacketPlayOutTitle = NMSUtil.getClass("PacketPlayOutTitle");
-        Class<?> clsEnumTitleAction = NMSUtil.getClass("PacketPlayOutTitle$EnumTitleAction");
-        Object timesPacket = clsPacketPlayOutTitle.getConstructor(int.class, int.class, int.class).newInstance(fadeIn, stay, fadeOut);
+        var clsPacketPlayOutTitle = NMSUtil.getClass("PacketPlayOutTitle");
+        var clsEnumTitleAction = NMSUtil.getClass("PacketPlayOutTitle$EnumTitleAction");
+        var timesPacket = clsPacketPlayOutTitle.getConstructor(int.class, int.class, int.class).newInstance(fadeIn, stay, fadeOut);
         sendPacketMethod.invoke(playerConnection, timesPacket);
 
         // Play title packet
         if (title != null) {
-          Object titlePacket = clsPacketPlayOutTitle.getConstructor(clsEnumTitleAction, clsIChatBaseComponent).newInstance(clsEnumTitleAction.getField("TITLE").get(null), titleComponent);
+          var titlePacket = clsPacketPlayOutTitle.getConstructor(clsEnumTitleAction, clsIChatBaseComponent).newInstance(clsEnumTitleAction.getField("TITLE").get(null), titleComponent);
           sendPacketMethod.invoke(playerConnection, titlePacket);
         }
 
         // Play subtitle packet
         if (subtitle != null) {
-          Object subtitlePacket = clsPacketPlayOutTitle.getConstructor(clsEnumTitleAction, clsIChatBaseComponent).newInstance(clsEnumTitleAction.getField("SUBTITLE").get(null), subtitleComponent);
+          var subtitlePacket = clsPacketPlayOutTitle.getConstructor(clsEnumTitleAction, clsIChatBaseComponent).newInstance(clsEnumTitleAction.getField("SUBTITLE").get(null), subtitleComponent);
           sendPacketMethod.invoke(playerConnection, subtitlePacket);
         }
       } else {
         // New titles code
 
-        Class<?> clsSetSubtitlePacket = NMSUtil.getClass("ClientboundSetSubtitleTextPacket");
-        Class<?> clsSetAnimationPacket = NMSUtil.getClass("ClientboundSetTitlesAnimationPacket");
+        var clsSetSubtitlePacket = NMSUtil.getClass("ClientboundSetSubtitleTextPacket");
+        var clsSetAnimationPacket = NMSUtil.getClass("ClientboundSetTitlesAnimationPacket");
 
         // Play animation packet
-        Object animationPacket = clsSetAnimationPacket.getConstructor(int.class, int.class, int.class).newInstance(fadeIn, stay, fadeOut);
+        var animationPacket = clsSetAnimationPacket.getConstructor(int.class, int.class, int.class).newInstance(fadeIn, stay, fadeOut);
         sendPacketMethod.invoke(playerConnection, animationPacket);
 
         // Play title packet
         if (title != null) {
-          Object titlePacket = clsSetTitlePacket.getConstructor(clsIChatBaseComponent).newInstance(titleComponent);
+          var titlePacket = clsSetTitlePacket.getConstructor(clsIChatBaseComponent).newInstance(titleComponent);
           sendPacketMethod.invoke(playerConnection, titlePacket);
         }
 
         // Play subtitle packet
         if (subtitle != null) {
-          Object subtitlePacket = clsSetSubtitlePacket.getConstructor(clsIChatBaseComponent).newInstance(subtitleComponent);
+          var subtitlePacket = clsSetSubtitlePacket.getConstructor(clsIChatBaseComponent).newInstance(subtitleComponent);
           sendPacketMethod.invoke(playerConnection, subtitlePacket);
         }
       }

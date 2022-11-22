@@ -101,7 +101,7 @@ public class ChatListener implements Listener, EventExecutor {
   }
 
   private void onChat(AsyncPlayerChatEvent event) {
-    final Player player = event.getPlayer();
+    var player = event.getPlayer();
 
     Chat chat;
     String message;
@@ -110,7 +110,7 @@ public class ChatListener implements Listener, EventExecutor {
       chat = ((ChattyAsyncPlayerChatEvent) event).getChat();
       message = event.getMessage();
     } else {
-      Pair<Chat, String> chatMessagePair = getChat(player, event.getMessage());
+      var chatMessagePair = getChat(player, event.getMessage());
       chat = chatMessagePair.getA();
       message = chatMessagePair.getB();
     }
@@ -121,7 +121,7 @@ public class ChatListener implements Listener, EventExecutor {
       return;
     }
 
-    boolean json = configuration.getNode("json.enable").getAsBoolean(false);
+    var json = configuration.getNode("json.enable").getAsBoolean(false);
 
     message = stylish(player, message, chat.getName());
 
@@ -133,7 +133,7 @@ public class ChatListener implements Listener, EventExecutor {
     if (hasActiveCooldown(event, player, chat)) return;
 
     if (chat.getMoney() > 0 && dependencyManager.getVault() != null) {
-      VaultHook vaultHook = dependencyManager.getVault();
+      var vaultHook = dependencyManager.getVault();
 
       if (!vaultHook.withdrawMoney(player, chat.getMoney())) {
         player.sendMessage(Chatty.instance().messages().get("not-enough-money")
@@ -143,7 +143,7 @@ public class ChatListener implements Listener, EventExecutor {
       }
     }
 
-    String format = chat.getFormat();
+    var format = chat.getFormat();
 
     format = TextUtil.fixMultilineFormatting(format);
 
@@ -177,14 +177,14 @@ public class ChatListener implements Listener, EventExecutor {
     }
 
     if (recipientsCount <= 1) {
-      String noRecipients = Chatty.instance().messages().get("no-recipients", null);
+      var noRecipients = Chatty.instance().messages().get("no-recipients", null);
 
       if (noRecipients != null && chat.getRange() > -3) {
         Bukkit.getScheduler().runTaskLaterAsynchronously(Chatty.instance(), () -> player.sendMessage(noRecipients), 5L);
       }
     }
 
-    StringBuilder logPrefixBuilder = new StringBuilder();
+    var logPrefixBuilder = new StringBuilder();
     message = checkModerationMethods(event, player, chat, message, logPrefixBuilder, TextUtil.getLastColors(format));
 
     event.setMessage(message);
@@ -206,14 +206,14 @@ public class ChatListener implements Listener, EventExecutor {
     pendingSpyMessages.put(player, Pair.of(chat, new ArrayList<>(event.getRecipients())));
 
     Bukkit.getScheduler().runTaskAsynchronously(Chatty.instance(), () -> {
-      ChattyMessageEvent chattyMessageEvent = new ChattyMessageEvent(player, chat, event.getMessage());
+      var chattyMessageEvent = new ChattyMessageEvent(player, chat, event.getMessage());
       Bukkit.getPluginManager().callEvent(chattyMessageEvent);
     });
   }
 
   private boolean hasActiveCooldown(AsyncPlayerChatEvent event, Player player, Chat chat) {
-    boolean bypassCooldown = chat.getCooldown() == -1 || player.hasPermission("chatty.cooldown." + chat.getName());
-    long cooldown = bypassCooldown ? -1 : chat.getCooldown(player);
+    var bypassCooldown = chat.getCooldown() == -1 || player.hasPermission("chatty.cooldown." + chat.getName());
+    var cooldown = bypassCooldown ? -1 : chat.getCooldown(player);
 
     if (cooldown != -1) {
       player.sendMessage(Chatty.instance().messages().get("cooldown")
@@ -231,7 +231,7 @@ public class ChatListener implements Listener, EventExecutor {
 
   private String checkModerationMethods(AsyncPlayerChatEvent event, Player player, Chat chat, String message, StringBuilder logPrefixBuilder, String lastFormatColors) {
     if (chat.isSwearModerationEnabled() && moderationManager.isSwearModerationEnabled()) {
-      SwearModerationMethod swearMethod = moderationManager.getSwearMethod(message, lastFormatColors);
+      var swearMethod = moderationManager.getSwearMethod(message, lastFormatColors);
       if (!player.hasPermission("chatty.moderation.swear")) {
         message = handleModerationMethod(event, player, message, logPrefixBuilder, swearMethod);
 
@@ -243,14 +243,14 @@ public class ChatListener implements Listener, EventExecutor {
     }
 
     if (chat.isCapsModerationEnabled() && this.moderationManager.isCapsModerationEnabled()) {
-      CapsModerationMethod capsMethod = this.moderationManager.getCapsMethod(message);
+      var capsMethod = this.moderationManager.getCapsMethod(message);
       if (!player.hasPermission("chatty.moderation.caps")) {
         message = handleModerationMethod(event, player, message, logPrefixBuilder, capsMethod);
       }
     }
 
     if (chat.isAdvertisementModerationEnabled() && this.moderationManager.isAdvertisementModerationEnabled()) {
-      AdvertisementModerationMethod advertisementMethod = this.moderationManager.getAdvertisementMethod(message, lastFormatColors);
+      var advertisementMethod = this.moderationManager.getAdvertisementMethod(message, lastFormatColors);
       if (!player.hasPermission("chatty.moderation.advertisement")) {
         message = handleModerationMethod(event, player, message, logPrefixBuilder, advertisementMethod);
       }
@@ -273,7 +273,7 @@ public class ChatListener implements Listener, EventExecutor {
         logPrefixBuilder.append("[").append(method.getLogPrefix()).append("] ");
       }
 
-      String warningMessage = Chatty.instance().messages().get(method.getWarningMessageKey(), null);
+      var warningMessage = Chatty.instance().messages().get(method.getWarningMessageKey(), null);
 
       if (warningMessage != null) { Bukkit.getScheduler().runTaskLaterAsynchronously(Chatty.instance(), () -> player.sendMessage(warningMessage), 5L); }
     }
@@ -283,14 +283,14 @@ public class ChatListener implements Listener, EventExecutor {
 
   @EventHandler(priority = EventPriority.MONITOR)
   public void onSpyMessage(AsyncPlayerChatEvent event) {
-    Pair<Chat, List<Player>> pair = pendingSpyMessages.remove(event.getPlayer());
+    var pair = pendingSpyMessages.remove(event.getPlayer());
 
     if (pair == null) return;
 
     if (pair.getA().isSpyEnabled()
       && configuration.getNode("spy.enable").getAsBoolean(false)
       && !event.isCancelled()) {
-      String spyInfo = TextUtil.stylish(configuration.getNode("spy.format.chat")
+      var spyInfo = TextUtil.stylish(configuration.getNode("spy.format.chat")
         .getAsString("&6[Spy] &r{format}")
         .replace("{format}", String.format(
           event.getFormat(),
@@ -315,7 +315,7 @@ public class ChatListener implements Listener, EventExecutor {
    */
   @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
   public void onChatMonitor(AsyncPlayerChatEvent event) {
-    Chat chat = pendingMessages.remove(event.getPlayer());
+    var chat = pendingMessages.remove(event.getPlayer());
 
     if (chat == null) {
       // Seems to event was uncancelled by another plugin
@@ -323,7 +323,7 @@ public class ChatListener implements Listener, EventExecutor {
     }
 
     if (chat.getSound() != null) {
-      for (Player recipient : event.getRecipients()) {
+      for (var recipient : event.getRecipients()) {
         if (!recipient.equals(event.getPlayer())) {
           recipient.playSound(recipient.getLocation(), chat.getSound(), 1L, 1L);
         }
@@ -333,8 +333,8 @@ public class ChatListener implements Listener, EventExecutor {
     if (configuration.getNode("json.enable").getAsBoolean(false)) {
       performJsonMessage(event, chat);
     } else {
-      String format = String.format(event.getFormat(), event.getPlayer().getDisplayName(), event.getMessage());
-      String strippedHexFormat = TextUtil.stripHex(format);
+      var format = String.format(event.getFormat(), event.getPlayer().getDisplayName(), event.getMessage());
+      var strippedHexFormat = TextUtil.stripHex(format);
 
       if (!strippedHexFormat.equals(format)) {
         event.getRecipients().forEach(player -> player.sendMessage(format));
@@ -345,10 +345,10 @@ public class ChatListener implements Listener, EventExecutor {
   }
 
   private void performJsonMessage(AsyncPlayerChatEvent event, Chat chat) {
-    Player player = event.getPlayer();
-    String format = unstylish(String.format(event.getFormat(), "{player}", "{message}"));
+    var player = event.getPlayer();
+    var format = unstylish(String.format(event.getFormat(), "{player}", "{message}"));
 
-    List<String> tooltip = configuration.getNode("json.tooltip").getAsStringList()
+    var tooltip = configuration.getNode("json.tooltip").getAsStringList()
       .stream().map(line -> TextUtil.stylish(
         line.replace("{player}", player.getDisplayName())
           .replace("{prefix}", playerTagManager.getPrefix(player))
@@ -357,13 +357,13 @@ public class ChatListener implements Listener, EventExecutor {
 
     if (dependencyManager.getPlaceholderApi() != null) { tooltip = dependencyManager.getPlaceholderApi().setPlaceholders(player, tooltip); }
 
-    String command = configuration.getNode("json.command").getAsString(null);
-    String suggestCommand = configuration.getNode("json.suggest").getAsString(null);
-    String link = configuration.getNode("json.link").getAsString(null);
+    var command = configuration.getNode("json.command").getAsString(null);
+    var suggestCommand = configuration.getNode("json.suggest").getAsString(null);
+    var link = configuration.getNode("json.link").getAsString(null);
 
-    Function<String, String> stringVariablesFunction = createVariablesFunction(player);
+    var stringVariablesFunction = createVariablesFunction(player);
 
-    FormattedMessage formattedMessage = new FormattedMessage(format);
+    var formattedMessage = new FormattedMessage(format);
     formattedMessage.replace(
       "{player}",
       new JsonMessagePart(player.getDisplayName())
@@ -396,7 +396,7 @@ public class ChatListener implements Listener, EventExecutor {
     event.getRecipients().clear();
 
     format = String.format(event.getFormat(), event.getPlayer().getDisplayName(), event.getMessage());
-    String strippedHexFormat = TextUtil.stripHex(format);
+    var strippedHexFormat = TextUtil.stripHex(format);
 
     if (!strippedHexFormat.equals(format)) {
       try {
@@ -408,8 +408,8 @@ public class ChatListener implements Listener, EventExecutor {
   }
 
   private void applyJsonSwears(AsyncPlayerChatEvent event, FormattedMessage formattedMessage) {
-    String replacement = configuration.getNode("moderation.swear.replacement").getAsString("<swear>");
-    List<String> swears = pendingSwears.remove(event.getPlayer());
+    var replacement = configuration.getNode("moderation.swear.replacement").getAsString("<swear>");
+    var swears = pendingSwears.remove(event.getPlayer());
 
     if (swears == null) {
       formattedMessage.send(event.getRecipients(), event.getPlayer());
@@ -427,10 +427,10 @@ public class ChatListener implements Listener, EventExecutor {
 
       formattedMessage.send(cannotSeeSwears, event.getPlayer());
 
-      List<String> swearTooltip = configuration.getNode("json.swears.tooltip").getAsStringList()
+      var swearTooltip = configuration.getNode("json.swears.tooltip").getAsStringList()
         .stream().map(TextUtil::stylish).collect(Collectors.toList());
 
-      String suggest = configuration.getNode("json.swears.suggest").getAsString(null);
+      var suggest = configuration.getNode("json.swears.suggest").getAsString(null);
 
       swears.forEach(swear -> formattedMessage.replace(
         replacement,
@@ -448,12 +448,12 @@ public class ChatListener implements Listener, EventExecutor {
     String link;
     String suggestCommand;
     String command;
-    FormattedMessage messageWithMention = new FormattedMessage(event.getMessage(), false);
-    Matcher matcher = MENTION_PATTERN.matcher(event.getMessage());
+    var messageWithMention = new FormattedMessage(event.getMessage(), false);
+    var matcher = MENTION_PATTERN.matcher(event.getMessage());
 
     while (matcher.find()) {
-      String group = matcher.group();
-      String playerName = group.substring(1);
+      var group = matcher.group();
+      var playerName = group.substring(1);
 
       Player mentionedPlayer;
       if ((mentionedPlayer = Bukkit.getPlayer(playerName)) != null) {
@@ -466,9 +466,9 @@ public class ChatListener implements Listener, EventExecutor {
           continue;
         }
 
-        Function<String, String> mentionedPlayerVariablesFunc = createVariablesFunction(mentionedPlayer);
+        var mentionedPlayerVariablesFunc = createVariablesFunction(mentionedPlayer);
 
-        List<String> mentionTooltip = configuration.getNode("json.mentions.tooltip").getAsStringList();
+        var mentionTooltip = configuration.getNode("json.mentions.tooltip").getAsStringList();
         mentionTooltip = mentionTooltip.stream().map(line ->
           TextUtil.stylish(
             line.replace("{player}", mentionedPlayer.getDisplayName())
@@ -494,11 +494,11 @@ public class ChatListener implements Listener, EventExecutor {
           new LegacyMessagePart(TextUtil.getLastColors(event.getFormat()))
         );
 
-        String soundName = configuration.getNode("json.mentions.sound").getAsString(null);
+        var soundName = configuration.getNode("json.mentions.sound").getAsString(null);
         if (soundName != null) {
-          org.bukkit.Sound sound = Sound.byName(soundName);
-          double soundVolume = (double) configuration.getNode("json.mentions.sound-volume").get(1d);
-          double soundPitch = (double) configuration.getNode("json.mentions.sound-pitch").get(1d);
+          var sound = Sound.byName(soundName);
+          var soundVolume = (double) configuration.getNode("json.mentions.sound-volume").get(1d);
+          var soundPitch = (double) configuration.getNode("json.mentions.sound-pitch").get(1d);
           mentionedPlayer.playSound(mentionedPlayer.getLocation(), sound, (float) soundVolume, (float) soundPitch);
         }
 
@@ -510,11 +510,11 @@ public class ChatListener implements Listener, EventExecutor {
   }
 
   private void applyReplacement(Player player, FormattedMessage formattedMessage, ConfigurationNode replacement) {
-    Function<String, String> stringVariablesFunction = createVariablesFunction(player);
-    String replacementName = replacement.getNode("original").getAsString(replacement.getName());
+    var stringVariablesFunction = createVariablesFunction(player);
+    var replacementName = replacement.getNode("original").getAsString(replacement.getName());
 
-    String text = replacement.getNode("text").getAsString(replacementName);
-    List<String> replacementTooltip = replacement.getNode("tooltip").getAsStringList();
+    var text = replacement.getNode("text").getAsString(replacementName);
+    var replacementTooltip = replacement.getNode("tooltip").getAsStringList();
 
     replacementTooltip = replacementTooltip.stream().map(line ->
       TextUtil.stylish(
@@ -525,9 +525,9 @@ public class ChatListener implements Listener, EventExecutor {
 
     if (dependencyManager.getPlaceholderApi() != null) { replacementTooltip = dependencyManager.getPlaceholderApi().setPlaceholders(player, replacementTooltip); }
 
-    String replacementCommand = replacement.getNode("command").getAsString(null);
-    String replacementSuggestCommand = replacement.getNode("suggest").getAsString(null);
-    String replacementLink = replacement.getNode("link").getAsString(null);
+    var replacementCommand = replacement.getNode("command").getAsString(null);
+    var replacementSuggestCommand = replacement.getNode("suggest").getAsString(null);
+    var replacementLink = replacement.getNode("link").getAsString(null);
 
     formattedMessage.replace(replacementName, new JsonMessagePart(stringVariablesFunction.apply(text))
       .command(stringVariablesFunction.apply(replacementCommand))
@@ -536,10 +536,10 @@ public class ChatListener implements Listener, EventExecutor {
       .tooltip(replacementTooltip));
   }
 
-  private Pair<Chat, String> getChat(final Player player, String message) {
-    Chat currentChat = this.chatManager.getCurrentChat(player);
+  private Pair<Chat, String> getChat(Player player, String message) {
+    var currentChat = this.chatManager.getCurrentChat(player);
 
-    for (Chat chat : this.chatManager.getChats()) {
+    for (var chat : this.chatManager.getChats()) {
       if (chat.isWriteAllowed(player)) {
         if (chat.getSymbol().isEmpty()) {
           if (currentChat == null) {
@@ -562,7 +562,7 @@ public class ChatListener implements Listener, EventExecutor {
   }
 
   private String stylish(Player player, String message, String chat) {
-    for (Map.Entry<String, Pattern> entry : PATTERNS.entrySet()) {
+    for (var entry : PATTERNS.entrySet()) {
       if (player.hasPermission(entry.getKey()) || player.hasPermission(entry.getKey() + "." + chat)) {
         message = entry.getValue().matcher(message).replaceAll("\u00A7$1");
       }
@@ -580,8 +580,8 @@ public class ChatListener implements Listener, EventExecutor {
   }
 
   private String unstylish(String string) {
-    char[] b = string.toCharArray();
-    for (int i = 0; i < b.length - 1; i++) {
+    var b = string.toCharArray();
+    for (var i = 0; i < b.length - 1; i++) {
       if (b[i] == '\u00A7' && "0123456789AaBbCcDdEeFfKkLlMmNnOoRr".indexOf(b[i + 1]) > -1) {
         b[i] = '&';
         b[i + 1] = Character.toLowerCase(b[i + 1]);

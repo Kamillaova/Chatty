@@ -88,7 +88,7 @@ public final class Chatty extends BukkitBasePlugin {
     configuration = getConfiguration();
 
     if (!configuration.getNode("config-version").getAsString("0.0").equals("2.0")) {
-      File file = new File(getDataFolder(), "config.yml");
+      var file = new File(getDataFolder(), "config.yml");
       file.renameTo(new File(getDataFolder(), "config.yml.old"));
 
       configuration = getConfiguration("config.yml");
@@ -116,7 +116,7 @@ public final class Chatty extends BukkitBasePlugin {
 
     EventPriority eventPriority;
     try {
-      String priorityName = configuration.getNode("general.priority").getAsString("normal").toUpperCase();
+      var priorityName = configuration.getNode("general.priority").getAsString("normal").toUpperCase();
       eventPriority = EventPriority.valueOf(priorityName);
 
       if (eventPriority == EventPriority.MONITOR) {
@@ -126,7 +126,7 @@ public final class Chatty extends BukkitBasePlugin {
       eventPriority = EventPriority.NORMAL;
     }
 
-    ChatListener chatListener = new ChatListener(this);
+    var chatListener = new ChatListener(this);
 
     this.getServer().getPluginManager().registerEvents(chatListener, this);
     this.getServer().getPluginManager().registerEvent(AsyncPlayerChatEvent.class, chatListener, eventPriority, chatListener, Chatty.instance, true);
@@ -157,7 +157,7 @@ public final class Chatty extends BukkitBasePlugin {
 
   private void runMetrics() {
     if (configuration.getNode("general.metrics").getAsBoolean(true)) {
-      Metrics metrics = new Metrics(this, 3466);
+      var metrics = new Metrics(this, 3466);
       metrics.addCustomChart(new SimplePie(
         "language",
         () -> configuration.getNode("general.locale").getAsString("en")

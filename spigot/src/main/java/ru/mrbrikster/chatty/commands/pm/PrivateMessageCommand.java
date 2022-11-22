@@ -38,9 +38,9 @@ public abstract class PrivateMessageCommand extends BukkitCommand {
   }
 
   protected void handlePrivateMessage(@NotNull CommandSender sender, @NotNull CommandSender recipient, @NotNull String message) {
-    String recipientName = recipient.getName();
-    String recipientPrefix = "";
-    String recipientSuffix = "";
+    var recipientName = recipient.getName();
+    var recipientPrefix = "";
+    var recipientSuffix = "";
 
     if (recipient instanceof Player) {
       recipientName = ((Player) recipient).getDisplayName();
@@ -49,11 +49,11 @@ public abstract class PrivateMessageCommand extends BukkitCommand {
       jsonStorage.setProperty((Player) recipient, "last-pm-interlocutor", new JsonPrimitive(sender.getName()));
     }
 
-    boolean cancelledByModeration = false;
+    var cancelledByModeration = false;
 
-    String senderName = sender.getName();
-    String senderPrefix = "";
-    String senderSuffix = "";
+    var senderName = sender.getName();
+    var senderPrefix = "";
+    var senderSuffix = "";
 
     if (sender instanceof Player) {
       senderName = ((Player) sender).getDisplayName();
@@ -62,7 +62,7 @@ public abstract class PrivateMessageCommand extends BukkitCommand {
       jsonStorage.setProperty((Player) sender, "last-pm-interlocutor", new JsonPrimitive(recipientName));
 
       if (moderationManager.isSwearModerationEnabled()) {
-        SwearModerationMethod swearMethod = moderationManager.getSwearMethod(message, MODERATION_COLOR_SYMBOL);
+        var swearMethod = moderationManager.getSwearMethod(message, MODERATION_COLOR_SYMBOL);
         if (!sender.hasPermission("chatty.moderation.swear")) {
           if (swearMethod.isBlocked()) {
             message = swearMethod.getEditedMessage();
@@ -73,7 +73,7 @@ public abstract class PrivateMessageCommand extends BukkitCommand {
               message = swearMethod.getEditedMessage();
             }
 
-            String swearFound = Chatty.instance().messages().get("swear-found", null);
+            var swearFound = Chatty.instance().messages().get("swear-found", null);
 
             if (swearFound != null) {
               Bukkit.getScheduler().runTaskLaterAsynchronously(Chatty.instance(),
@@ -85,7 +85,7 @@ public abstract class PrivateMessageCommand extends BukkitCommand {
       }
 
       if (this.moderationManager.isAdvertisementModerationEnabled()) {
-        AdvertisementModerationMethod advertisementMethod = this.moderationManager.getAdvertisementMethod(message, MODERATION_COLOR_SYMBOL);
+        var advertisementMethod = this.moderationManager.getAdvertisementMethod(message, MODERATION_COLOR_SYMBOL);
         if (!sender.hasPermission("chatty.moderation.advertisement")) {
           if (advertisementMethod.isBlocked()) {
             message = advertisementMethod.getEditedMessage();
@@ -96,7 +96,7 @@ public abstract class PrivateMessageCommand extends BukkitCommand {
               message = advertisementMethod.getEditedMessage();
             }
 
-            String adsFound = Chatty.instance().messages().get("advertisement-found", null);
+            var adsFound = Chatty.instance().messages().get("advertisement-found", null);
 
             if (adsFound != null) {
               Bukkit.getScheduler().runTaskLaterAsynchronously(Chatty.instance(),
@@ -114,7 +114,7 @@ public abstract class PrivateMessageCommand extends BukkitCommand {
 
     String senderFormat;
     if (!jsonStorage.isIgnore(recipient, sender)) {
-      String recipientFormat = createFormat(configuration.getNode("pm.format.recipient")
+      var recipientFormat = createFormat(configuration.getNode("pm.format.recipient")
           .getAsString("&7{sender-prefix}{sender-name} &6-> &7{recipient-prefix}{recipient-name}: &f{message}"),
         message, recipientName, recipientPrefix, recipientSuffix,
         senderName, senderPrefix, senderSuffix
@@ -124,14 +124,14 @@ public abstract class PrivateMessageCommand extends BukkitCommand {
         recipientFormat = TextUtil.stripHex(recipientFormat);
         recipient.sendMessage(recipientFormat);
       } else {
-        FormattedMessage formattedMessage = new FormattedMessage(recipientFormat);
+        var formattedMessage = new FormattedMessage(recipientFormat);
         formattedMessage.toFancyMessage().send((Player) recipient, (Player) sender);
 
-        String soundName = configuration.getNode("pm.sound").getAsString(null);
+        var soundName = configuration.getNode("pm.sound").getAsString(null);
         if (soundName != null) {
-          org.bukkit.Sound sound = Sound.byName(soundName);
-          double soundVolume = (double) configuration.getNode("pm.sound-volume").get(1d);
-          double soundPitch = (double) configuration.getNode("pm.sound-pitch").get(1d);
+          var sound = Sound.byName(soundName);
+          var soundVolume = (double) configuration.getNode("pm.sound-volume").get(1d);
+          var soundPitch = (double) configuration.getNode("pm.sound-pitch").get(1d);
           ((Player) recipient).playSound(((Player) recipient).getLocation(), sound, (float) soundVolume, (float) soundPitch);
         }
       }
@@ -150,7 +150,7 @@ public abstract class PrivateMessageCommand extends BukkitCommand {
     sender.sendMessage(senderFormat);
 
     if (configuration.getNode("spy.enable").getAsBoolean(false)) {
-      String stylishedSpyMessage = createFormat(configuration.getNode("spy.format.pm")
+      var stylishedSpyMessage = createFormat(configuration.getNode("spy.format.pm")
           .getAsString("&6[Spy] &r{format}"),
         message, recipientName, recipientPrefix, recipientSuffix,
         senderName, senderPrefix, senderSuffix
@@ -183,7 +183,7 @@ public abstract class PrivateMessageCommand extends BukkitCommand {
   }
 
   private String getLastColors(String format) {
-    int messageIndex = format.lastIndexOf("{message}");
+    var messageIndex = format.lastIndexOf("{message}");
 
     if (messageIndex == -1) {
       return format;

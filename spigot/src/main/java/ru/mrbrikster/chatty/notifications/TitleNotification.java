@@ -34,24 +34,24 @@ public class TitleNotification extends Notification {
 
     Chatty.instance().getExact(Debugger.class).debug("Run \"%s\" TitleNotification.", name);
 
-    String[] message = messages.get(nextMessage()).split("(\n)|(\\\\n)", 2);
+    var message = messages.get(nextMessage()).split("(\n)|(\\\\n)", 2);
 
-    DependencyManager dependencyManager = Chatty.instance().getExact(DependencyManager.class);
+    var dependencyManager = Chatty.instance().getExact(DependencyManager.class);
 
     Bukkit.getOnlinePlayers()
       .stream()
       .filter(player -> !isPermission() || player.hasPermission(String.format(PERMISSION_NODE, name)))
       .forEach(onlinePlayer -> {
 
-        String[] playerMessage = message.clone();
+        var playerMessage = message.clone();
 
         if (dependencyManager.getPlaceholderApi() != null) {
-          for (int i = 0; i < message.length; i++) {
+          for (var i = 0; i < message.length; i++) {
             playerMessage[i] = dependencyManager.getPlaceholderApi().setPlaceholders(onlinePlayer, playerMessage[i]);
           }
         }
 
-        Title title = new Title(playerMessage[0], playerMessage.length == 2
+        var title = new Title(playerMessage[0], playerMessage.length == 2
                                                   ? playerMessage[1]
                                                   : "", 20, 40, 20);
 

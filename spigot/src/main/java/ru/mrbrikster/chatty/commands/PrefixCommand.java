@@ -39,7 +39,7 @@ public class PrefixCommand extends BukkitCommand {
         return;
       }
 
-      Player player = Bukkit.getPlayer(args[0]);
+      var player = Bukkit.getPlayer(args[0]);
 
       if (player == null) {
         sender.sendMessage(Chatty.instance().messages().get("prefix-command.player-not-found"));
@@ -57,11 +57,11 @@ public class PrefixCommand extends BukkitCommand {
         sender.sendMessage(Chatty.instance().messages().get("prefix-command.prefix-clear")
           .replace("{player}", player.getName()));
       } else {
-        String prefix = String.join(" ", Arrays.copyOfRange(args, 1, args.length));
-        String formattedPrefix = prefix + configuration.getNode("miscellaneous.commands.prefix.after-prefix").getAsString("");
+        var prefix = String.join(" ", Arrays.copyOfRange(args, 1, args.length));
+        var formattedPrefix = prefix + configuration.getNode("miscellaneous.commands.prefix.after-prefix").getAsString("");
 
-        int minLimit = configuration.getNode("miscellaneous.commands.prefix.length-limit.min").getAsInt(3);
-        int maxLimit = configuration.getNode("miscellaneous.commands.prefix.length-limit.max").getAsInt(16);
+        var minLimit = configuration.getNode("miscellaneous.commands.prefix.length-limit.min").getAsInt(3);
+        var maxLimit = configuration.getNode("miscellaneous.commands.prefix.length-limit.max").getAsInt(16);
         if (formattedPrefix.length() > maxLimit) {
           sender.sendMessage(Chatty.instance().messages().get("prefix-command.length-limit-max")
             .replace("{limit}", String.valueOf(maxLimit - formattedPrefix.length() + prefix.length())));

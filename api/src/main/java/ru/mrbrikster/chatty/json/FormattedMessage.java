@@ -77,21 +77,21 @@ public class FormattedMessage {
   public FormattedMessage replace(Pattern pattern, List<MessagePart> parts) {
     List<MessagePart> updatedMessageParts = new ArrayList<>();
 
-    for (MessagePart messagePart : messageParts) {
+    for (var messagePart : messageParts) {
       if (messagePart instanceof LegacyMessagePart) {
-        LegacyMessagePart legacyPart = (LegacyMessagePart) messagePart;
+        var legacyPart = (LegacyMessagePart) messagePart;
 
-        String partText = legacyPart.getText();
-        Matcher matcher = pattern.matcher(partText);
+        var partText = legacyPart.getText();
+        var matcher = pattern.matcher(partText);
 
-        int firstIndex = 0;
+        var firstIndex = 0;
         while (matcher.find()) {
           updatedMessageParts.add(new LegacyMessagePart(partText.substring(firstIndex, matcher.start())));
           updatedMessageParts.addAll(parts);
           firstIndex = matcher.end();
         }
 
-        String tail = partText.substring(firstIndex);
+        var tail = partText.substring(firstIndex);
 
         if (!tail.isEmpty()) {
           updatedMessageParts.add(new LegacyMessagePart(tail));
@@ -156,9 +156,9 @@ public class FormattedMessage {
   }
 
   public FancyMessage toFancyMessage() {
-    FancyMessage fancyMessage = new FancyMessage("");
+    var fancyMessage = new FancyMessage("");
 
-    for (MessagePart messagePart : messageParts) {
+    for (var messagePart : messageParts) {
       fancyMessage = messagePart.append(fancyMessage);
     }
 

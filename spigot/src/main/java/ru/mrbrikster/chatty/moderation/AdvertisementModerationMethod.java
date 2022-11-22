@@ -35,8 +35,8 @@ public class AdvertisementModerationMethod extends ModifyingSubstringsModeration
     this.useBlock = configurationNode.getNode("block").getAsBoolean(true);
     this.replacement = TextUtil.stylish(configurationNode.getNode("replacement").getAsString("<ads>"));
 
-    String ipString = configurationNode.getNode("patterns.ip").getAsString(IP);
-    String webString = configurationNode.getNode("patterns.web").getAsString(WEB);
+    var ipString = configurationNode.getNode("patterns.ip").getAsString(IP);
+    var webString = configurationNode.getNode("patterns.web").getAsString(WEB);
     this.ipPattern = cachedIp.get(ipString, () -> Pattern.compile(ipString));
     this.webPattern = cachedWeb.get(webString, () -> Pattern.compile(webString));
   }
@@ -78,14 +78,14 @@ public class AdvertisementModerationMethod extends ModifyingSubstringsModeration
   }
 
   private boolean match(Pattern pattern) {
-    Matcher matcher = pattern.matcher(this.editedMessage);
+    var matcher = pattern.matcher(this.editedMessage);
 
-    int prevIndex = 0;
-    StringBuilder builder = new StringBuilder();
+    var prevIndex = 0;
+    var builder = new StringBuilder();
 
-    boolean containsAds = false;
+    var containsAds = false;
     while (matcher.find()) {
-      String group = matcher.group();
+      var group = matcher.group();
 
       builder.append(this.editedMessage, prevIndex, matcher.start());
       prevIndex = matcher.end();
@@ -95,7 +95,7 @@ public class AdvertisementModerationMethod extends ModifyingSubstringsModeration
       } else {
         containsAds = true;
 
-        String lastColors = TextUtil.getLastColors(message.substring(0, matcher.start()));
+        var lastColors = TextUtil.getLastColors(message.substring(0, matcher.start()));
         if (lastColors.isEmpty()) lastColors = lastFormatColors;
 
         builder.append(this.replacement).append(lastColors);

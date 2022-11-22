@@ -22,9 +22,9 @@ public class Messages {
   private final Configuration inJarConfiguration;
 
   public Messages(Chatty chatty) {
-    File localeDir = new File(chatty.getDataFolder(), "locale");
+    var localeDir = new File(chatty.getDataFolder(), "locale");
 
-    String localeName = chatty.getExact(Configuration.class).getNode("general.locale")
+    var localeName = chatty.getExact(Configuration.class).getNode("general.locale")
       .getAsString("en");
 
     if (!localeDir.exists()) {
@@ -33,14 +33,14 @@ public class Messages {
       }
     }
 
-    File localeFile = new File(localeDir, localeName + ".yml");
+    var localeFile = new File(localeDir, localeName + ".yml");
     if (!localeFile.exists()) {
-      URL localeFileUrl = getClass().getResource("/locale/" + localeName + ".yml");
+      var localeFileUrl = getClass().getResource("/locale/" + localeName + ".yml");
 
       if (localeFileUrl == null) {
         chatty.getLogger().warning("Locale " + '"' + localeName + '"' + " not found. Using \"en\" locale.");
 
-        File enLocaleFile = new File(localeDir, "en.yml");
+        var enLocaleFile = new File(localeDir, "en.yml");
 
         if (!enLocaleFile.exists()) {
           try {

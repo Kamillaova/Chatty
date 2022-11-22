@@ -40,7 +40,7 @@ public class CapsModerationMethod extends ModerationMethod {
 
   private double getPercent() {
     int codePoint, length = 0, capsLength = 0;
-    for (char c : message.toCharArray()) {
+    for (var c : message.toCharArray()) {
       codePoint = c;
       if (Character.isLetter(codePoint)) {
         length++;

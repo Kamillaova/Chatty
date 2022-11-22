@@ -77,11 +77,11 @@ public class Chat implements ru.mrbrikster.chatty.api.chats.Chat {
   }
 
   public long getCooldown(Player player) {
-    List<MetadataValue> metadataValues = player.getMetadata(String.format(CHAT_COOLDOWN_METADATA_KEY, name));
+    var metadataValues = player.getMetadata(String.format(CHAT_COOLDOWN_METADATA_KEY, name));
 
     if (metadataValues.isEmpty()) { return -1; }
 
-    long cooldown = (metadataValues.get(0).asLong() + (this.cooldown * 1000) - System.currentTimeMillis()) / 1000;
+    var cooldown = (metadataValues.get(0).asLong() + (this.cooldown * 1000) - System.currentTimeMillis()) / 1000;
     return cooldown > 0 ? cooldown : -1;
   }
 
@@ -105,11 +105,11 @@ public class Chat implements ru.mrbrikster.chatty.api.chats.Chat {
 
     if (player != null) {
       players.removeIf(recipient -> {
-        JsonElement jsonElement = Chatty.instance().getExact(JsonStorage.class)
+        var jsonElement = Chatty.instance().getExact(JsonStorage.class)
           .getProperty(recipient, "ignore").orElseGet(JsonArray::new);
 
         if (jsonElement.isJsonArray()) {
-          for (JsonElement ignoreJsonElement : jsonElement.getAsJsonArray()) {
+          for (var ignoreJsonElement : jsonElement.getAsJsonArray()) {
             if (player.getName().equalsIgnoreCase(ignoreJsonElement.getAsString())) {
               return true;
             }
@@ -135,7 +135,7 @@ public class Chat implements ru.mrbrikster.chatty.api.chats.Chat {
 
   @Override
   public void sendMessage(String message, Predicate<Player> playerPredicate) {
-    String stylishedMessage = TextUtil.stylish(message);
+    var stylishedMessage = TextUtil.stylish(message);
     getRecipients(null).stream().filter(playerPredicate).forEach(player ->
       player.sendMessage(stylishedMessage));
 

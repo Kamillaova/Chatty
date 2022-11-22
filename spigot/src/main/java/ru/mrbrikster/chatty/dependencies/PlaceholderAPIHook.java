@@ -53,14 +53,14 @@ public class PlaceholderAPIHook extends PlaceholderExpansion {
       return "Chatty is awesome";
     }
 
-    String[] split = params.split("_");
+    var split = params.split("_");
     switch (split[0].toLowerCase(Locale.ENGLISH)) {
       case "cooldown": {
         if (split.length > 1) {
           // To support player names with underscore
           split = params.split("_", 3);
 
-          Chat chat = chatManager.getChat(split[1]);
+          var chat = chatManager.getChat(split[1]);
           if (chat == null) {
             return "-1";
           }
@@ -90,7 +90,7 @@ public class PlaceholderAPIHook extends PlaceholderExpansion {
           return "null";
         }
 
-        Chat chat = chatManager.getCurrentChat(player);
+        var chat = chatManager.getCurrentChat(player);
         return chat == null ? "no" : chat.getDisplayName();
       }
 
@@ -99,12 +99,12 @@ public class PlaceholderAPIHook extends PlaceholderExpansion {
           return "-1";
         }
 
-        Chat chat = chatManager.getChat(split[1]);
+        var chat = chatManager.getChat(split[1]);
         if (chat == null) {
           return "-1";
         }
 
-        int i = 0;
+        var i = 0;
         for (Player onlinePlayer : Bukkit.getOnlinePlayers()) {
           if (chat.isWriteAllowed(onlinePlayer)) i++;
         }

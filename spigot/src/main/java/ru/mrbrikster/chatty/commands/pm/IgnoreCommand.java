@@ -42,17 +42,17 @@ public class IgnoreCommand extends BukkitCommand {
 
     if (args.length != 1) {
       if (args.length == 0) {
-        JsonElement jsonElement = jsonStorage.getProperty((Player) sender, "ignore").orElseGet(JsonArray::new);
+        var jsonElement = jsonStorage.getProperty((Player) sender, "ignore").orElseGet(JsonArray::new);
 
         if (!jsonElement.isJsonArray()) { jsonElement = new JsonArray(); }
 
         Set<String> ignoreList = new HashSet<>();
-        for (JsonElement element : jsonElement.getAsJsonArray()) {
+        for (var element : jsonElement.getAsJsonArray()) {
           ignoreList.add(element.getAsString());
         }
 
         if (!ignoreList.isEmpty()) {
-          String joinedIgnoreList = Joiner.on(Chatty.instance().messages().get("ignore-command.ignore-list-delimiter"))
+          var joinedIgnoreList = Joiner.on(Chatty.instance().messages().get("ignore-command.ignore-list-delimiter"))
             .join(ignoreList);
 
           sender.sendMessage(Chatty.instance().messages().get("ignore-command.ignore-list").replace("{players}", joinedIgnoreList));
@@ -64,7 +64,7 @@ public class IgnoreCommand extends BukkitCommand {
       return;
     }
 
-    String ignoreTarget = args[0];
+    var ignoreTarget = args[0];
 
     if (sender.getName().equalsIgnoreCase(ignoreTarget)) {
       sender.sendMessage(Chatty.instance().messages().get("ignore-command.cannot-ignore-yourself")
@@ -72,11 +72,11 @@ public class IgnoreCommand extends BukkitCommand {
       return;
     }
 
-    JsonElement jsonElement = jsonStorage.getProperty((Player) sender, "ignore").orElseGet(JsonArray::new);
+    var jsonElement = jsonStorage.getProperty((Player) sender, "ignore").orElseGet(JsonArray::new);
 
     if (!jsonElement.isJsonArray()) { jsonElement = new JsonArray(); }
 
-    Player ignoreTargetPlayer = Bukkit.getPlayer(ignoreTarget);
+    var ignoreTargetPlayer = Bukkit.getPlayer(ignoreTarget);
 
     if (jsonElement.getAsJsonArray().contains(new JsonPrimitive(ignoreTarget.toLowerCase()))) {
       sender.sendMessage(Chatty.instance().messages().get("ignore-command.remove-ignore")

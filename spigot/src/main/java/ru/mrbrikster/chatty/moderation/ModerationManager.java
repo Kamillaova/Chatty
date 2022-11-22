@@ -26,7 +26,7 @@ public class ModerationManager {
   }
 
   private void init() {
-    ConfigurationNode moderationNode =
+    var moderationNode =
       configuration.getNode("moderation");
 
     this.capsModerationEnabled = moderationNode.getNode("caps.enable")

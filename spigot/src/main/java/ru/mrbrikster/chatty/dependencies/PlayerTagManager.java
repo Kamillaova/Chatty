@@ -18,16 +18,16 @@ public class PlayerTagManager {
   }
 
   public String getPrefix(Player player) {
-    String prefix = "";
+    var prefix = "";
 
-    Optional<JsonElement> jsonElement = jsonStorage.getProperty(player, "prefix");
+    var jsonElement = jsonStorage.getProperty(player, "prefix");
 
     if (jsonElement.isPresent()) {
       return jsonElement.get().getAsString();
     }
 
     if (dependencyManager.getVault() != null) {
-      VaultHook vaultHook = dependencyManager.getVault();
+      var vaultHook = dependencyManager.getVault();
       prefix = vaultHook.getPrefix(player);
 
       if (prefix == null) prefix = "";
@@ -37,16 +37,16 @@ public class PlayerTagManager {
   }
 
   public String getSuffix(Player player) {
-    String suffix = "";
+    var suffix = "";
 
-    Optional<JsonElement> jsonElement = jsonStorage.getProperty(player, "suffix");
+    var jsonElement = jsonStorage.getProperty(player, "suffix");
 
     if (jsonElement.isPresent()) {
       return jsonElement.get().getAsString();
     }
 
     if (dependencyManager.getVault() != null) {
-      VaultHook vaultHook = dependencyManager.getVault();
+      var vaultHook = dependencyManager.getVault();
       suffix = vaultHook.getSuffix(player);
 
       if (suffix == null) suffix = "";

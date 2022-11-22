@@ -19,7 +19,7 @@ public class ClearChatCommand extends BukkitCommand {
     if (sender.hasPermission("chatty.command.clearchat")) {
       if (args.length == 0) {
         if (sender instanceof Player) {
-          for (int i = 0; i < 100; i++) {
+          for (var i = 0; i < 100; i++) {
             sender.sendMessage(" ");
           }
 
@@ -30,10 +30,10 @@ public class ClearChatCommand extends BukkitCommand {
       } else {
         if (args.length == 1 && args[0].equalsIgnoreCase("all")) {
           if (sender.hasPermission("chatty.command.clearchat.all")) {
-            String chatClearedMessage = Chatty.instance().messages().get("clearchat-command.clear-chat-for-all").replace("{player}", sender.getName());
+            var chatClearedMessage = Chatty.instance().messages().get("clearchat-command.clear-chat-for-all").replace("{player}", sender.getName());
 
             Bukkit.getOnlinePlayers().forEach(player -> {
-              for (int i = 0; i < 100; i++) {
+              for (var i = 0; i < 100; i++) {
                 player.sendMessage(" ");
               }
 

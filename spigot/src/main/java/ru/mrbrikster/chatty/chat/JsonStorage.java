@@ -82,16 +82,16 @@ public class JsonStorage {
 
   private Optional<JsonElement> getProperty(String player, String property) {
     try {
-      JsonElement jsonObject = JSON_PARSER.parse(read());
+      var jsonObject = JSON_PARSER.parse(read());
 
       if (!jsonObject.isJsonObject()) { return Optional.empty(); }
 
-      JsonElement propertyElement = ((JsonObject) jsonObject).get(property);
+      var propertyElement = ((JsonObject) jsonObject).get(property);
 
       if (propertyElement == null) { return Optional.empty(); }
 
       if (propertyElement.isJsonObject()) {
-        JsonElement playerPropertyElement = propertyElement.getAsJsonObject().get(player);
+        var playerPropertyElement = propertyElement.getAsJsonObject().get(player);
 
         return Optional.ofNullable(playerPropertyElement);
       }
@@ -114,11 +114,11 @@ public class JsonStorage {
 
   public boolean isIgnore(CommandSender recipient, CommandSender sender) {
     if (sender != null) {
-      JsonElement jsonElement = Chatty.instance().getExact(JsonStorage.class)
+      var jsonElement = Chatty.instance().getExact(JsonStorage.class)
         .getProperty((Player) recipient, "ignore").orElseGet(JsonArray::new);
 
       if (jsonElement.isJsonArray()) {
-        for (JsonElement ignoreJsonElement : jsonElement.getAsJsonArray()) {
+        for (var ignoreJsonElement : jsonElement.getAsJsonArray()) {
           if (sender.getName().equalsIgnoreCase(ignoreJsonElement.getAsString())) {
             return true;
           }
@@ -132,8 +132,8 @@ public class JsonStorage {
   }
 
   private String read() throws IOException {
-    BufferedReader reader = new BufferedReader(new FileReader(storageFile));
-    StringBuilder stringBuilder = new StringBuilder();
+    var reader = new BufferedReader(new FileReader(storageFile));
+    var stringBuilder = new StringBuilder();
 
     String line;
     while ((line = reader.readLine()) != null) {
@@ -146,7 +146,7 @@ public class JsonStorage {
   }
 
   private void write(String json) throws IOException {
-    BufferedWriter writer = new BufferedWriter(new FileWriter(storageFile));
+    var writer = new BufferedWriter(new FileWriter(storageFile));
 
     writer.write(json);
     writer.flush();

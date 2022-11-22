@@ -20,7 +20,7 @@ public class SwearsCommand extends BukkitCommand {
     if (sender.hasPermission("chatty.command.swears")) {
       if (args.length == 2
         && args[0].equalsIgnoreCase("add")) {
-        String word = args[1];
+        var word = args[1];
 
         if (SwearModerationMethod.addWhitelistWord(word)) {
           try {

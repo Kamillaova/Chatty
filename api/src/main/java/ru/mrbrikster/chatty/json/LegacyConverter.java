@@ -32,11 +32,11 @@ public class LegacyConverter {
       url = false;
     }
 
-    StringBuilder hex = new StringBuilder();
-    boolean checkingForHex = false;
-    boolean lastCharSection = false;
+    var hex = new StringBuilder();
+    var checkingForHex = false;
+    var lastCharSection = false;
 
-    for (char c : message.toCharArray()) {
+    for (var c : message.toCharArray()) {
       if (c == '§') {
         if (lastCharSection && checkingForHex) {
           checkingForHex = false;
@@ -74,7 +74,7 @@ public class LegacyConverter {
           continue;
         }
 
-        ChatColor color = ChatColor.getByChar(c);
+        var color = ChatColor.getByChar(c);
         if (color != null) {
           finalizeSection();
           this.color = color;

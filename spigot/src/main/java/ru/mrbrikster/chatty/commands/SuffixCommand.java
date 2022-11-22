@@ -39,7 +39,7 @@ public class SuffixCommand extends BukkitCommand {
         return;
       }
 
-      Player player = Bukkit.getPlayer(args[0]);
+      var player = Bukkit.getPlayer(args[0]);
 
       if (player == null) {
         sender.sendMessage(Chatty.instance().messages().get("suffix-command.player-not-found"));
@@ -57,11 +57,11 @@ public class SuffixCommand extends BukkitCommand {
         sender.sendMessage(Chatty.instance().messages().get("suffix-command.suffix-clear")
           .replace("{player}", player.getName()));
       } else {
-        String suffix = String.join(" ", Arrays.copyOfRange(args, 1, args.length));
-        String formattedSuffix = configuration.getNode("miscellaneous.commands.suffix.before-suffix").getAsString("") + suffix;
+        var suffix = String.join(" ", Arrays.copyOfRange(args, 1, args.length));
+        var formattedSuffix = configuration.getNode("miscellaneous.commands.suffix.before-suffix").getAsString("") + suffix;
 
-        int minLimit = configuration.getNode("miscellaneous.commands.suffix.length-limit.min").getAsInt(3);
-        int maxLimit = configuration.getNode("miscellaneous.commands.suffix.length-limit.max").getAsInt(16);
+        var minLimit = configuration.getNode("miscellaneous.commands.suffix.length-limit.min").getAsInt(3);
+        var maxLimit = configuration.getNode("miscellaneous.commands.suffix.length-limit.max").getAsInt(16);
         if (formattedSuffix.length() > maxLimit) {
           sender.sendMessage(Chatty.instance().messages().get("suffix-command.length-limit-max")
             .replace("{limit}", String.valueOf(maxLimit - formattedSuffix.length() + suffix.length())));

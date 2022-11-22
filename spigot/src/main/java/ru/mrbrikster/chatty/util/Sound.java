@@ -206,8 +206,8 @@ public enum Sound {
   }
 
   public static org.bukkit.Sound byName(@NotNull String name) {
-    for (Sound value : Sound.values()) {
-      for (String versionDependentName : value.versionDependentNames) {
+    for (var value : Sound.values()) {
+      for (var versionDependentName : value.versionDependentNames) {
         if (versionDependentName.equalsIgnoreCase(name)) {
           return value.bukkitSound();
         }
@@ -219,7 +219,7 @@ public enum Sound {
 
   public org.bukkit.Sound bukkitSound() {
     if (cached != null) return cached;
-    for (String name : versionDependentNames) {
+    for (var name : versionDependentNames) {
       try {
         return cached = org.bukkit.Sound.valueOf(name);
       } catch (IllegalArgumentException ignore2) {

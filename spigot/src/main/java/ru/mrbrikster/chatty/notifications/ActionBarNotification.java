@@ -55,9 +55,9 @@ public class ActionBarNotification extends Notification {
 
     Chatty.instance().getExact(Debugger.class).debug("Run ActionBarNotification.");
 
-    String message = TextUtil.stylish(prefix + messages.get(currentMessage));
+    var message = TextUtil.stylish(prefix + messages.get(currentMessage));
 
-    DependencyManager dependencyManager = Chatty.instance().getExact(DependencyManager.class);
+    var dependencyManager = Chatty.instance().getExact(DependencyManager.class);
     Bukkit.getOnlinePlayers().stream().filter(player -> !isPermission() || player.hasPermission(PERMISSION_NODE))
       .forEach(player -> new ActionBar(dependencyManager.getPlaceholderApi() != null
                                        ? dependencyManager.getPlaceholderApi().setPlaceholders(player, message)

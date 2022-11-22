@@ -41,7 +41,7 @@ public class AdvancementsNotification extends Notification {
 
     Chatty.instance().getExact(Debugger.class).debug("Run \"%s\" AdvancementsNotification.", name);
 
-    AdvancementMessage advancementMessage = new AdvancementMessage((Map<String, String>) messages.get(nextMessage()));
+    var advancementMessage = new AdvancementMessage((Map<String, String>) messages.get(nextMessage()));
     Bukkit.getOnlinePlayers().stream().filter(player -> !isPermission() || player.hasPermission(String.format(PERMISSION_NODE, name)))
       .forEach(advancementMessage::show);
   }
@@ -97,27 +97,27 @@ public class AdvancementsNotification extends Notification {
     }
 
     private void grant(Player player) {
-      Advancement advancement = Bukkit.getAdvancement(id);
-      AdvancementProgress progress = player.getAdvancementProgress(advancement);
+      var advancement = Bukkit.getAdvancement(id);
+      var progress = player.getAdvancementProgress(advancement);
       if (!progress.isDone()) {
         progress.getRemainingCriteria().forEach(progress::awardCriteria);
       }
     }
 
     private void revoke(Player player) {
-      Advancement advancement = Bukkit.getAdvancement(id);
-      AdvancementProgress progress = player.getAdvancementProgress(advancement);
+      var advancement = Bukkit.getAdvancement(id);
+      var progress = player.getAdvancementProgress(advancement);
       if (progress.isDone()) {
         progress.getAwardedCriteria().forEach(progress::revokeCriteria);
       }
     }
 
     private String json() {
-      JsonObject json = new JsonObject();
+      var json = new JsonObject();
 
-      JsonObject display = new JsonObject();
+      var display = new JsonObject();
 
-      JsonObject icon = new JsonObject();
+      var icon = new JsonObject();
       icon.addProperty("item", this.icon);
 
       display.add("icon", icon);
@@ -129,10 +129,10 @@ public class AdvancementsNotification extends Notification {
       display.addProperty("show_toast", true);
       display.addProperty("hidden", true);
 
-      JsonObject trigger = new JsonObject();
+      var trigger = new JsonObject();
       trigger.addProperty("trigger", "minecraft:impossible");
 
-      JsonObject criteria = new JsonObject();
+      var criteria = new JsonObject();
       criteria.add("impossible", trigger);
 
       json.add("criteria", criteria);

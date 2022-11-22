@@ -58,7 +58,7 @@ public class MiscellaneousListener implements Listener {
       soundPitch = (double) configuration.getNode("miscellaneous.vanilla.first-join.sound-pitch").get(1d);
     }
 
-    boolean hasPermission = !configuration.getNode("miscellaneous.vanilla.join.permission").getAsBoolean(true)
+    var hasPermission = !configuration.getNode("miscellaneous.vanilla.join.permission").getAsBoolean(true)
       || event.getPlayer().hasPermission("chatty.misc.joinmessage");
 
     if (joinMessage != null) {
@@ -77,7 +77,7 @@ public class MiscellaneousListener implements Listener {
 
     if (hasPermission) {
       if (soundName != null) {
-        org.bukkit.Sound sound = Sound.byName(soundName);
+        var sound = Sound.byName(soundName);
         Bukkit.getOnlinePlayers().forEach(player -> player.playSound(player.getLocation(), sound, (float) soundVolume, (float) soundPitch));
       }
     }
@@ -89,11 +89,11 @@ public class MiscellaneousListener implements Listener {
       return;
     }
 
-    String quitMessage = configuration
+    var quitMessage = configuration
       .getNode("miscellaneous.vanilla.quit.message")
       .getAsString(null);
 
-    boolean hasPermission = !configuration.getNode("miscellaneous.vanilla.quit.permission").getAsBoolean(true)
+    var hasPermission = !configuration.getNode("miscellaneous.vanilla.quit.permission").getAsBoolean(true)
       || event.getPlayer().hasPermission("chatty.misc.quitmessage");
 
     if (quitMessage != null) {
@@ -111,11 +111,11 @@ public class MiscellaneousListener implements Listener {
     }
 
     if (hasPermission) {
-      String soundName = configuration.getNode("miscellaneous.vanilla.quit.sound").getAsString(null);
+      var soundName = configuration.getNode("miscellaneous.vanilla.quit.sound").getAsString(null);
       if (soundName != null) {
-        org.bukkit.Sound sound = Sound.byName(soundName);
-        double soundVolume = (double) configuration.getNode("miscellaneous.vanilla.quit.sound-volume").get(1d);
-        double soundPitch = (double) configuration.getNode("miscellaneous.vanilla.quit.sound-pitch").get(1d);
+        var sound = Sound.byName(soundName);
+        var soundVolume = (double) configuration.getNode("miscellaneous.vanilla.quit.sound-volume").get(1d);
+        var soundPitch = (double) configuration.getNode("miscellaneous.vanilla.quit.sound-pitch").get(1d);
         Bukkit.getOnlinePlayers().forEach(player -> player.playSound(player.getLocation(), sound, (float) soundVolume, (float) soundPitch));
       }
     }
@@ -127,11 +127,11 @@ public class MiscellaneousListener implements Listener {
       return;
     }
 
-    String deathMessage = configuration
+    var deathMessage = configuration
       .getNode("miscellaneous.vanilla.death.message")
       .getAsString(null);
 
-    boolean hasPermission = !configuration.getNode("miscellaneous.vanilla.death.permission").getAsBoolean(true)
+    var hasPermission = !configuration.getNode("miscellaneous.vanilla.death.permission").getAsBoolean(true)
       || event.getEntity().hasPermission("chatty.misc.deathmessage");
 
     if (deathMessage != null) {
@@ -149,11 +149,11 @@ public class MiscellaneousListener implements Listener {
     }
 
     if (hasPermission) {
-      String soundName = configuration.getNode("miscellaneous.vanilla.death.sound").getAsString(null);
+      var soundName = configuration.getNode("miscellaneous.vanilla.death.sound").getAsString(null);
       if (soundName != null) {
-        org.bukkit.Sound sound = Sound.byName(soundName);
-        double soundVolume = (double) configuration.getNode("miscellaneous.vanilla.death.sound-volume").get(1d);
-        double soundPitch = (double) configuration.getNode("miscellaneous.vanilla.death.sound-pitch").get(1d);
+        var sound = Sound.byName(soundName);
+        var soundVolume = (double) configuration.getNode("miscellaneous.vanilla.death.sound-volume").get(1d);
+        var soundPitch = (double) configuration.getNode("miscellaneous.vanilla.death.sound-pitch").get(1d);
         Bukkit.getOnlinePlayers().forEach(player -> player.playSound(player.getLocation(), sound, (float) soundVolume, (float) soundPitch));
       }
     }

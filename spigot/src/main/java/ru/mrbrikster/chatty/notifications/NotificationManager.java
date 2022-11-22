@@ -23,12 +23,12 @@ public class NotificationManager {
   }
 
   private void init() {
-    ConfigurationNode notificationsNode = configuration.getNode("notifications");
+    var notificationsNode = configuration.getNode("notifications");
 
-    ConfigurationNode chatNotificationsNode = notificationsNode.getNode("chat");
-    ConfigurationNode actionBarNotificationsNode = notificationsNode.getNode("actionbar");
-    ConfigurationNode titleNotificationsNode = notificationsNode.getNode("title");
-    ConfigurationNode advancementsNotificationsNode = notificationsNode.getNode("advancements");
+    var chatNotificationsNode = notificationsNode.getNode("chat");
+    var actionBarNotificationsNode = notificationsNode.getNode("actionbar");
+    var titleNotificationsNode = notificationsNode.getNode("title");
+    var advancementsNotificationsNode = notificationsNode.getNode("advancements");
 
     if (chatNotificationsNode.getNode("enable").getAsBoolean(false)) {
       chatNotificationsNode.getNode("lists").getChildNodes().stream().map(notification -> new ChatNotification(

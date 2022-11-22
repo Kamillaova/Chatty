@@ -65,8 +65,8 @@ public class SwearModerationMethod extends ModifyingSubstringsModerationMethod {
     }
 
     try {
-      StringBuilder pattern = new StringBuilder();
-      for (String swear : Files.readLines(swearsFile, StandardCharsets.UTF_8)) {
+      var pattern = new StringBuilder();
+      for (var swear : Files.readLines(swearsFile, StandardCharsets.UTF_8)) {
         if (swear.isEmpty()) { continue; }
 
         pattern.append("|").append(swear);
@@ -94,28 +94,28 @@ public class SwearModerationMethod extends ModifyingSubstringsModerationMethod {
     if (editedMessage != null) { return editedMessage; }
 
     this.editedMessage = message;
-    Matcher matcher = swearsPattern.matcher(message.toLowerCase());
+    var matcher = swearsPattern.matcher(message.toLowerCase());
 
-    int previousWordStart = -1;
-    int previousWordEnd = -1;
+    var previousWordStart = -1;
+    var previousWordEnd = -1;
     while (matcher.find()) {
       if (matcher.group().trim().isEmpty()) {
         continue;
       }
 
-      int[] wordStartAndEndArray = getWord(message, matcher.start(), matcher.end());
+      var wordStartAndEndArray = getWord(message, matcher.start(), matcher.end());
 
       if (previousWordStart == wordStartAndEndArray[0] && previousWordEnd == wordStartAndEndArray[1]) {
         continue;
       }
 
-      String swear = message.substring(previousWordStart = wordStartAndEndArray[0], previousWordEnd = wordStartAndEndArray[1]);
+      var swear = message.substring(previousWordStart = wordStartAndEndArray[0], previousWordEnd = wordStartAndEndArray[1]);
 
-      String lastColors = TextUtil.getLastColors(message.substring(0, previousWordStart));
+      var lastColors = TextUtil.getLastColors(message.substring(0, previousWordStart));
       if (lastColors.isEmpty()) lastColors = lastFormatColors;
 
-      boolean whitelisted = false;
-      for (Pattern pattern : swearsWhitelist) {
+      var whitelisted = false;
+      for (var pattern : swearsWhitelist) {
         if (pattern.matcher(swear).matches()) { whitelisted = true; }
       }
 
@@ -144,18 +144,18 @@ public class SwearModerationMethod extends ModifyingSubstringsModerationMethod {
   }
 
   private int[] getWord(String message, int start, int end) {
-    int wordStart = 0;
-    int wordEnd = message.length();
+    var wordStart = 0;
+    var wordEnd = message.length();
 
-    char[] chars = message.toCharArray();
-    for (int i = start; i >= 0; i--) {
+    var chars = message.toCharArray();
+    for (var i = start; i >= 0; i--) {
       if (chars[i] == ' ') {
         wordStart = i + 1;
         break;
       }
     }
 
-    for (int i = end; i < message.length(); i++) {
+    for (var i = end; i < message.length(); i++) {
       if (chars[i] == ' ') {
         wordEnd = i;
         break;
