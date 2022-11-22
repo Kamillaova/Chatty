@@ -17,12 +17,10 @@ dependencies {
   compileOnly("org.jetbrains:annotations:23.0.0")
 
   implementation("com.github.Brikster:BasePlugin:v1.8")
-  implementation("com.google.code.gson:gson:2.8.9")
-  implementation("org.bstats:bstats-bukkit:2.2.1")
+  implementation("org.bstats:bstats-bukkit:2.10")
 
-  compileOnly("net.milkbowl.vault:VaultAPI:1.7")
-  compileOnly("me.clip:placeholderapi:2.10.6")
-  compileOnly("commons-io:commons-io:2.7")
+  compileOnly("net.milkbowl.vault:VaultAPI:1.7.1")
+  compileOnly("me.clip:placeholderapi:2.11.2")
 
   compileOnly("org.projectlombok:lombok:1.18.24")
   annotationProcessor("org.projectlombok:lombok:1.18.24")
