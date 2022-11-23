@@ -1,5 +1,6 @@
 package ru.mrbrikster.chatty;
 
+import net.kyori.adventure.platform.bukkit.BukkitAudiences;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
 import ru.mrbrikster.baseplugin.config.Configuration;
@@ -27,11 +28,16 @@ import java.util.stream.Collectors;
 
 public final class Chatty extends BukkitBasePlugin {
   private static Chatty instance;
+  private static BukkitAudiences audiences;
   private static ChattyApi api;
   private final Map<Class<?>, Object> dependenciesMap = new HashMap<>();
 
   public static Chatty instance() {
     return Chatty.instance;
+  }
+
+  public static BukkitAudiences audiences() {
+    return audiences;
   }
 
   /**
@@ -71,6 +77,7 @@ public final class Chatty extends BukkitBasePlugin {
   @Override
   public void onEnable() {
     Chatty.instance = Chatty.this;
+    Chatty.audiences = BukkitAudiences.create(this);
 
     var configuration = getConfiguration();
 
@@ -137,5 +144,6 @@ public final class Chatty extends BukkitBasePlugin {
         chat.getBukkitCommand().unregister(Chatty.instance());
       }
     });
+    audiences.close();
   }
 }

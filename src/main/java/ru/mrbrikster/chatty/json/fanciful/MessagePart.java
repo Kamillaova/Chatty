@@ -69,7 +69,7 @@ public final class MessagePart implements JsonRepresentedObject, ConfigurationSe
   public static MessagePart deserialize(Map<String, Object> serialized) {
     var part = new MessagePart((TextualComponent) serialized.get("text"));
     part.styles = (ArrayList<ChatColor>) serialized.get("styles");
-    part.color = ChatColor.of(serialized.get("color").toString());
+    part.color = ChatColor.valueOf(serialized.get("color").toString());
     part.hoverActionName = (String) serialized.get("hoverActionName");
     part.hoverActionData = (JsonRepresentedObject) serialized.get("hoverActionData");
     part.clickActionName = (String) serialized.get("clickActionName");

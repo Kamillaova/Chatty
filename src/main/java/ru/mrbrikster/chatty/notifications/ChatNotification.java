@@ -7,7 +7,6 @@ import ru.mrbrikster.chatty.Chatty;
 import ru.mrbrikster.chatty.dependencies.DependencyManager;
 import ru.mrbrikster.chatty.util.Pair;
 import ru.mrbrikster.chatty.util.TextUtil;
-import ru.mrbrikster.chatty.util.textapi.NMSUtil;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -62,12 +61,7 @@ public class ChatNotification extends Notification {
         var formattedLine = dependencyManager.getPlaceholderApi() != null
                               ? dependencyManager.getPlaceholderApi().setPlaceholders(player, line.left())
                               : line.left();
-
-        if (line.right()) {
-          NMSUtil.sendChatPacket(player, "CHAT", formattedLine, null);
-        } else {
           player.sendMessage(formattedLine);
-        }
       }));
   }
 }

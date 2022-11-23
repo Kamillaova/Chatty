@@ -5,15 +5,18 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonParser;
 import com.google.gson.stream.JsonWriter;
+import net.kyori.adventure.identity.Identified;
+import net.kyori.adventure.text.serializer.gson.GsonComponentSerializer;
+import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import net.md_5.bungee.api.ChatColor;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.serialization.ConfigurationSerializable;
 import org.bukkit.configuration.serialization.ConfigurationSerialization;
 import org.bukkit.entity.Player;
+import ru.mrbrikster.chatty.Chatty;
 import ru.mrbrikster.chatty.util.ArrayWrapper;
 import ru.mrbrikster.chatty.util.TextUtil;
-import ru.mrbrikster.chatty.util.textapi.NMSUtil;
 
 import java.io.IOException;
 import java.io.StringWriter;
@@ -27,6 +30,7 @@ import java.util.Map;
 import java.util.logging.Level;
 
 import static ru.mrbrikster.chatty.json.fanciful.TextualComponent.rawText;
+import static ru.mrbrikster.chatty.util.ComponentSerializers.GSON_SERIALIZER;
 
 /**
  * Represents a formattable message. Such messages can use elements such as colors, formatting codes, hover and click data, and other features provided by the vanilla Minecraft <a href="http://minecraft.gamepedia.com/Tellraw#Raw_JSON_Text">JSON message formatter</a>.
@@ -40,7 +44,7 @@ import static ru.mrbrikster.chatty.json.fanciful.TextualComponent.rawText;
  */
 public class FancyMessage implements JsonRepresentedObject, Cloneable, Iterable<MessagePart>, ConfigurationSerializable {
   @SuppressWarnings("deprecation")
-  private static JsonParser JsonParser = new JsonParser();
+  private static final JsonParser JsonParser = new JsonParser();
   private static final Gson GSON = new GsonBuilder()
     .disableHtmlEscaping()
     .create();
@@ -168,7 +172,7 @@ public class FancyMessage implements JsonRepresentedObject, Cloneable, Iterable<
   @Override
   public FancyMessage clone() throws CloneNotSupportedException {
     var instance = (FancyMessage) super.clone();
-    instance.messageParts = new ArrayList<MessagePart>(messageParts.size());
+    instance.messageParts = new ArrayList<>(messageParts.size());
     for (var i = 0; i < messageParts.size(); i++) {
       instance.messageParts.add(i, messageParts.get(i).clone());
     }
@@ -580,12 +584,15 @@ public class FancyMessage implements JsonRepresentedObject, Cloneable, Iterable<
   }
 
   private void send(CommandSender sender, String jsonString, Player from) {
-    if (!(sender instanceof Player)) {
+    if (!(sender instanceof Player player)) {
       sender.sendMessage(toOldMessageFormat());
       return;
     }
 
-    NMSUtil.sendChatPacket((Player) sender, "CHAT", jsonString, from);
+    Chatty.audiences().player(player).sendMessage(
+      (Identified) Chatty.audiences().player(from),
+      GSON_SERIALIZER.deserialize(jsonString)
+    );
   }
 
   /**

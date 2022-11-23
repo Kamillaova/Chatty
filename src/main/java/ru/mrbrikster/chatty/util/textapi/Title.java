@@ -17,13 +17,15 @@
  */
 package ru.mrbrikster.chatty.util.textapi;
 
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
-import org.bukkit.Bukkit;
+import net.kyori.adventure.text.Component;
 import org.bukkit.entity.Player;
-import ru.mrbrikster.chatty.json.FormattedMessage;
+import ru.mrbrikster.chatty.Chatty;
 
-import java.lang.reflect.Method;
+import java.time.Duration;
+
+import static net.kyori.adventure.title.Title.Times.times;
+import static net.kyori.adventure.title.Title.title;
+import static ru.mrbrikster.chatty.util.ComponentSerializers.GSON_SERIALIZER;
 
 /**
  * Represents a title that appears at the center of the screen.
@@ -31,11 +33,7 @@ import java.lang.reflect.Method;
  * @author Luca
  */
 public class Title {
-  @SuppressWarnings({"deprecation", "unused"})
-  private static final JsonParser JsonParser = new JsonParser();
-
-  private JsonObject title, subtitle;
-  private int fadeIn, fadeOut, stay;
+  private final net.kyori.adventure.title.Title title;
 
   /**
    * Constructs a {@link Title} object.
@@ -47,34 +45,15 @@ public class Title {
    * @param fadeOut  The fade-out time of the title (in ticks).
    */
   public Title(String title, String subtitle, int fadeIn, int stay, int fadeOut) {
-    this.title = convert(title);
-    this.subtitle = convert(subtitle);
-    this.fadeIn = fadeIn;
-    this.fadeOut = fadeOut;
-    this.stay = stay;
-  }
-
-  /**
-   * Constructs a {@link Title} object.
-   *
-   * @param title    The text of the main title. Must be in /tellraw JSON format.
-   * @param subtitle The text of the subtitle. Must be in /tellraw JSON
-   *                 format.
-   * @param fadeIn   The fade-in time of the title, in ticks.
-   * @param stay     The stay time of the title, in ticks.
-   * @param fadeOut  The fade-out time of the title, in ticks.
-   */
-  public Title(JsonObject title, JsonObject subtitle, int fadeIn, int fadeOut, int stay) {
-    this.title = title;
-    this.subtitle = subtitle;
-    this.fadeIn = fadeIn;
-    this.fadeOut = fadeOut;
-    this.stay = stay;
-  }
-
-  @SuppressWarnings("deprecation")
-  static JsonObject convert(String text) {
-    return JsonParser.parse(new FormattedMessage(text).toJSONString()).getAsJsonObject();
+    this.title = title(
+      GSON_SERIALIZER.deserialize(title),
+      GSON_SERIALIZER.deserialize(subtitle),
+      times(
+        Duration.ofMillis(50L * fadeIn),
+        Duration.ofMillis(50L * stay),
+        Duration.ofMillis(50L * fadeOut)
+      )
+    );
   }
 
   /**
@@ -83,190 +62,6 @@ public class Title {
    * @param player The player to send the title to.
    */
   public void send(Player player) {
-    try {
-      var entityPlayer = player.getClass().getMethod("getHandle").invoke(player);
-      var playerConnection = NMSUtil.resolveField(entityPlayer.getClass(), "b", "playerConnection").get(entityPlayer);
-
-      var clsPacket = NMSUtil.getClass("Packet");
-      var clsIChatBaseComponent = NMSUtil.getClass("IChatBaseComponent");
-      var clsChatSerializer = NMSUtil.getClass("IChatBaseComponent$ChatSerializer");
-
-      Object titleComponent = null;
-      if (title != null) { titleComponent = clsChatSerializer.getMethod("a", String.class).invoke(null, title.toString()); }
-
-      Object subtitleComponent = null;
-      if (subtitle != null) { subtitleComponent = clsChatSerializer.getMethod("a", String.class).invoke(null, subtitle.toString()); }
-
-      Method sendPacketMethod;
-      try {
-        sendPacketMethod = playerConnection.getClass().getMethod("sendPacket", clsPacket);
-      } catch (Exception ignored) {
-        // 1.18+
-        sendPacketMethod = playerConnection.getClass().getMethod("a", clsPacket);
-      }
-
-      var clsSetTitlePacket = NMSUtil.getClass("ClientboundSetTitleTextPacket");
-      if (clsSetTitlePacket == null) {
-        // Legacy titles code
-
-        var clsPacketPlayOutTitle = NMSUtil.getClass("PacketPlayOutTitle");
-        var clsEnumTitleAction = NMSUtil.getClass("PacketPlayOutTitle$EnumTitleAction");
-        var timesPacket = clsPacketPlayOutTitle.getConstructor(int.class, int.class, int.class).newInstance(fadeIn, stay, fadeOut);
-        sendPacketMethod.invoke(playerConnection, timesPacket);
-
-        // Play title packet
-        if (title != null) {
-          var titlePacket = clsPacketPlayOutTitle.getConstructor(clsEnumTitleAction, clsIChatBaseComponent).newInstance(clsEnumTitleAction.getField("TITLE").get(null), titleComponent);
-          sendPacketMethod.invoke(playerConnection, titlePacket);
-        }
-
-        // Play subtitle packet
-        if (subtitle != null) {
-          var subtitlePacket = clsPacketPlayOutTitle.getConstructor(clsEnumTitleAction, clsIChatBaseComponent).newInstance(clsEnumTitleAction.getField("SUBTITLE").get(null), subtitleComponent);
-          sendPacketMethod.invoke(playerConnection, subtitlePacket);
-        }
-      } else {
-        // New titles code
-
-        var clsSetSubtitlePacket = NMSUtil.getClass("ClientboundSetSubtitleTextPacket");
-        var clsSetAnimationPacket = NMSUtil.getClass("ClientboundSetTitlesAnimationPacket");
-
-        // Play animation packet
-        var animationPacket = clsSetAnimationPacket.getConstructor(int.class, int.class, int.class).newInstance(fadeIn, stay, fadeOut);
-        sendPacketMethod.invoke(playerConnection, animationPacket);
-
-        // Play title packet
-        if (title != null) {
-          var titlePacket = clsSetTitlePacket.getConstructor(clsIChatBaseComponent).newInstance(titleComponent);
-          sendPacketMethod.invoke(playerConnection, titlePacket);
-        }
-
-        // Play subtitle packet
-        if (subtitle != null) {
-          var subtitlePacket = clsSetSubtitlePacket.getConstructor(clsIChatBaseComponent).newInstance(subtitleComponent);
-          sendPacketMethod.invoke(playerConnection, subtitlePacket);
-        }
-      }
-    } catch (Throwable e) {
-      throw new RuntimeException("Titles are not supported by Chatty on your server version (" + NMSUtil.ServerPackage.getServerVersion() + ")", e);
-    }
+    Chatty.audiences().player(player).showTitle(title);
   }
-
-  /**
-   * Sends the title to all online players.
-   */
-  public void sendToAll() {
-    for (Player player : Bukkit.getOnlinePlayers()) {
-      send(player);
-    }
-  }
-
-  /**
-   * Getter for the text of the main title.
-   *
-   * @return Text of main title.
-   */
-  public JsonObject getTitle() {
-    return title;
-  }
-
-  /**
-   * Setter for the text of the main title.
-   *
-   * @param title New main title text.
-   */
-  public void setTitle(String title) {
-    this.title = convert(title);
-  }
-
-  /**
-   * Setter for the text of the main title.
-   *
-   * @param title New main title text. Must be in /tellraw JSON format.
-   */
-  public void setTitle(JsonObject title) {
-    this.title = title;
-  }
-
-  /**
-   * Getter for the text of the subtitle.
-   *
-   * @return Text of subtitle.
-   */
-  public JsonObject getSubtitle() {
-    return subtitle;
-  }
-
-  /**
-   * Setter for the text of the subtitle.
-   *
-   * @param subtitle New subtitle text.
-   */
-  public void setSubtitle(String subtitle) {
-    this.subtitle = convert(subtitle);
-  }
-
-  /**
-   * Setter for the text of the subtitle.
-   *
-   * @param subtitle New subtitle text. Must be in /tellraw JSON format.
-   */
-  public void setSubtitle(JsonObject subtitle) {
-    this.subtitle = subtitle;
-  }
-
-  /**
-   * Getter for the fade-in time, in ticks.
-   *
-   * @return Fade-in ticks.
-   */
-  public int getFadeIn() {
-    return fadeIn;
-  }
-
-  /**
-   * Setter for the fade-in time, in ticks.
-   *
-   * @param fadeIn New fade-in ticks.
-   */
-  public void setFadeIn(int fadeIn) {
-    this.fadeIn = fadeIn;
-  }
-
-  /**
-   * Getter for the fade-out time, in ticks.
-   *
-   * @return Fade-out ticks.
-   */
-  public int getFadeOut() {
-    return fadeOut;
-  }
-
-  /**
-   * Setter for the fade-out time, in ticks.
-   *
-   * @param fadeOut New fade-out ticks.
-   */
-  public void setFadeOut(int fadeOut) {
-    this.fadeOut = fadeOut;
-  }
-
-  /**
-   * Getter for the stay time, in ticks.
-   *
-   * @return Stay ticks.
-   */
-  public int getStay() {
-    return stay;
-  }
-
-  /**
-   * Setter for the stay time, in ticks.
-   *
-   * @param stay New stay ticks.
-   */
-  public void setStay(int stay) {
-    this.stay = stay;
-  }
-
 }

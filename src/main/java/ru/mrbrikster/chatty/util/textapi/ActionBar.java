@@ -17,11 +17,14 @@
  */
 package ru.mrbrikster.chatty.util.textapi;
 
-import com.google.gson.JsonObject;
+import net.kyori.adventure.identity.Identified;
+import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
+import ru.mrbrikster.chatty.Chatty;
 
 import static com.google.common.base.Preconditions.checkNotNull;
+import static ru.mrbrikster.chatty.util.ComponentSerializers.GSON_SERIALIZER;
 
 /**
  * Represents a message displayed above the hotbar.
@@ -29,7 +32,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
  * @author Luca
  */
 public class ActionBar {
-  private JsonObject json;
+  private Component text;
 
   /**
    * Constructs an {@link ActionBar} object based on plain text.
@@ -38,17 +41,7 @@ public class ActionBar {
    */
   public ActionBar(String text) {
     checkNotNull(text);
-    this.json = Title.convert(text);
-  }
-
-  /**
-   * Constructs an {@link ActionBar} object based on JSON-formatted text.
-   *
-   * @param json Text to display Must be in /tellraw JSON format.
-   */
-  public ActionBar(JsonObject json) {
-    checkNotNull(json);
-    this.json = json;
+    this.text = GSON_SERIALIZER.deserialize(text);
   }
 
   /**
@@ -65,33 +58,12 @@ public class ActionBar {
   }
 
   /**
-   * This method has been kept just to ensure backwards compatibility with older versions of TextAPI.
-   * It is not supported and will be removed in a future release.
-   *
-   * @param message The message to send.
-   * @deprecated Please create a new {@link ActionBar} instance instead.
-   */
-  @Deprecated
-  public static void sendToAll(String message) {
-    new ActionBar(message).sendToAll();
-  }
-
-  /**
    * Sends an action bar message to a specific player.
    *
    * @param player The player to send the message to.
    */
   public void send(Player player) {
-    NMSUtil.sendChatPacket(player, "GAME_INFO", json.toString(), null);
-  }
-
-  /**
-   * Sends an action bar message to all online players.
-   */
-  public void sendToAll() {
-    for (Player player : Bukkit.getOnlinePlayers()) {
-      send(player);
-    }
+    Chatty.audiences().player(player).sendActionBar(text);
   }
 
   /**
@@ -101,16 +73,6 @@ public class ActionBar {
    */
   public void setText(String text) {
     checkNotNull(text);
-    this.json = Title.convert(text);
-  }
-
-  /**
-   * Changes the text to display.
-   *
-   * @param json Text to display. Must be in /tellraw JSON format.
-   */
-  public void setJsonText(JsonObject json) {
-    checkNotNull(json);
-    this.json = json;
+    this.text = GSON_SERIALIZER.deserialize(text);
   }
 }
