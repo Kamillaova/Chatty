@@ -48,6 +48,8 @@ tasks {
     autoRelocate(
       "ru.mrbrikster.baseplugin",
       "net.kyori",
+      "com.google.gson",
+      "org.apache.commons.io", // baka!
     )
 
     mergeServiceFiles()
