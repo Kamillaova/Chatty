@@ -1,17 +1,15 @@
-name: Java CI
+name: Build
 
 on: [ push ]
 
 jobs:
   build:
-
-    if: "! contains(toJSON(github.event.commits.*.message), '[SKIP-CI]')"
-
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
 
     steps:
-      - uses: actions/checkout@main
-      - name: Set up JDK 1.8
+      - name: Clone repo
+        uses: actions/checkout@v3
+      - name: Set up JDK 17
         uses: actions/setup-java@v3
         with:
           java-version: 17
@@ -22,7 +20,8 @@ jobs:
         uses: gradle/gradle-build-action@v2
         with:
           arguments: build
-      - uses: actions/upload-artifact@v3
+      - name: Upload jar
+        uses: actions/upload-artifact@v3
         with:
           name: Chatty
           path: build/libs/chatty.jar
