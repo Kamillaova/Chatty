@@ -5,9 +5,6 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonParser;
 import com.google.gson.stream.JsonWriter;
-import net.kyori.adventure.identity.Identified;
-import net.kyori.adventure.text.serializer.gson.GsonComponentSerializer;
-import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import net.md_5.bungee.api.ChatColor;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
@@ -29,6 +26,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 
+import static net.kyori.adventure.identity.Identity.identity;
 import static ru.mrbrikster.chatty.json.fanciful.TextualComponent.rawText;
 import static ru.mrbrikster.chatty.util.ComponentSerializers.GSON_SERIALIZER;
 
@@ -590,7 +588,7 @@ public class FancyMessage implements JsonRepresentedObject, Cloneable, Iterable<
     }
 
     Chatty.audiences().player(player).sendMessage(
-      (Identified) Chatty.audiences().player(from),
+      identity(from.getUniqueId()),
       GSON_SERIALIZER.deserialize(jsonString)
     );
   }

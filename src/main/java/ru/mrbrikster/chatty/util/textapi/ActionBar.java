@@ -17,9 +17,7 @@
  */
 package ru.mrbrikster.chatty.util.textapi;
 
-import net.kyori.adventure.identity.Identified;
 import net.kyori.adventure.text.Component;
-import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import ru.mrbrikster.chatty.Chatty;
 
