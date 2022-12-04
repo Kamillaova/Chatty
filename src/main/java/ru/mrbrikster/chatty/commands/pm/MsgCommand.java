@@ -42,7 +42,7 @@ public class MsgCommand extends PrivateMessageCommand {
                     ? Bukkit.getConsoleSender()
                     : Bukkit.getPlayer(recipientName);
 
-    if (recipient == null) {
+    if (recipient == null || isOffline(sender, recipient)) {
       sender.sendMessage(Chatty.instance().messages().get("msg-command.player-not-found"));
       return;
     }

@@ -2,6 +2,7 @@ package ru.mrbrikster.chatty.commands.pm;
 
 import com.google.gson.JsonPrimitive;
 import org.bukkit.Bukkit;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import ru.mrbrikster.chatty.util.BukkitCommand;
@@ -36,7 +37,7 @@ public abstract class PrivateMessageCommand extends BukkitCommand {
     this.moderationManager = chatty.get(ModerationManager.class);
   }
 
-  protected void handlePrivateMessage( CommandSender sender,  CommandSender recipient,  String message) {
+  protected void handlePrivateMessage(CommandSender sender, CommandSender recipient, String message) {
     var recipientName = recipient.getName();
     var recipientPrefix = "";
     var recipientSuffix = "";
@@ -114,10 +115,17 @@ public abstract class PrivateMessageCommand extends BukkitCommand {
 
     String senderFormat;
     if (!jsonStorage.isIgnore(recipient, sender)) {
-      var recipientFormat = createFormat(configuration.getNode("pm.format.recipient")
+      var recipientFormat = createFormat(
+        configuration
+          .getNode("pm.format.recipient")
           .getAsString("&7{sender-prefix}{sender-name} &6-> &7{recipient-prefix}{recipient-name}: &f{message}"),
-        message, recipientName, recipientPrefix, recipientSuffix,
-        senderName, senderPrefix, senderSuffix
+        message,
+        recipientName,
+        recipientPrefix,
+        recipientSuffix,
+        senderName,
+        senderPrefix,
+        senderSuffix
       );
 
       if (!(recipient instanceof Player)) {
@@ -137,10 +145,17 @@ public abstract class PrivateMessageCommand extends BukkitCommand {
       }
     }
 
-    senderFormat = createFormat(configuration.getNode("pm.format.sender")
+    senderFormat = createFormat(
+      configuration
+        .getNode("pm.format.sender")
         .getAsString("&7{sender-prefix}{sender-name} &6-> &7{recipient-prefix}{recipient-name}: &f{message}"),
-      message, recipientName, recipientPrefix, recipientSuffix,
-      senderName, senderPrefix, senderSuffix
+      message,
+      recipientName,
+      recipientPrefix,
+      recipientSuffix,
+      senderName,
+      senderPrefix,
+      senderSuffix
     );
 
     if (!(sender instanceof Player)) {
@@ -198,5 +213,31 @@ public abstract class PrivateMessageCommand extends BukkitCommand {
     }
 
     return TextUtil.getLastColors(stylish(format.substring(0, messageIndex)));
+  }
+
+  protected boolean isOffline(CommandSender from, CommandSender sender) {
+    if (sender instanceof OfflinePlayer offlinePlayer) {
+      var player = offlinePlayer.getPlayer();
+
+      if (player == null) {
+        return true;
+      }
+
+      if (configuration.getNode("general.hide-vanished-recipients").getAsBoolean(false)) {
+        if (player.hasPermission("chatty.vanish.bypass")) {
+          return true;
+        }
+
+        if (from instanceof Player fromPlayer && !fromPlayer.canSee(player)) {
+          return true;
+        }
+
+        var essentials = Chatty.essentials();
+        if (essentials != null) {
+          return essentials.getUser(player).isHidden();
+        }
+      }
+    }
+    return false;
   }
 }

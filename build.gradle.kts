@@ -20,6 +20,9 @@ dependencies {
   implementation("net.kyori:adventure-text-serializer-gson:4.12.0")
   implementation("net.kyori:adventure-text-serializer-gson-legacy-impl:4.12.0")
 
+  compileOnly("net.essentialsx:EssentialsX:2.19.7") {
+    exclude(group = "org.spigotmc", module = "spigot-api")
+  }
   compileOnly("com.github.MilkBowl:VaultAPI:1.7.1")
   compileOnly("me.clip:placeholderapi:2.11.2")
 }

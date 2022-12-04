@@ -6,4 +6,4 @@ authors: [ MrBrikster, Kamillaova ]
 # This doesn't mean that plugin works only on 1.13+
 api-version: '1.13'
 
-softdepend: [ Vault, PlaceholderAPI ]
+softdepend: [ Vault, PlaceholderAPI, Essentials ]

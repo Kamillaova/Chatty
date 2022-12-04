@@ -66,7 +66,7 @@ public class ReplyCommand extends PrivateMessageCommand {
                                   ? Bukkit.getConsoleSender()
                                   : Bukkit.getPlayer(optionalRecipient.get());
 
-    if (recipient == null) {
+    if (recipient == null || isOffline(sender, recipient)) {
       sender.sendMessage(Chatty.instance().messages().get("reply-command.target-not-found"));
       return;
     }

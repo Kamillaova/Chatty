@@ -8,7 +8,10 @@ config-version: '2.0'
 #   Creator: MrBrikster
 #
 # * Optional dependencies:
-#   Vault, PlaceholderAPI.
+#   Vault, PlaceholderAPI, Essentials.
+#
+# * Permissions:
+#   chatty.vanish.bypass - Allow to send messages to vanished players.
 # ******************************************************
 
 # * GENERAL

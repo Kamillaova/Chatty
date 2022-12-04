@@ -1,6 +1,9 @@
 package ru.mrbrikster.chatty;
 
+import com.earth2me.essentials.Essentials;
+import net.ess3.api.IEssentials;
 import net.kyori.adventure.platform.bukkit.BukkitAudiences;
+import org.bukkit.Bukkit;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
 import ru.mrbrikster.baseplugin.config.Configuration;
@@ -22,18 +25,25 @@ import ru.mrbrikster.chatty.notifications.NotificationManager;
 import ru.mrbrikster.chatty.util.Messages;
 
 import java.io.File;
+import java.lang.ref.Reference;
+import java.lang.ref.WeakReference;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.stream.Collectors;
 
 public final class Chatty extends BukkitBasePlugin {
   private static Chatty instance;
+  private static Reference<IEssentials> essentials;
   private static BukkitAudiences audiences;
   private static ChattyApi api;
   private final Map<Class<?>, Object> dependenciesMap = new HashMap<>();
 
   public static Chatty instance() {
     return Chatty.instance;
+  }
+
+  public static IEssentials essentials() {
+    return essentials.get();
   }
 
   public static BukkitAudiences audiences() {
@@ -78,6 +88,7 @@ public final class Chatty extends BukkitBasePlugin {
   public void onEnable() {
     Chatty.instance = Chatty.this;
     Chatty.audiences = BukkitAudiences.create(this);
+    Chatty.essentials = new WeakReference<>((IEssentials) Bukkit.getPluginManager().getPlugin("Essentials"));
 
     var configuration = getConfiguration();
 

@@ -20,6 +20,9 @@ dependencyResolutionManagement {
     maven("https://repo.extendedclip.com/content/repositories/placeholderapi/") {
       content { includeGroup("me.clip") }
     }
+    maven("https://repo.essentialsx.net/releases/") {
+      content { includeGroup("net.essentialsx") }
+    }
   }
 }
 

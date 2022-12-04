@@ -163,7 +163,11 @@ public class ChatListener implements Listener, EventExecutor {
     }
 
     long recipientsCount;
-    if (configuration.getNode("general.hide-vanished-recipients").getAsBoolean(false)) {
+    if (!player.hasPermission("chatty.vanish.bypass") &&
+      configuration
+        .getNode("general.hide-vanished-recipients")
+        .getAsBoolean(false)
+    ) {
       recipientsCount = event.getRecipients().stream().filter(player::canSee).count();
     } else {
       recipientsCount = event.getRecipients().size();
