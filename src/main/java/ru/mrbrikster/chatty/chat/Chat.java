@@ -6,7 +6,7 @@ import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.metadata.FixedMetadataValue;
 import org.jetbrains.annotations.Nullable;
-import ru.mrbrikster.baseplugin.commands.BukkitCommand;
+import ru.mrbrikster.chatty.util.BukkitCommand;
 import ru.mrbrikster.chatty.Chatty;
 import ru.mrbrikster.chatty.json.FormattedMessage;
 import ru.mrbrikster.chatty.util.TextUtil;

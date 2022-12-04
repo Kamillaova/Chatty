@@ -2,7 +2,7 @@ package ru.mrbrikster.chatty.commands;
 
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-import ru.mrbrikster.baseplugin.commands.BukkitCommand;
+import ru.mrbrikster.chatty.util.BukkitCommand;
 import ru.mrbrikster.chatty.Chatty;
 import ru.mrbrikster.chatty.chat.JsonStorage;
 import ru.mrbrikster.chatty.util.JsonPrimitives;

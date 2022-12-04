@@ -3,7 +3,7 @@ package ru.mrbrikster.chatty.commands;
 import com.google.common.io.FileWriteMode;
 import com.google.common.io.Files;
 import org.bukkit.command.CommandSender;
-import ru.mrbrikster.baseplugin.commands.BukkitCommand;
+import ru.mrbrikster.chatty.util.BukkitCommand;
 import ru.mrbrikster.chatty.Chatty;
 import ru.mrbrikster.chatty.moderation.SwearModerationMethod;
 

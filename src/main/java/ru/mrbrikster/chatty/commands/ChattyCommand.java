@@ -1,7 +1,7 @@
 package ru.mrbrikster.chatty.commands;
 
 import org.bukkit.command.CommandSender;
-import ru.mrbrikster.baseplugin.commands.BukkitCommand;
+import ru.mrbrikster.chatty.util.BukkitCommand;
 import ru.mrbrikster.baseplugin.config.Configuration;
 import ru.mrbrikster.chatty.Chatty;
 

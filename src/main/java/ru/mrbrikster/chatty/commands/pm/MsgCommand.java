@@ -37,9 +37,10 @@ public class MsgCommand extends PrivateMessageCommand {
     var recipientName = args[0];
     var message = String.join(" ", Arrays.copyOfRange(args, 1, args.length));
 
-    CommandSender recipient =
-      recipientName.equalsIgnoreCase("CONSOLE") && configuration.getNode("pm.allow-console").getAsBoolean(false)
-      ? Bukkit.getConsoleSender() : Bukkit.getPlayer(recipientName);
+    var recipient = recipientName.equalsIgnoreCase("CONSOLE")
+                      && configuration.getNode("pm.allow-console").getAsBoolean(false)
+                    ? Bukkit.getConsoleSender()
+                    : Bukkit.getPlayer(recipientName);
 
     if (recipient == null) {
       sender.sendMessage(Chatty.instance().messages().get("msg-command.player-not-found"));
