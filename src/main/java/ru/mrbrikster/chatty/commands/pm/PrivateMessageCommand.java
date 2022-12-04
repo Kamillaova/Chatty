@@ -225,7 +225,7 @@ public abstract class PrivateMessageCommand extends BukkitCommand {
 
       if (configuration.getNode("general.hide-vanished-recipients").getAsBoolean(false)) {
         if (player.hasPermission("chatty.vanish.bypass")) {
-          return true;
+          return false;
         }
 
         if (from instanceof Player fromPlayer && !fromPlayer.canSee(player)) {
